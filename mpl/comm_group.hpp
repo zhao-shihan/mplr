@@ -2982,7 +2982,6 @@ namespace mpl {
         check_size(recvdispls);
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
         const auto recvdispls_int(displacements_as_vector_of_ints(recvdispls));
-        const std::vector<int> displs(recvdispls.begin(), recvdispls.end());
         MPI_Allgatherv(send_data, sendl.size(), detail::datatype_traits<T>::get_datatype(),
                        recv_data, recvcounts.data(), recvdispls_int.data(),
                        detail::datatype_traits<T>::get_datatype(), comm_);
@@ -3277,7 +3276,6 @@ namespace mpl {
         check_size(senddispls);
         const auto sendcounts{sizes_as_vector_of_ints(sendls)};
         const auto senddispls_int(displacements_as_vector_of_ints(senddispls));
-        const std::vector<int> displs(senddispls.begin(), senddispls.end());
         MPI_Scatterv(send_data, sendcounts.data(), senddispls_int.data(),
                      detail::datatype_traits<T>::get_datatype(), recv_data, recvl.size(),
                      detail::datatype_traits<T>::get_datatype(), root_rank, comm_);
