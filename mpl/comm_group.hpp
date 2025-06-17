@@ -415,24 +415,7 @@ namespace mpl {
         return counts;
       }
 
-      template<typename T>
-      std::vector<int> count_displacements_as_vector_of_ints(
-          const displacements &displs) const {
-        std::vector<int> displs_as_int;
-        displs_as_int.reserve(displs.size());
-        std::transform(displs.begin(), displs.end(), std::back_inserter(displs_as_int),
-                       [](const auto &displ) {
-#if defined MPL_DEBUG
-                         if (displ / sizeof(T) * sizeof(T) != displ or
-                             displ / sizeof(T) > std::numeric_limits<int>::max)
-                           throw invalid_displacement();
-#endif
-                         return static_cast<int>(displ / sizeof(T));
-                       });
-        return displs_as_int;
-      }
-
-      std::vector<int> byte_displacements_as_vector_of_ints(const displacements &displs) const {
+      std::vector<int> displacements_as_vector_of_ints(const displacements &displs) const {
         std::vector<int> displs_as_int;
         displs_as_int.reserve(displs.size());
         std::transform(displs.begin(), displs.end(), std::back_inserter(displs_as_int),
@@ -2698,7 +2681,7 @@ namespace mpl {
         check_size(recvls);
         check_size(recvdispls);
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto reacvdispls_int(count_displacements_as_vector_of_ints<T>(recvdispls));
+        const auto reacvdispls_int(displacements_as_vector_of_ints(recvdispls));
         MPI_Gatherv(send_data, sendl.size(), detail::datatype_traits<T>::get_datatype(),
                     recv_data, recvcounts.data(), reacvdispls_int.data(),
                     detail::datatype_traits<T>::get_datatype(), root_rank, comm_);
@@ -2777,7 +2760,7 @@ namespace mpl {
         check_size(recvls);
         check_size(recvdispls);
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto recvdispls_int(count_displacements_as_vector_of_ints<T>(recvdispls));
+        const auto recvdispls_int(displacements_as_vector_of_ints(recvdispls));
         MPI_Request req;
         MPI_Igatherv(send_data, sendl.size(), detail::datatype_traits<T>::get_datatype(),
                      recv_data, recvcounts.data(), recvdispls_int.data(),
@@ -2998,7 +2981,7 @@ namespace mpl {
         check_size(recvls);
         check_size(recvdispls);
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto recvdispls_int(count_displacements_as_vector_of_ints<T>(recvdispls));
+        const auto recvdispls_int(displacements_as_vector_of_ints(recvdispls));
         const std::vector<int> displs(recvdispls.begin(), recvdispls.end());
         MPI_Allgatherv(send_data, sendl.size(), detail::datatype_traits<T>::get_datatype(),
                        recv_data, recvcounts.data(), recvdispls_int.data(),
@@ -3065,7 +3048,7 @@ namespace mpl {
         check_size(recvls);
         check_size(recvdispls);
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto recvdispls_int(count_displacements_as_vector_of_ints<T>(recvdispls));
+        const auto recvdispls_int(displacements_as_vector_of_ints(recvdispls));
         MPI_Request req;
         MPI_Iallgatherv(send_data, sendl.size(), detail::datatype_traits<T>::get_datatype(),
                         recv_data, recvcounts.data(), recvdispls_int.data(),
@@ -3293,7 +3276,7 @@ namespace mpl {
         check_size(sendls);
         check_size(senddispls);
         const auto sendcounts{sizes_as_vector_of_ints(sendls)};
-        const auto senddispls_int(count_displacements_as_vector_of_ints<T>(senddispls));
+        const auto senddispls_int(displacements_as_vector_of_ints(senddispls));
         const std::vector<int> displs(senddispls.begin(), senddispls.end());
         MPI_Scatterv(send_data, sendcounts.data(), senddispls_int.data(),
                      detail::datatype_traits<T>::get_datatype(), recv_data, recvl.size(),
@@ -3374,7 +3357,7 @@ namespace mpl {
         check_size(sendls);
         check_size(senddispls);
         const auto sendcounts{sizes_as_vector_of_ints(sendls)};
-        const auto senddispls_int(count_displacements_as_vector_of_ints<T>(senddispls));
+        const auto senddispls_int(displacements_as_vector_of_ints(senddispls));
         MPI_Request req;
         MPI_Iscatterv(send_data, sendcounts.data(), senddispls_int.data(),
                       detail::datatype_traits<T>::get_datatype(), recv_data, recvl.size(),
@@ -3595,8 +3578,8 @@ namespace mpl {
         check_size(recvdispls);
         check_size(recvls);
         const std::vector<int> counts(recvls.size(), 1);
-        const auto senddispls_int{byte_displacements_as_vector_of_ints(senddispls)};
-        const auto recvdispls_int{byte_displacements_as_vector_of_ints(recvdispls)};
+        const auto senddispls_int{displacements_as_vector_of_ints(senddispls)};
+        const auto recvdispls_int{displacements_as_vector_of_ints(recvdispls)};
         static_assert(
             sizeof(decltype(*sendls())) == sizeof(MPI_Datatype),
             "compiler adds some unexpected padding, reinterpret cast will yield wrong results");
@@ -3637,9 +3620,9 @@ namespace mpl {
         check_size(recvdispls);
         check_size(recvls);
         const auto sendcounts{sizes_as_vector_of_ints(sendls)};
-        const auto senddispls_as_int{count_displacements_as_vector_of_ints<T>(senddispls)};
+        const auto senddispls_as_int{displacements_as_vector_of_ints(senddispls)};
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto recvdispls_as_int{count_displacements_as_vector_of_ints<T>(recvdispls)};
+        const auto recvdispls_as_int{displacements_as_vector_of_ints(recvdispls)};
         MPI_Alltoallv(send_data, sendcounts.data(), senddispls_as_int.data(),
                       detail::datatype_traits<T>::get_datatype(), recv_data, recvcounts.data(),
                       recvdispls_as_int.data(), detail::datatype_traits<T>::get_datatype(),
@@ -3830,9 +3813,9 @@ namespace mpl {
         check_size(recvdispls);
         check_size(recvls);
         const auto sendcounts{sizes_as_vector_of_ints(sendls)};
-        const auto senddispls_as_int{count_displacements_as_vector_of_ints<T>(senddispls)};
+        const auto senddispls_as_int{displacements_as_vector_of_ints(senddispls)};
         const auto recvcounts{sizes_as_vector_of_ints(recvls)};
-        const auto recvdispls_as_int{count_displacements_as_vector_of_ints<T>(recvdispls)};
+        const auto recvdispls_as_int{displacements_as_vector_of_ints(recvdispls)};
         MPI_Request req;
         MPI_Ialltoallv(send_data, sendcounts.data(), senddispls_as_int.data(),
                        detail::datatype_traits<T>::get_datatype(), recv_data, recvcounts.data(),
