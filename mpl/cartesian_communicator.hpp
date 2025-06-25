@@ -416,7 +416,7 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    cartesian_communicator(const cartesian_communicator &other) = default;
+    explicit cartesian_communicator(const cartesian_communicator &other) = default;
 
     /// Creates a new communicator with Cartesian process topology.
     /// \param other communicator containing the processes to use in the creation of the new

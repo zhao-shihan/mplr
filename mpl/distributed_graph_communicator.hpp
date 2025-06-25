@@ -88,7 +88,7 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    distributed_graph_communicator(const distributed_graph_communicator &other) = default;
+    explicit distributed_graph_communicator(const distributed_graph_communicator &other) = default;
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from

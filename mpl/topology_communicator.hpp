@@ -20,7 +20,7 @@ namespace mpl::impl {
     /// \param other the other communicator to copy from
     /// \note Objects of this class should not be instantiated by MPL users, just a base
     /// class.
-    topology_communicator(const topology_communicator &other) = default;
+    explicit topology_communicator(const topology_communicator &other) = default;
 
     /// Move constructor.
     /// \param other the other communicator to move from

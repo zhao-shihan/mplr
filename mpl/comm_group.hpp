@@ -466,7 +466,7 @@ namespace mpl {
       explicit base_communicator(MPI_Comm comm) : comm_(comm) {
       }
 
-      base_communicator(const base_communicator &other) : comm_{} {
+      explicit base_communicator(const base_communicator &other) : comm_{} {
         MPI_Comm_dup(other.comm_, &comm_);
       }
 
@@ -4367,7 +4367,7 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    communicator(const communicator &other) = default;
+    explicit communicator(const communicator &other) = default;
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
@@ -5336,7 +5336,7 @@ namespace mpl {
     /// remote processes of the inter-communicator \c other.  Inter-communicators should not be
     /// copied unless a new independent communicator is wanted.  Inter-Communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    inter_communicator(const inter_communicator &other) = default;
+    explicit inter_communicator(const inter_communicator &other) = default;
 
     /// Move-constructs an inter-communicator.
     /// \param other the other inter-communicator to move from
