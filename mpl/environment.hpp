@@ -276,11 +276,11 @@ namespace mpl {
 
     /// deleted copy assignment operator
     /// \param other buffer manager to copy-assign from
-    void operator=(const bsend_buffer &other) = delete;
+    auto& operator=(const bsend_buffer &other) = delete;
 
     /// deleted move assignment operator
     /// \param other buffer manager to move-assign from
-    void operator=(bsend_buffer &&other) = delete;
+    auto& operator=(bsend_buffer &&other) = delete;
   };
 
 }  // namespace mpl

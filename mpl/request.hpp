@@ -83,7 +83,7 @@ namespace mpl {
           MPI_Request_free(&request_);
       }
 
-      void operator=(const base_request &) = delete;
+      auto& operator=(const base_request &) = delete;
 
       base_request &operator=(base_request &&other) noexcept {
         if (this != &other) {
@@ -163,7 +163,7 @@ namespace mpl {
             MPI_Request_free(&request);
       }
 
-      void operator=(const request_pool &) = delete;
+      auto& operator=(const request_pool &) = delete;
 
       request_pool &operator=(request_pool &&other) noexcept {
         if (this != &other) {
@@ -334,7 +334,7 @@ namespace mpl {
     }
 
     /// Deleted copy operator.
-    void operator=(const irequest &) = delete;
+    auto& operator=(const irequest &) = delete;
 
     /// Move operator.
     /// \param other the request to move from
@@ -366,7 +366,7 @@ namespace mpl {
     }
 
     /// Deleted copy operator.
-    void operator=(const irequest_pool &) = delete;
+    auto& operator=(const irequest_pool &) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from
@@ -399,7 +399,7 @@ namespace mpl {
     }
 
     /// Deleted copy operator.
-    void operator=(const prequest &) = delete;
+    auto& operator=(const prequest &) = delete;
 
     /// Move operator.
     /// \param other the request to move from
@@ -437,7 +437,7 @@ namespace mpl {
     }
 
     /// Deleted copy constructor.
-    void operator=(const prequest_pool &) = delete;
+    auto& operator=(const prequest_pool &) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from

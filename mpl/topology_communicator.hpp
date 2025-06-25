@@ -26,12 +26,15 @@ namespace mpl::impl {
     /// \param other the other communicator to move from
     /// \note Objects of this class should not be instantiated by MPL users, just a base
     /// class.
-    topology_communicator(topology_communicator &&other) = default;
+    topology_communicator(topology_communicator &&other) noexcept = default;
+
+    /// Copy assignment operator.
+    topology_communicator &operator=(const topology_communicator &) noexcept = default;
+
+    /// Move assignment operator.
+    topology_communicator &operator=(topology_communicator &&) noexcept = default;
 
   public:
-    /// Deleted copy assignment operator.
-    void operator=(const topology_communicator &) = delete;
-
     // === neighbor collective =========================================
     // === neighbor allgather ===
     // === get a single value from each neighbor and store in contiguous memory

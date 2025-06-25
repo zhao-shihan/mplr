@@ -279,7 +279,7 @@ namespace mpl {
         MPI_Op_free(&mpi_op);
       }
 
-      void operator=(op const &) = delete;
+      auto& operator=(op const &) = delete;
 
       friend op &get_op<>(F);
     };

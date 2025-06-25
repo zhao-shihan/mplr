@@ -181,7 +181,7 @@ namespace mpl {
 
   public:
     base_struct_builder(const base_struct_builder &) = delete;
-    void operator=(const base_struct_builder &) = delete;
+    auto& operator=(const base_struct_builder &) = delete;
 
   protected:
     ~base_struct_builder() {

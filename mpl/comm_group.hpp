@@ -465,6 +465,14 @@ namespace mpl {
       explicit base_communicator(MPI_Comm comm) : comm_(comm) {
       }
 
+      base_communicator(const base_communicator &other) : comm_{} {
+        MPI_Comm_dup(other.comm_, &comm_);
+      }
+
+      base_communicator(base_communicator &&other) noexcept : comm_{other.comm_} {
+        other.comm_ = MPI_COMM_NULL;
+      }
+
       ~base_communicator() {
         if (is_valid()) {
           int result_1;
@@ -4358,15 +4366,11 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    communicator(const communicator &other) : base{} {
-      MPI_Comm_dup(other.comm_, &comm_);
-    }
+    communicator(const communicator &other) = default;
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
-    communicator(communicator &&other) noexcept : base{other.comm_} {
-      other.comm_ = MPI_COMM_NULL;
-    }
+    communicator(communicator &&other) noexcept = default;
 
     /// Specifies the process order when merging the local and the remote groups of an
     /// inter-communicator into a communicator.
@@ -4467,22 +4471,14 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    communicator &operator=(const communicator &other) noexcept {
-      if (this != &other)
-        base::operator=(other);
-      return *this;
-    }
+    communicator &operator=(const communicator &other) noexcept = default;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
     /// \return this communicator
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other.
-    communicator &operator=(communicator &&other) noexcept {
-      if (this != &other)
-        base::operator=(static_cast<base &&>(other));
-      return *this;
-    }
+    communicator &operator=(communicator &&other) noexcept = default;
 
     /// Determines the total number of processes in a communicator.
     /// \return number of processes
@@ -5339,15 +5335,11 @@ namespace mpl {
     /// remote processes of the inter-communicator \c other.  Inter-communicators should not be
     /// copied unless a new independent communicator is wanted.  Inter-Communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    inter_communicator(const inter_communicator &other) : base{} {
-      MPI_Comm_dup(other.comm_, &comm_);
-    }
+    inter_communicator(const inter_communicator &other) = default;
 
     /// Move-constructs an inter-communicator.
     /// \param other the other inter-communicator to move from
-    inter_communicator(inter_communicator &&other) noexcept : base{other.comm_} {
-      other.comm_ = MPI_COMM_NULL;
-    }
+    inter_communicator(inter_communicator &&other) noexcept = default;
 
     /// Get the parent inter-communicator of the current process, which is created when the
     /// process was spawned.
@@ -5371,22 +5363,14 @@ namespace mpl {
     /// remote processes of the communicator \c other. Inter-communicators should not be copied
     /// unless a new independent inter-communicator is wanted. Inter-communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    inter_communicator &operator=(const inter_communicator &other) noexcept {
-      if (this != &other)
-        base::operator=(other);
-      return *this;
-    }
+    inter_communicator &operator=(const inter_communicator &other) noexcept = default;
 
     /// Move-assigns an inter-communicator.
     /// \param other the other inter-communicator to move from
     /// \return this communicator
     /// \note This is a collective operation that needs to be carried out by all processes local
     /// and remote processes of the inter-communicator \c other.
-    inter_communicator &operator=(inter_communicator &&other) noexcept {
-      if (this != &other)
-        base::operator=(static_cast<base &&>(other));
-      return *this;
-    }
+    inter_communicator &operator=(inter_communicator &&other) noexcept = default;
 
     /// Determines the total number of processes in the local group of an
     /// inter-communicator.
@@ -5713,9 +5697,7 @@ namespace mpl {
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
-    mpi_communicator(mpi_communicator &&other) noexcept : base{other.comm_} {
-      other.comm_ = MPI_COMM_NULL;
-    }
+    mpi_communicator(mpi_communicator &&other) noexcept = default;
 
     /// Destructor.
     ~mpi_communicator() {
@@ -5727,11 +5709,7 @@ namespace mpl {
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
     /// \return this communicator
-    mpi_communicator &operator=(mpi_communicator &&other) noexcept {
-      comm_ = other.comm_;
-      other.comm_ = MPI_COMM_NULL;
-      return *this;
-    }
+    mpi_communicator &operator=(mpi_communicator &&other) noexcept = default;
   };
 
   //--------------------------------------------------------------------
@@ -5753,9 +5731,7 @@ namespace mpl {
 
     /// Move-constructs an inter-communicator.
     /// \param other the other inter-communicator to move from
-    mpi_inter_communicator(mpi_inter_communicator &&other) noexcept : base{other.comm_} {
-      other.comm_ = MPI_COMM_NULL;
-    }
+    mpi_inter_communicator(mpi_inter_communicator &&other) noexcept = default;
 
     /// Destructor.
     ~mpi_inter_communicator() {
@@ -5767,11 +5743,7 @@ namespace mpl {
     /// Move-assigns an inter-communicator.
     /// \param other the other communicator to move from
     /// \return this communicator
-    mpi_inter_communicator &operator=(mpi_inter_communicator &&other) noexcept {
-      comm_ = other.comm_;
-      other.comm_ = MPI_COMM_NULL;
-      return *this;
-    }
+    mpi_inter_communicator &operator=(mpi_inter_communicator &&other) noexcept = default;
   };
 
 }  // namespace mpl
