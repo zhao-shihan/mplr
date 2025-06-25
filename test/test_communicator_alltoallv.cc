@@ -28,9 +28,9 @@ bool alltoallv_with_displacements_test(const T &val) {
       send_data.push_back(send_val);
     ++send_val;
     sendls.push_back(mpl::vector_layout<T>(N_send));
-    senddispls.push_back(sizeof(T) * j * N_send);
+    senddispls.push_back(j * N_send);
     recvls.push_back(mpl::vector_layout<T>(j + 1));
-    recvdispls.push_back(sizeof(T) * (j * j + j) / 2);
+    recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -63,9 +63,9 @@ bool alltoallv_with_displacements_contiguous_test(const T &val) {
       send_data.push_back(send_val);
     ++send_val;
     sendls.push_back(mpl::contiguous_layout<T>(N_send));
-    senddispls.push_back(sizeof(T) * j * N_send);
+    senddispls.push_back(j * N_send);
     recvls.push_back(mpl::contiguous_layout<T>(j + 1));
-    recvdispls.push_back(sizeof(T) * (j * j + j) / 2);
+    recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -128,9 +128,9 @@ bool ialltoallv_with_displacements_test(const T &val) {
       send_data.push_back(send_val);
     ++send_val;
     sendls.push_back(mpl::vector_layout<T>(N_send));
-    senddispls.push_back(sizeof(T) * j * N_send);
+    senddispls.push_back(j * N_send);
     recvls.push_back(mpl::vector_layout<T>(j + 1));
-    recvdispls.push_back(sizeof(T) * (j * j + j) / 2);
+    recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -164,9 +164,9 @@ bool ialltoallv_with_displacements_contiguous_test(const T &val) {
       send_data.push_back(send_val);
     ++send_val;
     sendls.push_back(mpl::contiguous_layout<T>(N_send));
-    senddispls.push_back(sizeof(T) * j * N_send);
+    senddispls.push_back(j * N_send);
     recvls.push_back(mpl::contiguous_layout<T>(j + 1));
-    recvdispls.push_back(sizeof(T) * (j * j + j) / 2);
+    recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -228,7 +228,7 @@ bool alltoallv_in_place_with_displacements_test(const T &val) {
       expected.push_back(expected_val);
     }
     sendrecvls.push_back(mpl::contiguous_layout<T>(N_sendrecv));
-    sendrecvdispls.push_back(sizeof(T) * displ);
+    sendrecvdispls.push_back(displ);
     displ += N_sendrecv;
     ++expected_val;
   }
@@ -284,7 +284,7 @@ bool ialltoallv_in_place_with_displacements_test(const T &val) {
       expected.push_back(expected_val);
     }
     sendrecvls.push_back(mpl::contiguous_layout<T>(N_sendrecv));
-    sendrecvdispls.push_back(sizeof(T) * displ);
+    sendrecvdispls.push_back(displ);
     displ += N_sendrecv;
     ++expected_val;
   }

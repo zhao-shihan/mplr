@@ -415,16 +415,17 @@ namespace mpl {
         return counts;
       }
 
-      std::vector<int> displacements_as_vector_of_ints(const displacements &displs) const {
+      std::vector<int> displacements_as_vector_of_ints(const displacements &displs,
+                                                       int displ_unit = 1) const {
         std::vector<int> displs_as_int;
         displs_as_int.reserve(displs.size());
         std::transform(displs.begin(), displs.end(), std::back_inserter(displs_as_int),
-                       [](const auto &displ) {
+                       [displ_unit](const auto &displ) {
 #if defined MPL_DEBUG
-                         if (displ > std::numeric_limits<int>::max())
+                         if (displ * displ_unit > std::numeric_limits<int>::max())
                            throw invalid_displacement();
 #endif
-                         return static_cast<int>(displ);
+                         return static_cast<int>(displ * displ_unit);
                        });
         return displs_as_int;
       }
@@ -3584,8 +3585,8 @@ namespace mpl {
         check_size(recvdispls);
         check_size(recvls);
         const std::vector<int> counts(recvls.size(), 1);
-        const auto senddispls_int{displacements_as_vector_of_ints(senddispls)};
-        const auto recvdispls_int{displacements_as_vector_of_ints(recvdispls)};
+        const auto senddispls_int{displacements_as_vector_of_ints(senddispls, sizeof(T))};
+        const auto recvdispls_int{displacements_as_vector_of_ints(recvdispls, sizeof(T))};
         static_assert(
             sizeof(decltype(*sendls())) == sizeof(MPI_Datatype),
             "compiler adds some unexpected padding, reinterpret cast will yield wrong results");
@@ -3776,8 +3777,8 @@ namespace mpl {
                            &req);
         auto *alltoall_state{
             new ialltoallv_state<T>(sendls, recvls, std::vector<int>(recvls.size(), 1),
-                                    std::vector<int>(senddispls.begin(), senddispls.end()),
-                                    std::vector<int>(recvdispls.begin(), recvdispls.end()))};
+                                    displacements_as_vector_of_ints(senddispls, sizeof(T)),
+                                    displacements_as_vector_of_ints(recvdispls, sizeof(T)))};
         alltoall_state->req = req;
         alltoall_state->request_state = request_state;
         std::thread thread([this, send_data, recv_data, alltoall_state]() {
@@ -4679,7 +4680,7 @@ namespace mpl {
       check_size(sendrecvdispls);
       check_size(sendrecvls);
       const std::vector<int> counts(sendrecvls.size(), 1);
-      const std::vector<int> sendrecvdispls_int(sendrecvdispls.begin(), sendrecvdispls.end());
+      const auto sendrecvdispls_int{displacements_as_vector_of_ints(sendrecvdispls, sizeof(T))};
       MPI_Alltoallw(MPI_IN_PLACE, nullptr, nullptr, nullptr, sendrecv_data, counts.data(),
                     sendrecvdispls_int.data(),
                     reinterpret_cast<const MPI_Datatype *>(sendrecvls()), comm_);
@@ -4736,9 +4737,9 @@ namespace mpl {
       MPI_Request req;
       MPI_Grequest_start(ialltoallv_query, ialltoallv_free, ialltoallv_cancel, request_state,
                          &req);
-      auto *alltoall_state{new ialltoallv_state<T>(
-          sendrecvls, std::vector<int>(sendrecvls.size(), 1),
-          std::vector<int>(sendrecvdispls.begin(), sendrecvdispls.end()))};
+      auto *alltoall_state{
+          new ialltoallv_state<T>(sendrecvls, std::vector<int>(sendrecvls.size(), 1),
+                                  displacements_as_vector_of_ints(sendrecvdispls, sizeof(T)))};
       alltoall_state->req = req;
       alltoall_state->request_state = request_state;
       std::thread thread([this, sendrecv_data, alltoall_state]() {
