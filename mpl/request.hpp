@@ -79,7 +79,7 @@ namespace mpl {
       }
 
       ~base_request() {
-        if (request_ != MPI_REQUEST_NULL)
+        if (is_valid())
           MPI_Request_free(&request_);
       }
 
@@ -87,7 +87,7 @@ namespace mpl {
 
       base_request &operator=(base_request &&other) noexcept {
         if (this != &other) {
-          if (request_ != MPI_REQUEST_NULL)
+          if (is_valid())
             MPI_Request_free(&request_);
           request_ = other.request_;
           other.request_ = MPI_REQUEST_NULL;
@@ -95,9 +95,16 @@ namespace mpl {
         return *this;
       }
 
+      /// Checks if a request is not null.
+      /// \return true if request is valid
+      /// \note A default constructed request is a non-valid request.
+      bool is_valid() {
+        return request_ != MPI_REQUEST_NULL;
+      }
+
       /// Cancels the request if it is pending.
       void cancel() {
-        if (request_ != MPI_REQUEST_NULL)
+        if (is_valid())
           MPI_Cancel(&request_);
       }
 
