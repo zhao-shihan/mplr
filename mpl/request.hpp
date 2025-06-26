@@ -65,7 +65,8 @@ namespace mpl {
       MPI_Request request_;
 
     public:
-      base_request() = delete;
+      base_request() : request_{MPI_REQUEST_NULL} {
+      }
 
       base_request(const base_request &) = delete;
 
@@ -83,7 +84,7 @@ namespace mpl {
           MPI_Request_free(&request_);
       }
 
-      auto& operator=(const base_request &) = delete;
+      auto &operator=(const base_request &) = delete;
 
       base_request &operator=(base_request &&other) noexcept {
         if (this != &other) {
@@ -163,7 +164,7 @@ namespace mpl {
             MPI_Request_free(&request);
       }
 
-      auto& operator=(const request_pool &) = delete;
+      auto &operator=(const request_pool &) = delete;
 
       request_pool &operator=(request_pool &&other) noexcept {
         if (this != &other) {
@@ -320,6 +321,9 @@ namespace mpl {
     using base::request_;
 
   public:
+    /// Default null request.
+    irequest() = default;
+
 #if (!defined MPL_DOXYGEN_SHOULD_SKIP_THIS)
     irequest(const impl::base_irequest &r) : base{r} {
     }
@@ -330,19 +334,15 @@ namespace mpl {
 
     /// Move constructor.
     /// \param other the request to move from
-    irequest(irequest &&other) noexcept : base{std::move(other)} {
-    }
+    irequest(irequest &&other) noexcept = default;
 
     /// Deleted copy operator.
-    auto& operator=(const irequest &) = delete;
+    auto &operator=(const irequest &) = delete;
 
     /// Move operator.
     /// \param other the request to move from
     /// \return reference to the moved-to request
-    irequest &operator=(irequest &&other) noexcept {
-      base::operator=(std::move(other));
-      return *this;
-    }
+    irequest &operator=(irequest &&other) noexcept = default;
 
     friend class impl::request_pool<irequest>;
   };
@@ -362,19 +362,15 @@ namespace mpl {
 
     /// Move constructor.
     /// \param other the request pool to move from
-    irequest_pool(irequest_pool &&other) noexcept : base{std::move(other)} {
-    }
+    irequest_pool(irequest_pool &&other) noexcept = default;
 
     /// Deleted copy operator.
-    auto& operator=(const irequest_pool &) = delete;
+    auto &operator=(const irequest_pool &) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from
     /// \return reference to the moved-to request pool
-    irequest_pool &operator=(irequest_pool &&other) noexcept {
-      base::operator=(std::move(other));
-      return *this;
-    }
+    irequest_pool &operator=(irequest_pool &&other) noexcept = default;
   };
 
   //--------------------------------------------------------------------
@@ -385,6 +381,9 @@ namespace mpl {
     using base::request_;
 
   public:
+    /// Default null request.
+    prequest() = default;
+
 #if (!defined MPL_DOXYGEN_SHOULD_SKIP_THIS)
     prequest(const impl::base_prequest &r) : base{r} {
     }
@@ -395,19 +394,15 @@ namespace mpl {
 
     /// Move constructor.
     /// \param other the request to move from
-    prequest(prequest &&other) noexcept : base{std::move(other)} {
-    }
+    prequest(prequest &&other) noexcept = default;
 
     /// Deleted copy operator.
-    auto& operator=(const prequest &) = delete;
+    auto &operator=(const prequest &) = delete;
 
     /// Move operator.
     /// \param other the request to move from
     /// \return reference to the moved-to request
-    prequest &operator=(prequest &&other) noexcept {
-      base::operator=(std::move(other));
-      return *this;
-    }
+    prequest &operator=(prequest &&other) noexcept = default;
 
     /// Start communication operation.
     void start() {
@@ -433,18 +428,14 @@ namespace mpl {
 
     /// Move constructor.
     /// \param other the request pool to move from
-    prequest_pool(prequest_pool &&other) noexcept : base{std::move(other)} {
-    }
+    prequest_pool(prequest_pool &&other) noexcept = default;
 
     /// Deleted copy constructor.
-    auto& operator=(const prequest_pool &) = delete;
+    auto &operator=(const prequest_pool &) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from
-    prequest_pool &operator=(prequest_pool &&other) noexcept {
-      base::operator=(std::move(other));
-      return *this;
-    }
+    prequest_pool &operator=(prequest_pool &&other) noexcept = default;
 
     /// Start a persistent requests in the pool.
     /// \param i index of the request for which shall be started
