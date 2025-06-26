@@ -466,8 +466,9 @@ namespace mpl {
       explicit base_communicator(MPI_Comm comm) : comm_(comm) {
       }
 
-      explicit base_communicator(const base_communicator &other) : comm_{} {
-        MPI_Comm_dup(other.comm_, &comm_);
+      explicit base_communicator(const base_communicator &other, const mpl::info &info = {})
+          : comm_{} {
+        MPI_Comm_dup_with_info(other.comm_, info.info_, &comm_);
       }
 
       base_communicator(base_communicator &&other) noexcept : comm_{other.comm_} {
@@ -485,20 +486,7 @@ namespace mpl {
         }
       }
 
-      base_communicator &operator=(const base_communicator &other) noexcept {
-        if (this != &other) {
-          if (is_valid()) {
-            int result_1;
-            MPI_Comm_compare(comm_, MPI_COMM_WORLD, &result_1);
-            int result_2;
-            MPI_Comm_compare(comm_, MPI_COMM_SELF, &result_2);
-            if (result_1 != MPI_IDENT and result_2 != MPI_IDENT)
-              MPI_Comm_free(&comm_);
-          }
-          MPI_Comm_dup(other.comm_, &comm_);
-        }
-        return *this;
-      }
+      base_communicator &operator=(const base_communicator &other) = delete;
 
       base_communicator &operator=(base_communicator &&other) noexcept {
         if (this != &other) {
@@ -4363,11 +4351,14 @@ namespace mpl {
 
     /// Creates a new communicator which is equivalent to an existing one.
     /// \param other the other communicator to copy from
+    /// \param info the info object
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit communicator(const communicator &other) = default;
+    explicit communicator(const communicator &other, const mpl::info &info = {})
+        : base{other, info} {
+    }
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
@@ -4464,15 +4455,7 @@ namespace mpl {
                           detail::underlying_type<key_type>::value(key), MPI_INFO_NULL, &comm_);
     }
 
-    /// Copy-assigns and creates a new communicator which is equivalent to an existing
-    /// one.
-    /// \param other the other communicator to copy from
-    /// \return this communicator
-    /// \note This is a collective operation that needs to be carried out by all processes of
-    /// the communicator \c other. Communicators should not be copied unless a new independent
-    /// communicator is wanted. Communicators should be passed via references to functions to
-    /// avoid unnecessary copying.
-    communicator &operator=(const communicator &other) noexcept = default;
+    communicator &operator=(const communicator &other) = delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
@@ -5336,7 +5319,9 @@ namespace mpl {
     /// remote processes of the inter-communicator \c other.  Inter-communicators should not be
     /// copied unless a new independent communicator is wanted.  Inter-Communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    explicit inter_communicator(const inter_communicator &other) = default;
+    explicit inter_communicator(const inter_communicator &other, const mpl::info &info = {})
+        : base{other, info} {
+    }
 
     /// Move-constructs an inter-communicator.
     /// \param other the other inter-communicator to move from
@@ -5356,15 +5341,7 @@ namespace mpl {
       return s_parent;
     }
 
-    /// Copy-assigns and creates a new inter-communicator which is equivalent to an
-    /// existing one.
-    /// \param other the other inter-communicator to copy from
-    /// \return this inter-communicator
-    /// \note This is a collective operation that needs to be carried out by all local and
-    /// remote processes of the communicator \c other. Inter-communicators should not be copied
-    /// unless a new independent inter-communicator is wanted. Inter-communicators should be
-    /// passed via references to functions to avoid unnecessary copying.
-    inter_communicator &operator=(const inter_communicator &other) noexcept = default;
+    inter_communicator &operator=(const inter_communicator &other) = delete;
 
     /// Move-assigns an inter-communicator.
     /// \param other the other inter-communicator to move from

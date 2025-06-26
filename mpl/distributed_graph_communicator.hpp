@@ -84,11 +84,15 @@ namespace mpl {
 
     /// Creates a new communicator which is equivalent to an existing one.
     /// \param other the other communicator to copy from
+    /// \param info the info object
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit distributed_graph_communicator(const distributed_graph_communicator &other) = default;
+    explicit distributed_graph_communicator(const distributed_graph_communicator &other,
+                                            const mpl::info &info = {})
+        : topology_communicator{other, info} {
+    }
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
@@ -136,15 +140,8 @@ namespace mpl {
                                      MPI_INFO_NULL, reorder, &comm_);
     }
 
-    /// Copy-assigns and creates a new communicator with graph process topology which
-    /// is equivalent to an existing one.
-    /// \param other the other communicator to copy from
-    /// \note This is a collective operation that needs to be carried out by all processes of
-    /// the communicator \c other. Communicators should not be copied unless a new independent
-    /// communicator is wanted. Communicators should be passed via references to functions to
-    /// avoid unnecessary copying.
-    distributed_graph_communicator &operator=(
-        const distributed_graph_communicator &other) noexcept = default;
+    distributed_graph_communicator &operator=(const distributed_graph_communicator &other) =
+        delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from

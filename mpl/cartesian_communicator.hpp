@@ -412,11 +412,15 @@ namespace mpl {
 
     /// Creates a new communicator which is equivalent to an existing one.
     /// \param other the other communicator to copy from
+    /// \param info the info object
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit cartesian_communicator(const cartesian_communicator &other) = default;
+    explicit cartesian_communicator(const cartesian_communicator &other,
+                                    const mpl::info &info = {})
+        : topology_communicator{other, info} {
+    }
 
     /// Creates a new communicator with Cartesian process topology.
     /// \param other communicator containing the processes to use in the creation of the new
@@ -452,14 +456,7 @@ namespace mpl {
     /// \param other the other communicator to move from
     cartesian_communicator(cartesian_communicator &&other) noexcept = default;
 
-    /// Copy-assigns and creates a new communicator with Cartesian process topology which
-    /// is equivalent to an existing one.
-    /// \param other the other communicator to copy from
-    /// \note This is a collective operation that needs to be carried out by all processes of
-    /// the communicator \c other. Communicators should not be copied unless a new independent
-    /// communicator is wanted. Communicators should be passed via references to functions to
-    /// avoid unnecessary copying.
-    cartesian_communicator &operator=(const cartesian_communicator &other) noexcept = default;
+    cartesian_communicator &operator=(const cartesian_communicator &other) = delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from

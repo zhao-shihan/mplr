@@ -16,11 +16,15 @@ namespace mpl::impl {
     /// class.
     topology_communicator() = default;
 
-    /// Copy constructor.
+    /// Copy a communicator.
     /// \param other the other communicator to copy from
+    /// \param info the info object
     /// \note Objects of this class should not be instantiated by MPL users, just a base
     /// class.
-    explicit topology_communicator(const topology_communicator &other) = default;
+    explicit topology_communicator(const topology_communicator &other,
+                                   const mpl::info &info = {})
+        : communicator{other, info} {
+    }
 
     /// Move constructor.
     /// \param other the other communicator to move from
@@ -28,8 +32,7 @@ namespace mpl::impl {
     /// class.
     topology_communicator(topology_communicator &&other) noexcept = default;
 
-    /// Copy assignment operator.
-    topology_communicator &operator=(const topology_communicator &) noexcept = default;
+    topology_communicator &operator=(const topology_communicator &) = delete;
 
     /// Move assignment operator.
     topology_communicator &operator=(topology_communicator &&) noexcept = default;
