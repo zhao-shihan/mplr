@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <algorithm>
 #include <mpi.h>
 
 
@@ -112,9 +113,10 @@ namespace mpl {
         }
 
         [[nodiscard]] std::string processor_name() const {
-          char name[MPI_MAX_PROCESSOR_NAME];
+          char name[MPI_MAX_PROCESSOR_NAME + 1];
           int len;
           MPI_Get_processor_name(name, &len);
+          name[std::min(len, MPI_MAX_PROCESSOR_NAME)] = '\0';
           return name;
         }
 
@@ -276,11 +278,11 @@ namespace mpl {
 
     /// deleted copy assignment operator
     /// \param other buffer manager to copy-assign from
-    auto& operator=(const bsend_buffer &other) = delete;
+    auto &operator=(const bsend_buffer &other) = delete;
 
     /// deleted move assignment operator
     /// \param other buffer manager to move-assign from
-    auto& operator=(bsend_buffer &&other) = delete;
+    auto &operator=(bsend_buffer &&other) = delete;
   };
 
 }  // namespace mpl
