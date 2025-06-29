@@ -1,8 +1,8 @@
 # MPL - A message passing library
 
-[![build-with-openmpi](https://github.com/rabauke/mpl/actions/workflows/build-with-openmpi.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-openmpi.yml)
-[![build-with-mpich](https://github.com/rabauke/mpl/actions/workflows/build-with-mpich.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-mpich.yml)
-[![build-with-IntelMPI](https://github.com/rabauke/mpl/actions/workflows/build-with-IntelMPI.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-IntelMPI.yml)
+[![build-with-openmpi](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-openmpi.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-openmpi.yml)
+[![build-with-mpich](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-mpich.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-mpich.yml)
+[![build-with-IntelMPI](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-IntelMPI.yml/badge.svg)](https://github.com/rabauke/mpl/actions/workflows/build-with-IntelMPI.yml)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 MPL is a message passing library written in C++17 based on the
