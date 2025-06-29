@@ -6,17 +6,62 @@
 #include <utility>
 #include <optional>
 #include <vector>
+#include <thread>
+#include <mpl/utility.hpp>
 
 
 namespace mpl {
 
-  class irequest;
+  class duty_ratio {
+  public:
+    enum struct preset : char {
+      active = 'a',    // 0.1
+      moderate = 'm',  // 0.01
+      relaxed = 'r'    // 0.001
+    };
 
-  class prequest;
+  public:
+    constexpr duty_ratio(preset p)
+        : duty_ratio{[p]() -> double {
+            switch (p) {
+              case preset::active:
+                return 0.1;
+              case preset::moderate:
+                return 0.01;
+              case preset::relaxed:
+                return 0.001;
+            }
+            return -1;
+          }()} {
+    }
 
-  class irequest_pool;
+    constexpr explicit duty_ratio(double duty_ratio) : duty_ratio_{duty_ratio} {
+#if defined MPL_DEBUG
+      if (duty_ratio_ <= 0 or duty_ratio_ > 1) {
+        throw invalid_argument{};
+      }
+#endif
+    }
 
-  class rrequest_pool;
+    constexpr operator double() const {
+      return duty_ratio_;
+    }
+
+    constexpr double sleep_ratio() const {
+      return 1 - duty_ratio_;
+    }
+
+    constexpr double duty_to_sleep_ratio() const {
+      return duty_ratio_ / sleep_ratio();
+    }
+
+    constexpr double sleep_to_duty_ratio() const {
+      return sleep_ratio() / duty_ratio_;
+    }
+
+  private:
+    double duty_ratio_;
+  };
 
   /// Indicates kind of outcome of test for request completion.
   enum class test_result {
@@ -128,6 +173,24 @@ namespace mpl {
         return s;
       }
 
+      /// @brief A lazy-spin wait.
+      /// @param duty_ratio duty ratio of wait
+      /// @return operation's status after completion
+      status_t wait(duty_ratio duty_ratio) {
+        const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        int flag;
+        status_t status;
+        while (true) {
+          const auto t0{detail::steady_high_resolution_clock::now()};
+          MPI_Test(&request_, &flag, static_cast<MPI_Status *>(&status));
+          if (flag) {
+            return status;
+          }
+          const auto t1{detail::steady_high_resolution_clock::now()};
+          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+        }
+      }
+
       /// Access information associated with a request without freeing the request.
       /// \return the operation's status if completed successfully
       std::optional<status_t> get_status() {
@@ -209,6 +272,25 @@ namespace mpl {
         return s;
       }
 
+      /// @brief A lazy-spin wait.
+      /// @param i index of the request for which shall be waited
+      /// @param duty_ratio duty ratio of wait
+      /// @return operation's status after completion
+      status_t wait(size_type i, duty_ratio duty_ratio) {
+        const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        int flag;
+        status_t status;
+        while (true) {
+          const auto t0{detail::steady_high_resolution_clock::now()};
+          MPI_Test(&requests_[i], &flag, static_cast<MPI_Status *>(&status));
+          if (flag) {
+            return status;
+          }
+          const auto t1{detail::steady_high_resolution_clock::now()};
+          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+        }
+      }
+
       /// Access information associated with a request in the pool without freeing the request.
       /// \param i index of the request for which the status will be returned
       /// \return the operation's status if completed successfully
@@ -253,6 +335,27 @@ namespace mpl {
         return std::make_pair(test_result::no_active_requests, size());
       }
 
+      /// @brief A lazy-spin waitany.
+      /// @param duty_ratio duty ratio of wait
+      /// @return operation's status after completion
+      std::pair<test_result, size_type> waitany(duty_ratio duty_ratio) {
+        const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        int index;
+        int flag;
+        while (true) {
+          const auto t0{detail::steady_high_resolution_clock::now()};
+          MPI_Testany(size(), requests_.data(), &index, &flag, MPI_STATUS_IGNORE);
+          if (flag) {
+            if (index == MPI_UNDEFINED) {
+              return {test_result::no_active_requests, size()};
+            }
+            return {test_result::completed, static_cast<size_type>(index)};
+          }
+          const auto t1{detail::steady_high_resolution_clock::now()};
+          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+        }
+      }
+
       /// Test for completion of any pending communication operation.
       /// \return pair containing the outcome of the test and an index to the completed
       /// request if there was any pending request
@@ -270,6 +373,22 @@ namespace mpl {
       /// Waits for completion of all pending requests.
       void waitall() {
         MPI_Waitall(size(), requests_.data(), MPI_STATUSES_IGNORE);
+      }
+
+      /// A lazy-spin waitall.
+      /// @param duty_ratio duty ratio of wait
+      void waitall(duty_ratio duty_ratio) {
+        const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        int flag;
+        while (true) {
+          const auto t0{detail::steady_high_resolution_clock::now()};
+          MPI_Testall(size(), requests_.data(), &flag, MPI_STATUSES_IGNORE);
+          if (flag) {
+            return;
+          }
+          const auto t1{detail::steady_high_resolution_clock::now()};
+          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+        }
       }
 
       /// Tests for completion of all pending requests.
@@ -293,6 +412,28 @@ namespace mpl {
               std::vector<size_t>(out_indices.begin(), out_indices.begin() + count));
         }
         return std::make_pair(test_result::no_active_requests, std::vector<size_t>{});
+      }
+
+      /// A lazy-spin waitsome.
+      /// @param duty_ratio duty ratio of wait
+      std::pair<test_result, std::vector<size_type>> waitsome(duty_ratio duty_ratio) {
+        const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        std::vector<int> out_indices(size());
+        int count;
+        while (true) {
+          const auto t0{detail::steady_high_resolution_clock::now()};
+          MPI_Testsome(size(), requests_.data(), &count, out_indices.data(),
+                       MPI_STATUSES_IGNORE);
+          if (count == MPI_UNDEFINED) {
+            return {test_result::no_active_requests, {}};
+          }
+          if (count != 0) {
+            return {test_result::completed,
+                    std::vector<size_t>(out_indices.begin(), out_indices.begin() + count)};
+          }
+          const auto t1{detail::steady_high_resolution_clock::now()};
+          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+        }
       }
 
       /// Tests if one or more pending requests have finished.
