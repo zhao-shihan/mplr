@@ -13,7 +13,7 @@ namespace mpl {
 
   /// Represents the various levels of thread support that the underlying MPI
   /// implementation may provide.
-  enum class threading_modes {
+  enum class threading_modes : int {
     /// the application is single-threaded
     single = MPI_THREAD_SINGLE,
     /// the application is multi-threaded, however, all MPL calls will be issued from the main
@@ -28,128 +28,6 @@ namespace mpl {
   };
 
   namespace environment {
-
-    namespace detail {
-
-      class env {
-        class initializer {
-          int thread_mode_{MPI_THREAD_SINGLE};
-          bool is_externally_initialized_{false};
-
-        public:
-          initializer() {
-            int is_initialized{0};
-            MPI_Initialized(&is_initialized);
-            is_externally_initialized_ = is_initialized != 0;
-            if (is_externally_initialized_)
-              MPI_Query_thread(&thread_mode_);
-            else
-              MPI_Init_thread(nullptr, nullptr, MPI_THREAD_MULTIPLE, &thread_mode_);
-          }
-
-          ~initializer() {
-            if (not is_externally_initialized_)
-              MPI_Finalize();
-          }
-
-          [[nodiscard]] threading_modes thread_mode() const {
-            switch (thread_mode_) {
-              case MPI_THREAD_SINGLE:
-                return threading_modes::single;
-              case MPI_THREAD_FUNNELED:
-                return threading_modes::funneled;
-              case MPI_THREAD_SERIALIZED:
-                return threading_modes::serialized;
-              case MPI_THREAD_MULTIPLE:
-                return threading_modes::multiple;
-            }
-            return threading_modes::single;  // make compiler happy
-          }
-        };
-
-        initializer init;
-        mpl::communicator comm_world_, comm_self_;
-
-      public:
-        env() : init{}, comm_world_{MPI_COMM_WORLD}, comm_self_{MPI_COMM_SELF} {
-          int size;
-          MPI_Comm_size(MPI_COMM_WORLD, &size);
-        }
-
-        env(const env &) = delete;
-
-        env &operator=(const env &) = delete;
-
-        [[nodiscard]] int tag_up() const {
-          void *p;
-          int flag;
-          MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_TAG_UB, &p, &flag);
-          return *static_cast<int *>(p);
-        }
-
-        [[nodiscard]] threading_modes threading_mode() const {
-          return init.thread_mode();
-        }
-
-        [[nodiscard]] bool is_thread_main() const {
-          int res;
-          MPI_Is_thread_main(&res);
-          return static_cast<bool>(res);
-        }
-
-        [[nodiscard]] bool wtime_is_global() const {
-          void *p;
-          int flag;
-          MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_WTIME_IS_GLOBAL, &p, &flag);
-          return *static_cast<int *>(p);
-        }
-
-        [[nodiscard]] const communicator &comm_world() const {
-          return comm_world_;
-        }
-
-        [[nodiscard]] const communicator &comm_self() const {
-          return comm_self_;
-        }
-
-        [[nodiscard]] std::string processor_name() const {
-          char name[MPI_MAX_PROCESSOR_NAME + 1];
-          int len;
-          MPI_Get_processor_name(name, &len);
-          name[std::min(len, MPI_MAX_PROCESSOR_NAME)] = '\0';
-          return name;
-        }
-
-        [[nodiscard]] double wtime() const {
-          return MPI_Wtime();
-        }
-
-        [[nodiscard]] double wtick() const {
-          return MPI_Wtick();
-        }
-
-        void buffer_attach(void *buff, int size) const {
-          MPI_Buffer_attach(buff, size);
-        }
-
-        [[nodiscard]] std::pair<void *, int> buffer_detach() const {
-          void *buff;
-          int size;
-          MPI_Buffer_detach(&buff, &size);
-          return {buff, size};
-        }
-      };
-
-      //----------------------------------------------------------------
-
-      inline const env &get_env() {
-        static env the_env;
-        return the_env;
-      }
-
-    }  // namespace detail
-
-    //------------------------------------------------------------------
 
     /// @brief This routine may be used to determine whether MPI_INIT or MPI_INIT_THREAD has been called.
     /// @return true if MPI_INIT or MPI_INIT_THREAD has been called.
@@ -194,18 +72,61 @@ namespace mpl {
       return lib_version;
     }
 
+    //----------------------------------------------------------------
+
+    /// @brief Initialize and finalize MPI in an RAII style.
+    class environment {
+    public:
+      environment(int &argc, char **&argv) {
+        int _;
+        MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &_);
+      }
+
+      environment() {
+        int _;
+        MPI_Init_thread(nullptr, nullptr, MPI_THREAD_MULTIPLE, &_);
+      }
+
+      ~environment() {
+        MPI_Finalize();
+      }
+
+      environment(const environment &) = delete;
+      auto &operator=(const environment &) = delete;
+    };
+
+    //------------------------------------------------------------------
+
+    /// Provides access to a predefined communicator that allows communication with
+    /// all processes.
+    /// \return communicator to communicate with any other process
+    inline mpi_communicator comm_world() {
+      return mpi_communicator{MPI_COMM_WORLD};
+    }
+
+    /// Provides access to a predefined communicator that includes only the calling
+    /// process itself.
+    /// \return communicator including only the process itself
+    inline mpi_communicator comm_self() {
+      return mpi_communicator{MPI_COMM_SELF};
+    }
+
     /// Determines the highest level of thread support that is provided by the underlying
     /// MPI implementation.
     /// \return supported threading level
-    inline threading_modes threading_mode() {
-      return detail::get_env().threading_mode();
+    inline threading_modes query_thread() {
+      int threading_mode;
+      MPI_Query_thread(&threading_mode);
+      return static_cast<threading_modes>(threading_mode);
     }
 
     /// Determines if the current thread is the main thread, i.e., the thread that has
     /// initialized the MPI environment of the underlying MPI implementation.
     /// \return true if the current thread is the main thread
     inline bool is_thread_main() {
-      return detail::get_env().is_thread_main();
+      int res;
+      MPI_Is_thread_main(&res);
+      return static_cast<bool>(res);
     }
 
     /// Determines if time values given by <tt>\ref wtime</tt> are synchronized with each other
@@ -213,21 +134,10 @@ namespace mpl {
     /// \return true if times are synchronized
     /// \see <tt>\ref wtime</tt>
     inline bool wtime_is_global() {
-      return detail::get_env().wtime_is_global();
-    }
-
-    /// Provides access to a predefined communicator that allows communication with
-    /// all processes.
-    /// \return communicator to communicate with any other process
-    inline const communicator &comm_world() {
-      return detail::get_env().comm_world();
-    }
-
-    /// Provides access to a predefined communicator that includes only the calling
-    /// process itself.
-    /// \return communicator including only the process itself
-    inline const communicator &comm_self() {
-      return detail::get_env().comm_self();
+      void *val;
+      int flag;
+      MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_WTIME_IS_GLOBAL, &val, &flag);
+      return *static_cast<int *>(val);
     }
 
     /// Gives a unique specifier, the processor name, for the actual (physical) node.
@@ -235,20 +145,24 @@ namespace mpl {
     /// \note The name is determined by the underlying MPI implementation, i.e., it is
     /// implementation defined and may be different for different MPI implementations.
     inline std::string processor_name() {
-      return detail::get_env().processor_name();
+      char name[MPI_MAX_PROCESSOR_NAME + 1];
+      int len;
+      MPI_Get_processor_name(name, &len);
+      name[std::min(len, MPI_MAX_PROCESSOR_NAME)] = '\0';
+      return name;
     }
 
     /// Get time.
     /// \return number of seconds of elapsed wall-clock time since some time in the past
     inline double wtime() {
-      return detail::get_env().wtime();
+      return MPI_Wtime();
     }
 
     /// Get resolution of time given by \c wtime.
     /// \return resolution of \c wtime in seconds.
     /// \see \c wtime
     inline double wtick() {
-      return detail::get_env().wtick();
+      return MPI_Wtick();
     }
 
     /// Provides to MPL a buffer in the user's memory to be used for buffering outgoing
@@ -257,7 +171,7 @@ namespace mpl {
     /// \param size size of the buffer in bytes, must be non-negative
     /// \see \c buffer_detach
     inline void buffer_attach(void *buff, int size) {
-      return detail::get_env().buffer_attach(buff, size);
+      MPI_Buffer_attach(buff, size);
     }
 
     /// Detach the buffer currently associated with MPL.
@@ -265,20 +179,13 @@ namespace mpl {
     /// <tt>\ref buffer_attach</tt>
     /// \see \c buffer_attach
     inline std::pair<void *, int> buffer_detach() {
-      return detail::get_env().buffer_detach();
+      void *buff;
+      int size;
+      MPI_Buffer_detach(&buff, &size);
+      return {buff, size};
     }
 
   }  // namespace environment
-
-  //--------------------------------------------------------------------
-
-  tag_t tag_t::up() {
-    return tag_t(environment::detail::get_env().tag_up());
-  }
-
-  tag_t tag_t::any() {
-    return tag_t(MPI_ANY_TAG);
-  }
 
   //--------------------------------------------------------------------
 

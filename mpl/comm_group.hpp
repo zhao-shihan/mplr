@@ -26,12 +26,6 @@ namespace mpl {
 
   class file;
 
-  namespace environment::detail {
-
-    class env;
-
-  }  // namespace environment::detail
-
   //--------------------------------------------------------------------
 
   /// Return value of matching probe operations.
@@ -5276,8 +5270,6 @@ namespace mpl {
     friend class distributed_graph_communicator;
 
     friend class inter_communicator;
-
-    friend class environment::detail::env;
 
     friend class file;
   };

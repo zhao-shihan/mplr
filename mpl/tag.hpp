@@ -5,6 +5,7 @@
 #include <mpl/utility.hpp>
 #include <ostream>
 #include <istream>
+#include "mpi.h"
 
 
 namespace mpl {
@@ -43,12 +44,19 @@ namespace mpl {
     }
 
     /// \return tag with the largest value when converted to int
-    static inline tag_t up();
+    static tag_t up() {
+      void *val;
+      int flag;
+      MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_TAG_UB, &val, &flag);
+      return tag_t{*static_cast<int *>(val)};
+    }
 
     /// \return wildcard tag to be used in receive operations, e.g., \c communicator::recv, to
     /// indicate acceptance of a message with any tag value
     /// \see \c any_source
-    static inline tag_t any();
+    static tag_t any() {
+      return tag_t{static_cast<int>(MPI_ANY_TAG)};
+    }
   };
 
   /// \param t1 first tag to compare

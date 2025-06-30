@@ -7,6 +7,7 @@
 #include <optional>
 #include <vector>
 #include <thread>
+#include <limits>
 #include <mpl/utility.hpp>
 
 
@@ -22,7 +23,7 @@ namespace mpl {
 
   public:
     constexpr duty_ratio(preset p)
-        : duty_ratio{[p]() -> double {
+        : duty_ratio{[p]() {
             switch (p) {
               case preset::active:
                 return 0.1;
@@ -31,7 +32,7 @@ namespace mpl {
               case preset::relaxed:
                 return 0.001;
             }
-            return -1;
+            return std::numeric_limits<double>::min();
           }()} {
     }
 

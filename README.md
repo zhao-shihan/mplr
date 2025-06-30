@@ -81,8 +81,10 @@ which is also printed.
 #include <mpl/mpl.hpp>
 
 int main() {
-  // get a reference to communicator "world"
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  // environment object
+  mpl::environment::environment env;
+  // get communicator "world"
+  const auto comm_world{mpl::environment::comm_world()};
   // each process prints a message containing the processor name, the rank
   // in communicator world and the size of communicator world
   // output may depend on the underlying MPI implementation
