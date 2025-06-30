@@ -153,7 +153,7 @@ namespace mpl {
 
     /// @brief This routine may be used to determine whether MPI_INIT or MPI_INIT_THREAD has been called.
     /// @return true if MPI_INIT or MPI_INIT_THREAD has been called.
-    [[nodiscard]] bool initialized() {
+    inline bool initialized() {
       int flag;
       MPI_Initialized(&flag);
       return flag;
@@ -161,7 +161,7 @@ namespace mpl {
 
     /// @brief This routine returns true if MPI_FINALIZE has completed.
     /// @return true if MPI_FINALIZE has completed.
-    [[nodiscard]] bool finalized() {
+    inline bool finalized() {
       int flag;
       MPI_Finalized(&flag);
       return flag;
@@ -171,13 +171,13 @@ namespace mpl {
     /// has been called and MPI_FINALIZE has not completed.
     /// @return true if MPI_INIT or MPI_INIT_THREAD
     /// has been called and MPI_FINALIZE has not completed.
-    [[nodiscard]] bool available() {
+    inline bool available() {
       return initialized() and not finalized();
     }
 
     /// @brief Get MPI standard version.
     /// @return (version, subversion)
-    [[nodiscard]] std::pair<int, int> get_version() {
+    inline std::pair<int, int> get_version() {
       int version;
       int subversion;
       MPI_Get_version(&version, &subversion);
@@ -186,7 +186,7 @@ namespace mpl {
 
     /// @brief This routine returns a string representing the version of the MPI library.
     /// @return library information string
-    [[nodiscard]] std::string get_library_version() {
+    inline std::string get_library_version() {
       char lib_version[MPI_MAX_LIBRARY_VERSION_STRING + 1];
       int len;
       MPI_Get_processor_name(lib_version, &len);
