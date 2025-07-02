@@ -1,14 +1,14 @@
-#if !(defined MPL_TAG_HPP)
+#if !(defined MPLR_TAG_HPP)
 
-#define MPL_TAG_HPP
+#define MPLR_TAG_HPP
 
-#include <mpl/utility.hpp>
+#include <mplr/utility.hpp>
 #include <ostream>
 #include <istream>
 #include "mpi.h"
 
 
-namespace mpl {
+namespace mplr {
 
   /// Class for representing tag parameters in communication operations.
   class tag_t {
@@ -97,6 +97,6 @@ namespace mpl {
     return is;
   }
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

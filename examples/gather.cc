@@ -1,12 +1,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   const auto c_rank{comm_world.rank()};
   const auto c_size{comm_world.size()};
   // gather a single int from all ranks to rank root=0
@@ -40,7 +40,7 @@ int main() {
     const int root{0}, n{3};
     std::vector<int> x(n, c_rank + 1);
     std::vector<int> y(c_rank == root ? n * c_size : 0);
-    mpl::contiguous_layout<int> l(n);
+    mplr::contiguous_layout<int> l(n);
     comm_world.gather(root, x.data(), l, y.data(), l);
     if (c_rank == root) {
       for (int i{0}; i < c_size * n; ++i)

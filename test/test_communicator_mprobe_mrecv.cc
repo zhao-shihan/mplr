@@ -8,13 +8,13 @@
 #include <list>
 #include <tuple>
 #include <utility>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename T>
 bool mprobe_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -40,7 +40,7 @@ bool mprobe_test(const T &data) {
 
 template<typename T>
 bool mprobe_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -64,7 +64,7 @@ bool mprobe_iter_test(const T &data) {
 
 template<typename T>
 bool improbe_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -84,7 +84,7 @@ bool improbe_test(const T &data) {
             return false;
         }
         T data_r;
-        mpl::irequest request{comm_world.imrecv(data_r, m)};
+        mplr::irequest request{comm_world.imrecv(data_r, m)};
         request.wait();
         return data_r == data;
       }
@@ -96,7 +96,7 @@ bool improbe_test(const T &data) {
 
 template<typename T>
 bool improbe_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -114,7 +114,7 @@ bool improbe_iter_test(const T &data) {
         T data_r;
         if constexpr (has_resize<T>())
           data_r.resize(count);
-        mpl::irequest request{comm_world.imrecv(std::begin(data_r), std::end(data_r), m)};
+        mplr::irequest request{comm_world.imrecv(std::begin(data_r), std::end(data_r), m)};
         request.wait();
         return data_r == data;
       }
@@ -124,10 +124,10 @@ bool improbe_iter_test(const T &data) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(mprobe) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE(mprobe) {
 
 
 BOOST_AUTO_TEST_CASE(improbe) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types

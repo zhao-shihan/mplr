@@ -1,13 +1,13 @@
-#if !(defined MPL_DISTRIBUTED_GRID_HPP)
+#if !(defined MPLR_DISTRIBUTED_GRID_HPP)
 
-#define MPL_DISTRIBUTED_GRID_HPP
+#define MPLR_DISTRIBUTED_GRID_HPP
 
 #include <vector>
-#include <mpl/cartesian_communicator.hpp>
-#include <mpl/layout.hpp>
+#include <mplr/cartesian_communicator.hpp>
+#include <mplr/layout.hpp>
 
 
-namespace mpl {
+namespace mplr {
 
   template<std::size_t dim, typename T, typename A>
   class distributed_grid;
@@ -184,7 +184,7 @@ namespace mpl {
     /// parameter must be equal.
     explicit distributed_grid(const cartesian_communicator &communicator,
                               const dimensions &dims) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (communicator.dimensionality() != dim or global_size_.size() != dim or
           overlap_.size() != dim)
         throw invalid_dim();
@@ -614,7 +614,7 @@ namespace mpl {
     /// parameter must be equal.
     local_grid(const cartesian_communicator &communicator, const dimensions &dims)
         : global_size_(dims.size_) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (communicator.dimensionality() != dim or global_size_.size() != dim)
         throw invalid_dim();
 #endif
@@ -782,6 +782,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

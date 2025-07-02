@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator_gather
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include <iterator>
 
 
 template<typename T>
 bool gather_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size());
     comm_world.gather(0, val, v.data());
@@ -24,8 +24,8 @@ bool gather_test(const T &val) {
 
 template<typename T>
 bool gather_test(const std::vector<T> &send, const std::vector<T> &expected,
-                 const mpl::layout<T> &l) {
-  const auto comm_world{mpl::environment::comm_world()};
+                 const mplr::layout<T> &l) {
+  const auto comm_world{mplr::environment::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size() * send.size());
     comm_world.gather(0, send.data(), l, v.data(), l);
@@ -42,7 +42,7 @@ bool gather_test(const std::vector<T> &send, const std::vector<T> &expected,
 
 template<typename T>
 bool igather_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size());
     auto r{comm_world.igather(0, val, v.data())};
@@ -61,8 +61,8 @@ bool igather_test(const T &val) {
 
 template<typename T>
 bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
-                  const mpl::layout<T> &l) {
-  const auto comm_world{mpl::environment::comm_world()};
+                  const mplr::layout<T> &l) {
+  const auto comm_world{mplr::environment::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size() * send.size());
     auto r{comm_world.igather(0, send.data(), l, v.data(), l)};
@@ -79,10 +79,10 @@ bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(gather) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(gather_test(1.0));
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(gather) {
   {
     const std::vector send{1, 2, 3, 4, 5, 6};
     const std::vector expected{0, 2, 3, 0, 5, 0};
-    mpl::indexed_layout<int> l{{{2, 1}, {1, 4}}};
+    mplr::indexed_layout<int> l{{{2, 1}, {1, 4}}};
     l.resize(0, 6);
     BOOST_TEST(gather_test(send, expected, l));
   }
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(gather) {
   {
     const std::vector send{1, 2, 3, 4, 5, 6};
     const std::vector expected{0, 2, 3, 0, 5, 0};
-    mpl::indexed_layout<int> l{{{2, 1}, {1, 4}}};
+    mplr::indexed_layout<int> l{{{2, 1}, {1, 4}}};
     l.resize(0, 6);
     BOOST_TEST(igather_test(send, expected, l));
   }

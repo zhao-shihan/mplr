@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator_exscan
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename F, typename T>
 bool exscan_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -27,12 +27,12 @@ bool exscan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_with_layout(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   std::vector<T> v_y(n);
   comm_world.exscan(f, v_x.data(), v_y.data(), l);
@@ -51,7 +51,7 @@ bool exscan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -72,12 +72,12 @@ bool iexscan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_with_layout(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   std::vector<T> v_y(n);
   auto r{comm_world.iexscan(f, v_x.data(), v_y.data(), l)};
@@ -97,7 +97,7 @@ bool iexscan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -116,12 +116,12 @@ bool exscan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   comm_world.exscan(f, v_x.data(), l);
   T expected{val};
@@ -139,7 +139,7 @@ bool exscan_test_with_layout_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -159,12 +159,12 @@ bool iexscan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   auto r{comm_world.iexscan(f, v_x.data(), l)};
   T expected{val};
@@ -181,67 +181,67 @@ bool iexscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(exscan) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(exscan_test(add<double>(), 1.0));
   BOOST_TEST(exscan_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(exscan_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(exscan_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(exscan_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(exscan_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(exscan_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(exscan_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(exscan_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(exscan_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(exscan_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(exscan_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(exscan_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(exscan_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(exscan_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(exscan_test_with_layout([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iexscan_test(add<double>(), 1.0));
   BOOST_TEST(iexscan_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iexscan_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iexscan_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iexscan_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iexscan_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iexscan_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iexscan_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iexscan_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(iexscan_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iexscan_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iexscan_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iexscan_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iexscan_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iexscan_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iexscan_test_with_layout([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
 
   BOOST_TEST(exscan_test_inplace(add<double>(), 1.0));
   BOOST_TEST(exscan_test_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(exscan_test_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(exscan_test_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(exscan_test_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(exscan_test_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(exscan_test_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(exscan_test_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(exscan_test_with_layout_inplace(add<double>(), 1.0));
   BOOST_TEST(exscan_test_with_layout_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(exscan_test_with_layout_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(exscan_test_with_layout_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(exscan_test_with_layout_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(exscan_test_with_layout_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(exscan_test_with_layout_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(
       exscan_test_with_layout_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iexscan_test_inplace(add<double>(), 1.0));
   BOOST_TEST(iexscan_test_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iexscan_test_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iexscan_test_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iexscan_test_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iexscan_test_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iexscan_test_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iexscan_test_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iexscan_test_with_layout_inplace(add<double>(), 1.0));
   BOOST_TEST(iexscan_test_with_layout_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iexscan_test_with_layout_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iexscan_test_with_layout_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iexscan_test_with_layout_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iexscan_test_with_layout_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iexscan_test_with_layout_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(
       iexscan_test_with_layout_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));

@@ -1,22 +1,22 @@
 #define BOOST_TEST_MODULE communicator_scatterv
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include <tuple>
 #include "test_helper.hpp"
 
 
 template<use_non_root_overload variant, typename T>
 bool scatterv_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
   std::vector<T> v_expected(comm_world.rank() + 1);
   std::iota(begin(v_scatter), end(v_scatter), val);
-  mpl::layouts<T> layouts;
+  mplr::layouts<T> layouts;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    layouts.push_back(mpl::indexed_layout<T>({{i + 1, offset}}));
+    layouts.push_back(mplr::indexed_layout<T>({{i + 1, offset}}));
     offset += i + 1;
   }
   T t_val{val};
@@ -24,7 +24,7 @@ bool scatterv_test(const T &val) {
        i < i_end; ++i)
     ++t_val;
   std::iota(begin(v_expected), end(v_expected), t_val);
-  const mpl::vector_layout<T> layout(comm_world.rank() + 1);
+  const mplr::vector_layout<T> layout(comm_world.rank() + 1);
   if constexpr (variant == use_non_root_overload::yes) {
     if (comm_world.rank() == 0)
       comm_world.scatterv(0, v_scatter.data(), layouts, v_recv.data(), layout);
@@ -39,16 +39,16 @@ bool scatterv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool scatterv_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
   std::vector<T> v_expected(comm_world.rank() + 1);
   std::iota(begin(v_scatter), end(v_scatter), val);
-  mpl::contiguous_layouts<T> layouts;
-  mpl::displacements displacements;
+  mplr::contiguous_layouts<T> layouts;
+  mplr::displacements displacements;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    layouts.push_back(mpl::contiguous_layout<T>(i + 1));
+    layouts.push_back(mplr::contiguous_layout<T>(i + 1));
     displacements.push_back(offset);
     offset += i + 1;
   }
@@ -57,7 +57,7 @@ bool scatterv_contiguous_test(const T &val) {
        i < i_end; ++i)
     ++t_val;
   std::iota(begin(v_expected), end(v_expected), t_val);
-  const mpl::contiguous_layout<T> layout(comm_world.rank() + 1);
+  const mplr::contiguous_layout<T> layout(comm_world.rank() + 1);
   if constexpr (variant == use_non_root_overload::yes) {
     if (comm_world.rank() == 0)
       comm_world.scatterv(0, v_scatter.data(), layouts, displacements, v_recv.data(), layout);
@@ -72,15 +72,15 @@ bool scatterv_contiguous_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool iscatterv_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
   std::vector<T> v_expected(comm_world.rank() + 1);
   std::iota(begin(v_scatter), end(v_scatter), val);
-  mpl::layouts<T> layouts;
+  mplr::layouts<T> layouts;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    layouts.push_back(mpl::indexed_layout<T>({{i + 1, offset}}));
+    layouts.push_back(mplr::indexed_layout<T>({{i + 1, offset}}));
     offset += i + 1;
   }
   T t_val{val};
@@ -88,7 +88,7 @@ bool iscatterv_test(const T &val) {
        i < i_end; ++i)
     ++t_val;
   std::iota(begin(v_expected), end(v_expected), t_val);
-  const mpl::vector_layout<T> layout(comm_world.rank() + 1);
+  const mplr::vector_layout<T> layout(comm_world.rank() + 1);
   if constexpr (variant == use_non_root_overload::yes) {
     if (comm_world.rank() == 0) {
       auto r{comm_world.iscatterv(0, v_scatter.data(), layouts, v_recv.data(), layout)};
@@ -107,16 +107,16 @@ bool iscatterv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool iscatterv_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
   std::vector<T> v_expected(comm_world.rank() + 1);
   std::iota(begin(v_scatter), end(v_scatter), val);
-  mpl::contiguous_layouts<T> layouts;
-  mpl::displacements displacements;
+  mplr::contiguous_layouts<T> layouts;
+  mplr::displacements displacements;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    layouts.push_back(mpl::contiguous_layout<T>(i + 1));
+    layouts.push_back(mplr::contiguous_layout<T>(i + 1));
     displacements.push_back(offset);
     offset += i + 1;
   }
@@ -125,7 +125,7 @@ bool iscatterv_contiguous_test(const T &val) {
        i < i_end; ++i)
     ++t_val;
   std::iota(begin(v_expected), end(v_expected), t_val);
-  const mpl::contiguous_layout<T> layout(comm_world.rank() + 1);
+  const mplr::contiguous_layout<T> layout(comm_world.rank() + 1);
   if constexpr (variant == use_non_root_overload::yes) {
     if (comm_world.rank() == 0) {
       auto r{comm_world.iscatterv(0, v_scatter.data(), layouts, displacements, v_recv.data(),
@@ -144,10 +144,10 @@ bool iscatterv_contiguous_test(const T &val) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(scatterv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(scatterv_test<use_non_root_overload::no>(1.0));

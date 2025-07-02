@@ -1,6 +1,6 @@
-#if !(defined MPL_GRAPH_COMMUNICATOR_HPP)
+#if !(defined MPLR_GRAPH_COMMUNICATOR_HPP)
 
-#define MPL_GRAPH_COMMUNICATOR_HPP
+#define MPLR_GRAPH_COMMUNICATOR_HPP
 
 #include <mpi.h>
 #include <vector>
@@ -10,7 +10,7 @@
 #include <numeric>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Communicator with general graph topology.
   class graph_communicator : public impl::topology_communicator {
@@ -124,7 +124,7 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit graph_communicator(const graph_communicator &other, const mpl::info &info = {})
+    explicit graph_communicator(const graph_communicator &other, const mplr::info &info = {})
         : topology_communicator{other, info} {
     }
 
@@ -144,7 +144,7 @@ namespace mpl {
                                 bool reorder = true) {
       int nodes{0};
       for (const auto &e : edges) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (std::get<0>(e) < 0 or std::get<1>(e) < 0)
           throw invalid_argument();
 #endif
@@ -223,6 +223,6 @@ namespace mpl {
     return not(l_1 == l_2);
   }
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

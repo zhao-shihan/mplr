@@ -1,16 +1,16 @@
-#if !(defined MPL_FILE_HPP)
+#if !(defined MPLR_FILE_HPP)
 
-#define MPL_FILE_HPP
+#define MPLR_FILE_HPP
 
-#include <mpl/utility.hpp>
-#include <mpl/request.hpp>
-#include <mpl/info.hpp>
+#include <mplr/utility.hpp>
+#include <mplr/request.hpp>
+#include <mplr/info.hpp>
 #include <string>
 #include <filesystem>
 #include <type_traits>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Class implementing parallel file i/o.
   class file {
@@ -297,7 +297,7 @@ namespace mpl {
     /// Get the underlying MPI handle of the file.
     /// \return MPI handle of the file
     /// \note This function returns a non-owning handle to the underlying MPI file, which may
-    /// be useful when refactoring legacy MPI applications to MPL.
+    /// be useful when refactoring legacy MPI applications to MPLR.
     [[nodiscard]] MPI_File native_handle() const {
       return file_;
     }
@@ -1330,6 +1330,6 @@ namespace mpl {
     MPI_File_get_group(f.file_, &gr_);
   }
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

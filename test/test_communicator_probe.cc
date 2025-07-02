@@ -10,19 +10,19 @@
 #include <set>
 #include <tuple>
 #include <utility>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename T>
 bool probe_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
     comm_world.send(data, 1);
   if (comm_world.rank() == 1) {
-    mpl::status_t s{comm_world.probe(0)};
+    mplr::status_t s{comm_world.probe(0)};
     if (s.source() != 0)
       return false;
     if constexpr (has_size<T>::value) {
@@ -42,13 +42,13 @@ bool probe_test(const T &data) {
 
 template<typename T>
 bool probe_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
     comm_world.send(data, 1);
   if (comm_world.rank() == 1) {
-    mpl::status_t s{comm_world.probe(0)};
+    mplr::status_t s{comm_world.probe(0)};
     if (s.source() != 0)
       return false;
     int count{s.get_count<typename T::value_type>()};
@@ -66,7 +66,7 @@ bool probe_iter_test(const T &data) {
 
 template<typename T>
 bool iprobe_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -85,7 +85,7 @@ bool iprobe_test(const T &data) {
             return false;
         }
         T data_r{};
-        mpl::irequest request{comm_world.irecv(data_r, 0)};
+        mplr::irequest request{comm_world.irecv(data_r, 0)};
         request.wait();
         return data_r == data;
       }
@@ -97,7 +97,7 @@ bool iprobe_test(const T &data) {
 
 template<typename T>
 bool iprobe_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -114,7 +114,7 @@ bool iprobe_iter_test(const T &data) {
         T data_r{};
         if constexpr (has_resize<T>())
           data_r.resize(count);
-        mpl::irequest request{comm_world.irecv(std::begin(data_r), std::end(data_r), 0)};
+        mplr::irequest request{comm_world.irecv(std::begin(data_r), std::end(data_r), 0)};
         request.wait();
         return data_r == data;
       }
@@ -124,10 +124,10 @@ bool iprobe_iter_test(const T &data) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(probe) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(probe) {
 
 
 BOOST_AUTO_TEST_CASE(iprobe) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types

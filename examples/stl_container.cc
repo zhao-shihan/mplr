@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 #include <cmath>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // print elements of a pair
@@ -65,23 +65,23 @@ std::basic_ostream<ch, tr> &operator<<(std::basic_ostream<ch, tr> &out,
 
 // send an STL container
 template<typename T>
-void send(const mpl::communicator &comm, const T &x) {
+void send(const mplr::communicator &comm, const T &x) {
   comm.send(x, 1);
 }
 
 
 // send an STL container
 template<typename T>
-void isend(const mpl::communicator &comm, const T &x) {
-  mpl::irequest r{comm.isend(x, 1)};
+void isend(const mplr::communicator &comm, const T &x) {
+  mplr::irequest r{comm.isend(x, 1)};
   r.wait();
 }
 
 
 // receive an STL container
 template<typename T>
-void recv(const mpl::communicator &comm) {
-  using value_type = mpl::detail::remove_const_from_members_t<typename T::value_type>;
+void recv(const mplr::communicator &comm) {
+  using value_type = mplr::detail::remove_const_from_members_t<typename T::value_type>;
   T x;
   auto s{comm.recv(x, 0)};
   std::cout << "x = " << x << " with " << s.template get_count<value_type>() << " elements\n";
@@ -90,18 +90,18 @@ void recv(const mpl::communicator &comm) {
 
 // receive an STL container
 template<typename T>
-void irecv(const mpl::communicator &comm) {
-  using value_type = mpl::detail::remove_const_from_members_t<typename T::value_type>;
+void irecv(const mplr::communicator &comm) {
+  using value_type = mplr::detail::remove_const_from_members_t<typename T::value_type>;
   T x;
-  mpl::irequest r{comm.irecv(x, 0)};
-  mpl::status_t s{r.wait()};
+  mplr::irequest r{comm.irecv(x, 0)};
+  mplr::status_t s{r.wait()};
   std::cout << "x = " << x << " with " << s.template get_count<value_type>() << " elements\n";
 }
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     comm_world.abort(EXIT_FAILURE);

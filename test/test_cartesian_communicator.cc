@@ -1,16 +1,16 @@
 #define BOOST_TEST_MODULE cartesian_communicator
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 bool cartesian_communicator_test() {
-  const auto comm_world{mpl::environment::comm_world()};
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic,
-                                                     mpl::cartesian_communicator::non_periodic};
-  mpl::cartesian_communicator comm_c{comm_world,
-                                     mpl::dims_create(comm_world.size(), dimensions)};
+  const auto comm_world{mplr::environment::comm_world()};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic,
+                                                     mplr::cartesian_communicator::non_periodic};
+  mplr::cartesian_communicator comm_c{comm_world,
+                                     mplr::dims_create(comm_world.size(), dimensions)};
   if (comm_c.dimensionality() != 2)
     return false;
   const int rank{comm_c.rank()};
@@ -20,8 +20,8 @@ bool cartesian_communicator_test() {
   auto dims{comm_c.get_dimensions()};
   if (dims.size(0) * dims.size(1) != comm_c.size())
     return false;
-  if (not(dims.periodicity(0) == mpl::cartesian_communicator::periodic and
-          dims.periodicity(1) == mpl::cartesian_communicator::non_periodic))
+  if (not(dims.periodicity(0) == mplr::cartesian_communicator::periodic and
+          dims.periodicity(1) == mplr::cartesian_communicator::non_periodic))
     return false;
   auto ranks{comm_c.shift(0, 1)};
   ++coordinate[0];
@@ -48,33 +48,33 @@ bool cartesian_communicator_test() {
     comm_c.neighbor_alltoall(x.data(), y.data());
     auto ranks_0{comm_c.shift(0, 1)};
     auto ranks_1{comm_c.shift(1, 1)};
-    if (ranks_0.source != mpl::proc_null and y[0] != ranks_0.source + 1.)
+    if (ranks_0.source != mplr::proc_null and y[0] != ranks_0.source + 1.)
       return false;
-    if (ranks_0.destination != mpl::proc_null and y[1] != ranks_0.destination + 1.)
+    if (ranks_0.destination != mplr::proc_null and y[1] != ranks_0.destination + 1.)
       return false;
-    if (ranks_1.source != mpl::proc_null and y[2] != ranks_1.source + 1.)
+    if (ranks_1.source != mplr::proc_null and y[2] != ranks_1.source + 1.)
       return false;
-    if (ranks_1.destination != mpl::proc_null and y[3] != ranks_1.destination + 1.)
+    if (ranks_1.destination != mplr::proc_null and y[3] != ranks_1.destination + 1.)
       return false;
   }
   {
     std::vector<double> x(4, rank + 1.0);
     std::vector<double> y(4, 0.0);
-    mpl::layouts<double> ls;
-    ls.push_back(mpl::indexed_layout<double>({{1, 0}}));
-    ls.push_back(mpl::indexed_layout<double>({{1, 1}}));
-    ls.push_back(mpl::indexed_layout<double>({{1, 2}}));
-    ls.push_back(mpl::indexed_layout<double>({{1, 3}}));
+    mplr::layouts<double> ls;
+    ls.push_back(mplr::indexed_layout<double>({{1, 0}}));
+    ls.push_back(mplr::indexed_layout<double>({{1, 1}}));
+    ls.push_back(mplr::indexed_layout<double>({{1, 2}}));
+    ls.push_back(mplr::indexed_layout<double>({{1, 3}}));
     comm_c.neighbor_alltoallv(x.data(), ls, y.data(), ls);
     auto ranks_0{comm_c.shift(0, 1)};
     auto ranks_1{comm_c.shift(1, 1)};
-    if (ranks_0.source != mpl::proc_null and y[0] != ranks_0.source + 1.)
+    if (ranks_0.source != mplr::proc_null and y[0] != ranks_0.source + 1.)
       return false;
-    if (ranks_0.destination != mpl::proc_null and y[1] != ranks_0.destination + 1.)
+    if (ranks_0.destination != mplr::proc_null and y[1] != ranks_0.destination + 1.)
       return false;
-    if (ranks_1.source != mpl::proc_null and y[2] != ranks_1.source + 1.)
+    if (ranks_1.source != mplr::proc_null and y[2] != ranks_1.source + 1.)
       return false;
-    if (ranks_1.destination != mpl::proc_null and y[3] != ranks_1.destination + 1.)
+    if (ranks_1.destination != mplr::proc_null and y[3] != ranks_1.destination + 1.)
       return false;
   }
   return true;
@@ -83,10 +83,10 @@ bool cartesian_communicator_test() {
 
 template<typename T>
 bool cartesian_communicator_neighbor_alltoall_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
-  mpl::cartesian_communicator comm_c{comm_world,
-                                     mpl::dims_create(comm_world.size(), dimensions)};
+  const auto comm_world{mplr::environment::comm_world()};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic};
+  mplr::cartesian_communicator comm_c{comm_world,
+                                     mplr::dims_create(comm_world.size(), dimensions)};
   T send_val{val};
   for (int i{0}; i < comm_c.rank(); ++i)
     ++send_val;
@@ -108,10 +108,10 @@ bool cartesian_communicator_neighbor_alltoall_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_neighbor_alltoall_layout_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
-  mpl::cartesian_communicator comm_c{comm_world,
-                                     mpl::dims_create(comm_world.size(), dimensions)};
+  const auto comm_world{mplr::environment::comm_world()};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic};
+  mplr::cartesian_communicator comm_c{comm_world,
+                                     mplr::dims_create(comm_world.size(), dimensions)};
   const int vector_size{3};
   T send_val{val};
   for (int i{0}; i < comm_c.rank(); ++i)
@@ -129,7 +129,7 @@ bool cartesian_communicator_neighbor_alltoall_layout_test(const T &val) {
     expected.push_back(expected_values[(comm_c.rank() - 1 + comm_c.size()) % comm_c.size()]);
   for (int j{0}; j < vector_size; ++j)
     expected.push_back(expected_values[(comm_c.rank() + 1) % comm_c.size()]);
-  mpl::vector_layout<T> sendrecvl(vector_size);
+  mplr::vector_layout<T> sendrecvl(vector_size);
   comm_c.neighbor_alltoall(send_data.data(), sendrecvl, recv_data.data(), sendrecvl);
   return recv_data == expected;
 }
@@ -137,10 +137,10 @@ bool cartesian_communicator_neighbor_alltoall_layout_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_ineighbor_alltoall_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
-  mpl::cartesian_communicator comm_c{comm_world,
-                                     mpl::dims_create(comm_world.size(), dimensions)};
+  const auto comm_world{mplr::environment::comm_world()};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic};
+  mplr::cartesian_communicator comm_c{comm_world,
+                                     mplr::dims_create(comm_world.size(), dimensions)};
   T send_val{val};
   for (int i{0}; i < comm_c.rank(); ++i)
     ++send_val;
@@ -163,10 +163,10 @@ bool cartesian_communicator_ineighbor_alltoall_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_ineighbor_alltoall_layout_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
-  mpl::cartesian_communicator comm_c{comm_world,
-                                     mpl::dims_create(comm_world.size(), dimensions)};
+  const auto comm_world{mplr::environment::comm_world()};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic};
+  mplr::cartesian_communicator comm_c{comm_world,
+                                     mplr::dims_create(comm_world.size(), dimensions)};
   const int vector_size{3};
   T send_val{val};
   for (int i{0}; i < comm_c.rank(); ++i)
@@ -184,17 +184,17 @@ bool cartesian_communicator_ineighbor_alltoall_layout_test(const T &val) {
     expected.push_back(expected_values[(comm_c.rank() - 1 + comm_c.size()) % comm_c.size()]);
   for (int j{0}; j < vector_size; ++j)
     expected.push_back(expected_values[(comm_c.rank() + 1) % comm_c.size()]);
-  mpl::vector_layout<T> sendrecvl(vector_size);
+  mplr::vector_layout<T> sendrecvl(vector_size);
   auto r{comm_c.ineighbor_alltoall(send_data.data(), sendrecvl, recv_data.data(), sendrecvl)};
   r.wait();
   return recv_data == expected;
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(cartesian_communicator_test());
@@ -202,10 +202,10 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator) {
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_vector) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
-  mpl::cartesian_communicator::vector vector{1, 2, 3, 4, 5};
+  mplr::cartesian_communicator::vector vector{1, 2, 3, 4, 5};
   BOOST_TEST(vector.dimensions() == 5);
   vector.add(6);
   BOOST_TEST(vector.dimensions() == 6);
@@ -215,12 +215,12 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator_vector) {
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_include_tags) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
-  const auto included = mpl::cartesian_communicator::included;
-  const auto excluded = mpl::cartesian_communicator::excluded;
-  mpl::cartesian_communicator::included_tags is_included{10};
+  const auto included = mplr::cartesian_communicator::included;
+  const auto excluded = mplr::cartesian_communicator::excluded;
+  mplr::cartesian_communicator::included_tags is_included{10};
   BOOST_TEST(is_included.size() == 10);
   is_included.add(included);
   is_included.add(excluded);
@@ -231,30 +231,30 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator_include_tags) {
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_dimensions) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
-  mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic,
-                                                     mpl::cartesian_communicator::non_periodic,
-                                                     mpl::cartesian_communicator::non_periodic};
+  mplr::cartesian_communicator::dimensions dimensions{mplr::cartesian_communicator::periodic,
+                                                     mplr::cartesian_communicator::non_periodic,
+                                                     mplr::cartesian_communicator::non_periodic};
 
   BOOST_TEST(dimensions.dimensionality() == 3);
-  BOOST_TEST(dimensions.periodicity(0) == mpl::cartesian_communicator::periodic);
-  BOOST_TEST(dimensions.periodicity(1) == mpl::cartesian_communicator::non_periodic);
-  BOOST_TEST(dimensions.periodicity(2) == mpl::cartesian_communicator::non_periodic);
-  dimensions[1] = {10, mpl::cartesian_communicator::periodic};
-  BOOST_TEST(dimensions.periodicity(1) == mpl::cartesian_communicator::periodic);
+  BOOST_TEST(dimensions.periodicity(0) == mplr::cartesian_communicator::periodic);
+  BOOST_TEST(dimensions.periodicity(1) == mplr::cartesian_communicator::non_periodic);
+  BOOST_TEST(dimensions.periodicity(2) == mplr::cartesian_communicator::non_periodic);
+  dimensions[1] = {10, mplr::cartesian_communicator::periodic};
+  BOOST_TEST(dimensions.periodicity(1) == mplr::cartesian_communicator::periodic);
   BOOST_TEST(dimensions.size(1) == 10);
-  dimensions.add(11, mpl::cartesian_communicator::non_periodic);
-  BOOST_TEST(dimensions.periodicity(3) == mpl::cartesian_communicator::non_periodic);
+  dimensions.add(11, mplr::cartesian_communicator::non_periodic);
+  BOOST_TEST(dimensions.periodicity(3) == mplr::cartesian_communicator::non_periodic);
   BOOST_TEST(dimensions.size(3) == 11);
   BOOST_TEST((std::find(dimensions.begin(), dimensions.end(),
-                        std::tuple{11, mpl::cartesian_communicator::non_periodic}) !=
+                        std::tuple{11, mplr::cartesian_communicator::non_periodic}) !=
               dimensions.end()));
 }
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_neighbor_alltoall) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(cartesian_communicator_neighbor_alltoall_test(1.0));

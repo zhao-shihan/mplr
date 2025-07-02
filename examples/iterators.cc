@@ -5,12 +5,12 @@
 #include <iostream>
 #include <numeric>
 #include <algorithm>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     comm_world.abort(EXIT_FAILURE);

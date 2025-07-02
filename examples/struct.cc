@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <numeric>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // some structures
@@ -37,7 +37,7 @@ std::basic_ostream<ch, tr> &operator<<(std::basic_ostream<ch, tr> &out, const st
 
 // specialize trait template class struct_builder
 // for the structures defined above
-namespace mpl {
+namespace mplr {
 
   template<>
   class struct_builder<structure> : public base_struct_builder<structure> {
@@ -55,19 +55,19 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 
-// MPL_REFLECTION is a convenient macro which creates the required
+// MPLR_REFLECTION is a convenient macro which creates the required
 // specialization of the struct_builder template automatically.  Just
 // pass the class name and the public members as arguments to the
-// macro.  MPL_REFLECTION is limited to 120 class members.
-MPL_REFLECTION(structure_2, d, str)
+// macro.  MPLR_REFLECTION is limited to 120 class members.
+MPLR_REFLECTION(structure_2, d, str)
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     comm_world.abort(EXIT_FAILURE);
@@ -97,7 +97,7 @@ int main() {
   // send / receive a vector of structures
   const int field_size{8};
   std::vector<structure> str_field(field_size);
-  mpl::contiguous_layout<structure> str_field_layout(field_size);
+  mplr::contiguous_layout<structure> str_field_layout(field_size);
   if (comm_world.rank() == 0) {
     // populate vector of structures
     for (int k{0}; k < field_size; ++k) {

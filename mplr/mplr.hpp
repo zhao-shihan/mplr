@@ -1,12 +1,12 @@
-#if !(defined MPL_HPP)
+#if !(defined MPLR_HPP)
 
-#define MPL_HPP
+#define MPLR_HPP
 
 #include <mpi.h>
 #include <cstddef>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Wildcard value to indicate in a receive operation, e.g., \c communicator::recv, that any
   /// source is acceptable.
@@ -41,27 +41,27 @@ namespace mpl {
   /// Signed integer type used for array indexing and address arithmetic.
   using ssize_t = std::ptrdiff_t;
 
-}  // namespace mpl
+}  // namespace mplr
 
-#include <mpl/error.hpp>
-#include <mpl/displacements.hpp>
-#include <mpl/tag.hpp>
-#include <mpl/ranks.hpp>
-#include <mpl/flat_memory.hpp>
-#include <mpl/datatype.hpp>
-#include <mpl/layout.hpp>
-#include <mpl/status.hpp>
-#include <mpl/message.hpp>
-#include <mpl/operator.hpp>
-#include <mpl/request.hpp>
-#include <mpl/info.hpp>
-#include <mpl/comm_group.hpp>
-#include <mpl/environment.hpp>
-#include <mpl/topology_communicator.hpp>
-#include <mpl/cartesian_communicator.hpp>
-#include <mpl/graph_communicator.hpp>
-#include <mpl/file.hpp>
-#include <mpl/distributed_graph_communicator.hpp>
-#include <mpl/distributed_grid.hpp>
+#include <mplr/error.hpp>
+#include <mplr/displacements.hpp>
+#include <mplr/tag.hpp>
+#include <mplr/ranks.hpp>
+#include <mplr/flat_memory.hpp>
+#include <mplr/datatype.hpp>
+#include <mplr/layout.hpp>
+#include <mplr/status.hpp>
+#include <mplr/message.hpp>
+#include <mplr/operator.hpp>
+#include <mplr/request.hpp>
+#include <mplr/info.hpp>
+#include <mplr/comm_group.hpp>
+#include <mplr/environment.hpp>
+#include <mplr/topology_communicator.hpp>
+#include <mplr/cartesian_communicator.hpp>
+#include <mplr/graph_communicator.hpp>
+#include <mplr/file.hpp>
+#include <mplr/distributed_graph_communicator.hpp>
+#include <mplr/distributed_grid.hpp>
 
 #endif

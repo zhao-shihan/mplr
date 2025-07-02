@@ -1,12 +1,12 @@
-#if !(defined MPL_VECTOR_HPP)
+#if !(defined MPLR_VECTOR_HPP)
 
-#define MPL_VECTOR_HPP
+#define MPLR_VECTOR_HPP
 
 #include <cstdlib>
 #include <iterator>
 
 
-namespace mpl::detail {
+namespace mplr::detail {
 
   struct uninitialized {};
 
@@ -102,6 +102,6 @@ namespace mpl::detail {
     }
   };
 
-}  // namespace mpl::detail
+}  // namespace mplr::detail
 
-#endif  // MPL_VECTOR_HPP
+#endif  // MPLR_VECTOR_HPP

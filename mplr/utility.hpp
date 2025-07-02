@@ -1,6 +1,6 @@
-#if !(defined MPL_UTILITY_HPP)
+#if !(defined MPLR_UTILITY_HPP)
 
-#define MPL_UTILITY_HPP
+#define MPLR_UTILITY_HPP
 
 #include <iterator>
 #include <limits>
@@ -10,7 +10,7 @@
 #include <chrono>
 
 
-namespace mpl::detail {
+namespace mplr::detail {
 
   template<typename T>
   struct iterator_traits : public std::iterator_traits<T> {
@@ -163,6 +163,6 @@ namespace mpl::detail {
       std::conditional_t<std::chrono::high_resolution_clock::is_steady,
                          std::chrono::high_resolution_clock, std::chrono::steady_clock>;
 
-}  // namespace mpl::detail
+}  // namespace mplr::detail
 
 #endif

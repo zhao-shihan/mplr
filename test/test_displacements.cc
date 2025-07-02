@@ -1,17 +1,17 @@
 #define BOOST_TEST_MODULE displacements
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(displacements) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
-  mpl::displacements displacements_1(10);
-  mpl::displacements displacements_2{1, 2, 3};
+  mplr::displacements displacements_1(10);
+  mplr::displacements displacements_2{1, 2, 3};
   displacements_2.push_back(10);
   BOOST_TEST(displacements_1.size() == 10);
   BOOST_TEST(displacements_2.size() == 4);

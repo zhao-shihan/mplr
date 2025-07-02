@@ -1,70 +1,72 @@
-# MPL - A message passing library
+# MPLR - A message passing library
 
-[![build-with-openmpi](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-openmpi.yml/badge.svg)](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-openmpi.yml)
-[![build-with-mpich](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-mpich.yml/badge.svg)](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-mpich.yml)
-[![build-with-IntelMPI](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-IntelMPI.yml/badge.svg)](https://github.com/zhao-shihan/mpl/actions/workflows/build-with-IntelMPI.yml)
+[![build-with-openmpi](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-openmpi.yml/badge.svg)](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-openmpi.yml)
+[![build-with-mpich](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-mpich.yml/badge.svg)](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-mpich.yml)
+[![build-with-IntelMPI](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-IntelMPI.yml/badge.svg)](https://github.com/zhao-shihan/mplr/actions/workflows/build-with-IntelMPI.yml)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-MPL is a message passing library written in C++17 based on the
+*MPLR is a [MPL](https://github.com/rabauke/mpl) revision.*
+
+MPLR is a message passing library written in C++17 based on the
 [Message Passing Interface](http://mpi-forum.org/) (MPI) standard. 
 Since the C++ API has been dropped from the MPI standard in version 
-3.1, it is the aim of MPL to provide a modern C++ message passing 
+3.1, it is the aim of MPLR to provide a modern C++ message passing 
 library for high performance computing.
 
-MPL will neither bring all functions of the C language MPI-API to C++
+MPLR will neither bring all functions of the C language MPI-API to C++
 nor provide a direct mapping of the C API to some C++ functions and
 classes. The library's focus lies on the MPI core message passing
-functions, ease of use, type safety, and elegance. The aim of MPL is to
+functions, ease of use, type safety, and elegance. The aim of MPLR is to
 provide an idiomatic C++ message passing library without introducing a
 significant overhead compared to utilizing MPI via its plain C-API.
 This library is most useful for developers who have at least some basic
 knowledge of the Message Passing Interface standard and would like to
 utilize it via a more user-friendly interface in modern C++. Unlike
 [Boost.MPI](https://www.boost.org/doc/libs/1_77_0/doc/html/mpi.html),
-MPL does not rely on an external serialization library and has a
+MPLR does not rely on an external serialization library and has a
 negligible run-time overhead.
 
 
 ## Supported features
 
-MPL assumes that the underlying MPI implementation supports the 
+MPLR assumes that the underlying MPI implementation supports the 
 [version 3.1](https://www.mpi-forum.org/docs/mpi-3.1/mpi31-report.pdf) 
-of the Message Passing Interface standard.  Future versions of MPL 
+of the Message Passing Interface standard.  Future versions of MPLR 
 may also employ features of the new 
 [version 4.0](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf) 
 or later MPI versions.  
 
-MPL gives currently access via a convenient C++ interface to the 
+MPLR gives currently access via a convenient C++ interface to the 
 following features of the Message Passing Interface standard:
 
 * environmental management (implicit initialization and finalization, timers, but no error handling).
 * point-to-point communication (blocking and non-blocking),
 * collective communication (blocking and non-blocking),
-* derived data types (happens automatically for many custom data types or via the `base_struct_builder` helper class and the layout classes of MPL),
+* derived data types (happens automatically for many custom data types or via the `base_struct_builder` helper class and the layout classes of MPLR),
 * communicator- and group-management,
 * process topologies (cartesian and graph topologies),
 * inter-communicators,
 * dynamic process creation and
 * file i/o.
 
-Currently, the following MPI features are not yet supported by MPL:
+Currently, the following MPI features are not yet supported by MPLR:
 
 * error handling and
 * one-sided communication.
 
-Although MPL covers a subset of the MPI functionality only, it has 
+Although MPLR covers a subset of the MPI functionality only, it has 
 probably the largest MPI-feature coverage among all alternative C++ 
 interfaces to MPI.
 
 
 ## Hello parallel world
 
-MPL is built on top of the Message Passing Interface (MPI) standard.  Therefore, 
-MPL shares many concepts known from the MPI standard, e.g., the concept of a
+MPLR is built on top of the Message Passing Interface (MPI) standard.  Therefore, 
+MPLR shares many concepts known from the MPI standard, e.g., the concept of a
 communicator.  Communicators manage the message exchange between different processes, 
 i.e., messages are sent and received with the help of a communicator.  
 
-The MPL environment provides a global default communicator `comm_world`, which will 
+The MPLR environment provides a global default communicator `comm_world`, which will 
 be used in the following Hello-World program.  The program prints out some information 
 about each process:
 * its rank, 
@@ -77,18 +79,18 @@ which is also printed.
 ```C++
 #include <cstdlib>
 #include <iostream>
-// include MPL header file
-#include <mpl/mpl.hpp>
+// include MPLR header file
+#include <mplr/mplr.hpp>
 
 int main() {
   // environment object
-  mpl::environment::environment env;
+  mplr::environment::environment env;
   // get communicator "world"
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   // each process prints a message containing the processor name, the rank
   // in communicator world and the size of communicator world
   // output may depend on the underlying MPI implementation
-  std::cout << "Hello world! I am running on \"" << mpl::environment::processor_name()
+  std::cout << "Hello world! I am running on \"" << mplr::environment::processor_name()
             << "\". My rank is " << comm_world.rank() << " out of " << comm_world.size()
             << " processes.\n";
   // if there are two or more processes send a message from process 0 to process 1

@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <numeric>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 struct my_array {
@@ -18,8 +18,8 @@ struct my_array {
 };
 
 
-// use reflection macro to make the struct compatible with mpl
-MPL_REFLECTION(my_array, data)
+// use reflection macro to make the struct compatible with mplr
+MPLR_REFLECTION(my_array, data)
 
 
 // overload plus operator
@@ -33,13 +33,13 @@ my_array operator+(const my_array &a, const my_array &b) {
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   int root{0};
 
   // synchronize processes via barrier
   comm_world.barrier();
-  std::cout << mpl::environment::processor_name() << " has passed barrier\n";
+  std::cout << mplr::environment::processor_name() << " has passed barrier\n";
   comm_world.barrier();
   double x{0};
   if (comm_world.rank() == root)
@@ -73,13 +73,13 @@ int main() {
 
   // reduce/sum all values of x on all nodes and send global result to root
   if (comm_world.rank() == root) {
-    comm_world.reduce(mpl::plus<double>(), root, x, y);
+    comm_world.reduce(mplr::plus<double>(), root, x, y);
     std::cout << "sum after reduce " << y << '\n';
   } else
-    comm_world.reduce(mpl::plus<double>(), root, x);
+    comm_world.reduce(mplr::plus<double>(), root, x);
 
   // reduce/multiply all values of x on all nodes and send global result to all
-  comm_world.allreduce(mpl::multiplies<double>(), x, y);
+  comm_world.allreduce(mplr::multiplies<double>(), x, y);
   std::cout << "sum after allreduce " << y << '\n';
 
   // reduce a C-style array using a contiguous layout
@@ -90,8 +90,8 @@ int main() {
     for (int i_1{0}; i_1 < n_1; ++i_1)
       for (int i_0{0}; i_0 < n_0; ++i_0)
         array[i_0][i_1] = i_0 + 100 * i_1;
-    mpl::contiguous_layout<double> l(n_1 * n_0);
-    comm_world.allreduce(mpl::plus<double>(), &array[0][0], l);
+    mplr::contiguous_layout<double> l(n_1 * n_0);
+    comm_world.allreduce(mplr::plus<double>(), &array[0][0], l);
     if (comm_world.rank() == 0) {
       std::cout << "array after allreduce\n";
       for (int i_1{0}; i_1 < n_1; ++i_1) {
@@ -108,7 +108,7 @@ int main() {
     for (int i_1{0}; i_1 < my_array::n_1; ++i_1)
       for (int i_0{0}; i_0 < my_array::n_0; ++i_0)
         array(i_0, i_1) = i_0 + 100 * i_1;
-    comm_world.allreduce(mpl::plus<my_array>(), array);
+    comm_world.allreduce(mplr::plus<my_array>(), array);
     if (comm_world.rank() == 0) {
       std::cout << "array after allreduce\n";
       for (int i_1{0}; i_1 < my_array::n_1; ++i_1) {

@@ -1,15 +1,15 @@
 #include <cstdlib>
-// include MPL header file
-#include <mpl/mpl.hpp>
+// include MPLR header file
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
+  mplr::environment::environment env;
   using namespace std::string_literals;
   // get a reference to communicator "world"
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   // spawn 2 new processes
-  mpl::info info;
+  mplr::info info;
   info.set("host", "localhost");
   auto inter_comm{
       comm_world.spawn_multiple(0,
@@ -22,10 +22,10 @@ int main() {
   if (comm_world.rank() == 0) {
     // root rank
     message = 1.23;
-    inter_comm.bcast(mpl::root, message);
+    inter_comm.bcast(mplr::root, message);
   } else
     // non-root ranks
-    inter_comm.bcast(mpl::proc_null, message);
+    inter_comm.bcast(mplr::proc_null, message);
 
   return EXIT_SUCCESS;
 }

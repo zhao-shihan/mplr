@@ -1,6 +1,6 @@
-#if !(defined MPL_COMMANDLINE_HPP)
+#if !(defined MPLR_COMMANDLINE_HPP)
 
-#define MPL_COMMANDLINE_HPP
+#define MPLR_COMMANDLINE_HPP
 
 #include <cstddef>
 #include <vector>
@@ -8,7 +8,7 @@
 #include <string>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Represents a set of command-line arguments.
   /// \see class \c communicator::spawn
@@ -86,6 +86,6 @@ namespace mpl {
     using base::push_back;
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

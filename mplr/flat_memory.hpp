@@ -1,6 +1,6 @@
-#if !(defined MPL_FLAT_MEMORY_HPP)
+#if !(defined MPLR_FLAT_MEMORY_HPP)
 
-#define MPL_FLAT_MEMORY_HPP
+#define MPLR_FLAT_MEMORY_HPP
 
 #include <mpi.h>
 #include <cstddef>
@@ -8,10 +8,10 @@
 #include <iterator>
 #include <algorithm>
 #include <type_traits>
-#include <mpl/utility.hpp>
+#include <mplr/utility.hpp>
 
 
-namespace mpl::detail {
+namespace mplr::detail {
 
   template<typename T, typename I>
   class flat_memory_in {
@@ -296,6 +296,6 @@ namespace mpl::detail {
     }
   };
 
-}  // namespace mpl::detail
+}  // namespace mplr::detail
 
 #endif

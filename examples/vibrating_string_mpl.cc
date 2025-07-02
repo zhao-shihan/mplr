@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 const int n{1001};        // total number of grid points
@@ -45,10 +45,10 @@ inline double u_0_dt([[maybe_unused]] double x) {
 
 
 int main() {
-  mpl::environment::environment env;
+  mplr::environment::environment env;
   const double dx{l / (n - 1)};  // grid spacing
   const double eps{dt * dt * c * c / (dx * dx)};
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int c_size{comm_world.size()};
   const int c_rank{comm_world.rank()};
   std::vector<int> n_l, n_0_l;
@@ -75,25 +75,25 @@ int main() {
     // make one time step to get elongation
     string(u_l, u_old_l, u_new_l, eps);
     // update border data
-    mpl::irequest_pool r;
+    mplr::irequest_pool r;
     r.push(comm_world.isend(u_new_l[n_l[c_rank] - 2],
-                            c_rank + 1 < c_size ? c_rank + 1 : mpl::proc_null, copy::right));
-    r.push(comm_world.isend(u_new_l[1], c_rank - 1 >= 0 ? c_rank - 1 : mpl::proc_null,
+                            c_rank + 1 < c_size ? c_rank + 1 : mplr::proc_null, copy::right));
+    r.push(comm_world.isend(u_new_l[1], c_rank - 1 >= 0 ? c_rank - 1 : mplr::proc_null,
                             copy::left));
-    r.push(comm_world.irecv(u_new_l[0], c_rank - 1 >= 0 ? c_rank - 1 : mpl::proc_null,
+    r.push(comm_world.irecv(u_new_l[0], c_rank - 1 >= 0 ? c_rank - 1 : mplr::proc_null,
                             copy::right));
     r.push(comm_world.irecv(u_new_l[n_l[c_rank] - 1],
-                            c_rank + 1 < c_size ? c_rank + 1 : mpl::proc_null, copy::left));
+                            c_rank + 1 < c_size ? c_rank + 1 : mplr::proc_null, copy::left));
     r.waitall();
     std::swap(u_l, u_old_l);
     std::swap(u_new_l, u_l);
     t += dt;
   }
   // finally, gather all the data at rank 0 and print result
-  mpl::layouts<double> layouts;
+  mplr::layouts<double> layouts;
   for (int i{0}; i < c_size; ++i)
-    layouts.push_back(mpl::indexed_layout<double>({{n_l[i] - 2, n_0_l[i] + 1}}));
-  mpl::contiguous_layout<double> layout(n_l[c_rank] - 2);
+    layouts.push_back(mplr::indexed_layout<double>({{n_l[i] - 2, n_0_l[i] + 1}}));
+  mplr::contiguous_layout<double> layout(n_l[c_rank] - 2);
   if (c_rank == 0) {
     std::vector<double> u(n, 0);
     comm_world.gatherv(0, u_l.data() + 1, layout, u.data(), layouts);

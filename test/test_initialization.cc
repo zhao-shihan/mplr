@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 bool initialization_test() {
-  mpl::environment::environment{};
-  // Do some MPL stuff.
-  return mpl::environment::comm_world().is_valid() and mpl::environment::comm_self().is_valid();
+  mplr::environment::environment{};
+  // Do some MPLR stuff.
+  return mplr::environment::comm_world().is_valid() and mplr::environment::comm_self().is_valid();
 }
 
 

@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator_allreduce
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename F, typename T>
 bool allreduce_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -25,12 +25,12 @@ bool allreduce_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool allreduce_test_with_layout(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   std::vector<T> v_y(n);
   comm_world.allreduce(f, v_x.data(), v_y.data(), l);
@@ -47,7 +47,7 @@ bool allreduce_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool iallreduce_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -66,12 +66,12 @@ bool iallreduce_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool iallreduce_test_with_layout(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   std::vector<T> v_y(n);
   auto r{comm_world.iallreduce(f, v_x.data(), v_y.data(), l)};
@@ -89,7 +89,7 @@ bool iallreduce_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool allreduce_test_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -106,12 +106,12 @@ bool allreduce_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool allreduce_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   comm_world.allreduce(f, v_x.data(), l);
   T expected{val};
@@ -127,7 +127,7 @@ bool allreduce_test_with_layout_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iallreduce_test_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -145,12 +145,12 @@ bool iallreduce_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iallreduce_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
   const int n{5};
-  mpl::contiguous_layout<T> l(n);
+  mplr::contiguous_layout<T> l(n);
   std::vector<T> v_x(n, x);
   auto r{comm_world.iallreduce(f, v_x.data(), l)};
   r.wait();
@@ -164,67 +164,67 @@ bool iallreduce_test_with_layout_inplace(F f, const T &val) {
   return v_x == v_expected;
 }
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(allreduce) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(allreduce_test(add<double>(), 1.0));
   BOOST_TEST(allreduce_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(allreduce_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(allreduce_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(allreduce_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(allreduce_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(allreduce_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(allreduce_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(allreduce_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(allreduce_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(allreduce_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(allreduce_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(allreduce_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(allreduce_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(allreduce_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(allreduce_test_with_layout([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iallreduce_test(add<double>(), 1.0));
   BOOST_TEST(iallreduce_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iallreduce_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iallreduce_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iallreduce_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iallreduce_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iallreduce_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iallreduce_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iallreduce_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(iallreduce_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iallreduce_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iallreduce_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iallreduce_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iallreduce_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iallreduce_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iallreduce_test_with_layout([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
 
   BOOST_TEST(allreduce_test_inplace(add<double>(), 1.0));
   BOOST_TEST(allreduce_test_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(allreduce_test_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(allreduce_test_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(allreduce_test_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(allreduce_test_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(allreduce_test_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(allreduce_test_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(allreduce_test_with_layout_inplace(add<double>(), 1.0));
   BOOST_TEST(allreduce_test_with_layout_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(allreduce_test_with_layout_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(allreduce_test_with_layout_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(allreduce_test_with_layout_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(allreduce_test_with_layout_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(allreduce_test_with_layout_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(
       allreduce_test_with_layout_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iallreduce_test_inplace(add<double>(), 1.0));
   BOOST_TEST(iallreduce_test_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iallreduce_test_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iallreduce_test_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iallreduce_test_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iallreduce_test_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iallreduce_test_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(iallreduce_test_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(iallreduce_test_with_layout_inplace(add<double>(), 1.0));
   BOOST_TEST(iallreduce_test_with_layout_inplace(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(iallreduce_test_with_layout_inplace(mpl::plus<double>(), 1.0));
-  BOOST_TEST(iallreduce_test_with_layout_inplace(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(iallreduce_test_with_layout_inplace(mplr::plus<double>(), 1.0));
+  BOOST_TEST(iallreduce_test_with_layout_inplace(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(iallreduce_test_with_layout_inplace([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(
       iallreduce_test_with_layout_inplace([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));

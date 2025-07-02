@@ -3,17 +3,17 @@
 #include <cmath>
 #include <tuple>
 #include <random>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 using double_2 = std::tuple<double, double>;
 
 
 template<std::size_t dim, typename T, typename A>
-mpl::irequest_pool update_overlap(const mpl::cartesian_communicator &communicator,
-                                  mpl::distributed_grid<dim, T, A> &distributed_grid,
-                                  mpl::tag_t tag = mpl::tag_t()) {
-  mpl::shift_ranks ranks;
-  mpl::irequest_pool r;
+mplr::irequest_pool update_overlap(const mplr::cartesian_communicator &communicator,
+                                  mplr::distributed_grid<dim, T, A> &distributed_grid,
+                                  mplr::tag_t tag = mplr::tag_t()) {
+  mplr::shift_ranks ranks;
+  mplr::irequest_pool r;
   for (std::size_t i{0}; i < dim; ++i) {
     // send to left
     ranks = communicator.shift(i, -1);
@@ -33,45 +33,45 @@ mpl::irequest_pool update_overlap(const mpl::cartesian_communicator &communicato
 
 
 template<std::size_t dim, typename T, typename A>
-void scatter(const mpl::cartesian_communicator &communicator, int root,
-             const mpl::local_grid<dim, T, A> &local_grid,
-             mpl::distributed_grid<dim, T, A> &distributed_grid) {
+void scatter(const mplr::cartesian_communicator &communicator, int root,
+             const mplr::local_grid<dim, T, A> &local_grid,
+             mplr::distributed_grid<dim, T, A> &distributed_grid) {
   communicator.scatterv(root, local_grid.data(), local_grid.sub_layouts(),
                         distributed_grid.data(), distributed_grid.interior_layout());
 }
 
 
 template<std::size_t dim, typename T, typename A>
-void scatter(const mpl::cartesian_communicator &communicator, int root,
-             mpl::distributed_grid<dim, T, A> &distributed_grid) {
+void scatter(const mplr::cartesian_communicator &communicator, int root,
+             mplr::distributed_grid<dim, T, A> &distributed_grid) {
   communicator.scatterv(root, distributed_grid.data(), distributed_grid.interior_layout());
 }
 
 
 template<std::size_t dim, typename T, typename A>
-void gather(const mpl::cartesian_communicator &communicator, int root,
-            const mpl::distributed_grid<dim, T, A> &distributed_grid,
-            mpl::local_grid<dim, T, A> &local_grid) {
+void gather(const mplr::cartesian_communicator &communicator, int root,
+            const mplr::distributed_grid<dim, T, A> &distributed_grid,
+            mplr::local_grid<dim, T, A> &local_grid) {
   communicator.gatherv(root, distributed_grid.data(), distributed_grid.interior_layout(),
                        local_grid.data(), local_grid.sub_layouts());
 }
 
 
 template<std::size_t dim, typename T, typename A>
-void gather(const mpl::cartesian_communicator &communicator, int root,
-            const mpl::distributed_grid<dim, T, A> &distributed_grid) {
+void gather(const mplr::cartesian_communicator &communicator, int root,
+            const mplr::distributed_grid<dim, T, A> &distributed_grid) {
   communicator.gatherv(root, distributed_grid.data(), distributed_grid.interior_layout());
 }
 
 
 int main() {
-  mpl::environment::environment env;
+  mplr::environment::environment env;
   // world communicator
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   // construct a two-dimensional Cartesian communicator with no periodic boundary conditions
-  mpl::cartesian_communicator::dimensions size{mpl::cartesian_communicator::non_periodic,
-                                               mpl::cartesian_communicator::non_periodic};
-  mpl::cartesian_communicator comm_c{comm_world, mpl::dims_create(comm_world.size(), size)};
+  mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::non_periodic,
+                                               mplr::cartesian_communicator::non_periodic};
+  mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
   // total number of inner grid points
   const int n_x{768}, n_y{512};
   // grid points with extremal indices (-1, Nx or Ny) hold fixed boundary data
@@ -80,14 +80,14 @@ int main() {
   double dx{l_x / (n_x + 1)}, dy{l_y / (n_y + 1)};
   // distributed grids that hold each processor's subgrid plus one row and
   // one column  of neighboring data
-  mpl::distributed_grid<2, double> u_d_1(comm_c, {{n_x, 1}, {n_y, 1}});
-  mpl::distributed_grid<2, double> u_d_2(comm_c, {{n_x, 1}, {n_y, 1}});
+  mplr::distributed_grid<2, double> u_d_1(comm_c, {{n_x, 1}, {n_y, 1}});
+  mplr::distributed_grid<2, double> u_d_2(comm_c, {{n_x, 1}, {n_y, 1}});
   // rank 0 initializes with some random data
   if (comm_c.rank() == 0) {
     std::default_random_engine engine;
     std::uniform_real_distribution<double> uniform{0, 1};
     // local grid to store the whole set of inner grid points
-    mpl::local_grid<2, double> u(comm_c, {n_x, n_y});
+    mplr::local_grid<2, double> u(comm_c, {n_x, n_y});
     for (auto j{u.begin(1)}, j_end{u.end(1)}; j < j_end; ++j)
       for (auto i{u.begin(0)}, i_end{u.end(0)}; i < i_end; ++i)
         u(i, j) = uniform(engine);
@@ -118,7 +118,7 @@ int main() {
   while (not converged) {
     iterations++;
     // exchange asynchronously overlapping boundary data
-    mpl::irequest_pool r(update_overlap(comm_c, u_d_1));
+    mplr::irequest_pool r(update_overlap(comm_c, u_d_1));
     // apply one Jacobi iteration step for interior region
     double delta_u{0}, sum_u{0};
     for (auto j{u_d_1.begin(1) + 1}, j_end{u_d_1.end(1) - 1}; j < j_end; ++j)
@@ -163,7 +163,7 @@ int main() {
   if (comm_c.rank() == 0) {
     std::cerr << iterations << " iterations\n";
     // local grid to store the whole set of inner grid points
-    mpl::local_grid<2, double> u{comm_c, {n_x, n_y}};
+    mplr::local_grid<2, double> u{comm_c, {n_x, n_y}};
     gather(comm_c, 0, u_d_1, u);
     for (auto j{u.begin(1)}, j_end{u.end(1)}; j < j_end; ++j) {
       for (auto i{u.begin(0)}, i_end{u.end(0)}; i < i_end; ++i)

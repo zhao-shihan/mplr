@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // calculate the least common multiple of two arguments
@@ -37,8 +37,8 @@ public:
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // generate data
   std::mt19937_64 g(std::time(nullptr) * comm_world.rank());  // random seed
   std::uniform_int_distribution uniform{1, 12};
@@ -47,7 +47,7 @@ int main() {
   std::vector<int> v(n);
   std::generate(v.begin(), v.end(), [&g, &uniform]() { return uniform(g); });
   // calculate the least common multiple and send result to rank 0
-  mpl::contiguous_layout<int> layout(n);
+  mplr::contiguous_layout<int> layout(n);
   if (comm_world.rank() == 0) {
     std::vector<int> result(n);
     // calculate the least common multiple

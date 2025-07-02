@@ -1,11 +1,11 @@
 #include <cstdlib>
 #include <iostream>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 template<std::size_t dim, typename T, typename A>
-void update_overlap(const mpl::cartesian_communicator &cartesian_communicator,
-                    mpl::distributed_grid<dim, T, A> &grid, mpl::tag_t tag = mpl::tag_t()) {
+void update_overlap(const mplr::cartesian_communicator &cartesian_communicator,
+                    mplr::distributed_grid<dim, T, A> &grid, mplr::tag_t tag = mplr::tag_t()) {
   for (std::size_t i{0}; i < dim; ++i) {
     // send to left
     auto [source_l, destination_l] = cartesian_communicator.shift(i, -1);
@@ -21,16 +21,16 @@ void update_overlap(const mpl::cartesian_communicator &cartesian_communicator,
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   {
     // build a one-dimensional Cartesian communicator
     // Cartesian is non-cyclic
-    mpl::cartesian_communicator::dimensions size{mpl::cartesian_communicator::non_periodic};
-    mpl::cartesian_communicator comm_c{comm_world, mpl::dims_create(comm_world.size(), size)};
+    mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::non_periodic};
+    mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
     // create a distributed grid of 31 total grid points and 2 shadow grid points
     // to mirror data between adjacent processes
-    mpl::distributed_grid<1, int> grid{comm_c, {{31, 2}}};
+    mplr::distributed_grid<1, int> grid{comm_c, {{31, 2}}};
     // fill local grid including shadow grid points
     for (auto i{grid.obegin(0)}, i_end{grid.oend(0)}; i < i_end; ++i)
       grid(i) = comm_c.rank();
@@ -49,12 +49,12 @@ int main() {
   {
     // build a two-dimensional Cartesian communicator
     // Cartesian is cyclic along 1st dimension, non-cyclic along 2nd dimension
-    mpl::cartesian_communicator::dimensions size{mpl::cartesian_communicator::periodic,
-                                                 mpl::cartesian_communicator::non_periodic};
-    mpl::cartesian_communicator comm_c{comm_world, mpl::dims_create(comm_world.size(), size)};
+    mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::periodic,
+                                                 mplr::cartesian_communicator::non_periodic};
+    mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
     // create a distributed grid of 11x13 total grid points and 2 respectively 1
     // shadow grid points to mirror data between adjacent processes
-    mpl::distributed_grid<2, int> grid{comm_c, {{11, 2}, {13, 1}}};
+    mplr::distributed_grid<2, int> grid{comm_c, {{11, 2}, {13, 1}}};
     // fill local grid including shadow grid points
     for (auto j{grid.obegin(1)}, j_end{grid.oend(1)}; j < j_end; ++j)
       for (auto i{grid.obegin(0)}, i_end{grid.oend(0)}; i < i_end; ++i)

@@ -1,17 +1,17 @@
 #include <cstdlib>
 #include <iostream>
-// include MPL header file
-#include <mpl/mpl.hpp>
+// include MPLR header file
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
+  mplr::environment::environment env;
   // get a reference to communicator "world"
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   // each process prints a message containing the processor name, the rank
   // in communicator world and the size of communicator world
   // output may depend on MPI implementation
-  std::cout << "Hello world! I am running on \"" << mpl::environment::processor_name()
+  std::cout << "Hello world! I am running on \"" << mplr::environment::processor_name()
             << "\". My rank is " << comm_world.rank() << " out of " << comm_world.size()
             << " processes.\n";
   // if there are two or more processes send a message from process 0 to process 1

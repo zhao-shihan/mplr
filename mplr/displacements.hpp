@@ -1,13 +1,13 @@
-#if !(defined MPL_DISPLACEMENTS_HPP)
+#if !(defined MPLR_DISPLACEMENTS_HPP)
 
-#define MPL_DISPLACEMENTS_HPP
+#define MPLR_DISPLACEMENTS_HPP
 
 #include <cstddef>
 #include <vector>
 #include <utility>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Set of %displacements indicates the beginning of data buffers in various collective
   /// communication operations.
@@ -55,6 +55,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

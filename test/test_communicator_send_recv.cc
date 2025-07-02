@@ -12,7 +12,7 @@
 #include <utility>
 #include <algorithm>
 #include <type_traits>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
@@ -40,7 +40,7 @@ struct span_size<std::span<T, N>> {
 
 template<typename T>
 bool send_recv_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -68,7 +68,7 @@ bool send_recv_test(const T &data) {
 
 template<typename T>
 bool send_recv_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -91,7 +91,7 @@ bool send_recv_iter_test(const T &data) {
 
 template<typename T>
 bool bsend_recv_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -100,7 +100,7 @@ bool bsend_recv_test(const T &data) {
       size = comm_world.bsend_size<typename T::value_type>(data.size());
     else
       size = comm_world.bsend_size<T>();
-    mpl::bsend_buffer buff(size);
+    mplr::bsend_buffer buff(size);
     comm_world.bsend(data, 1);
   }
   if (comm_world.rank() == 1) {
@@ -126,7 +126,7 @@ bool bsend_recv_test(const T &data) {
 
 template<typename T>
 bool bsend_recv_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -135,7 +135,7 @@ bool bsend_recv_iter_test(const T &data) {
       size = comm_world.bsend_size<typename T::value_type>(data.size());
     else
       size = comm_world.bsend_size<T>();
-    mpl::bsend_buffer buff(size);
+    mplr::bsend_buffer buff(size);
     comm_world.bsend(std::begin(data), std::end(data), 1);
   }
   if (comm_world.rank() == 1) {
@@ -157,7 +157,7 @@ bool bsend_recv_iter_test(const T &data) {
 
 template<typename T>
 bool ssend_recv_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -185,7 +185,7 @@ bool ssend_recv_test(const T &data) {
 
 template<typename T>
 bool ssend_recv_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -208,19 +208,19 @@ bool ssend_recv_iter_test(const T &data) {
 
 template<typename T>
 bool rsend_recv_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
     comm_world.barrier();
     comm_world.rsend(data, 1);
   } else if (comm_world.rank() == 1) {
-    // must ensure that MPI_Recv is called before mpl::communicator::rsend
+    // must ensure that MPI_Recv is called before mplr::communicator::rsend
     if constexpr (has_begin_end<T>() and has_size<T>() and has_resize<T>()) {
       // T is an STL container
       T data_r;
       data_r.resize(data.size());
-      mpl::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
+      mplr::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
       comm_world.barrier();
       r.wait();
       return data_r == data;
@@ -228,13 +228,13 @@ bool rsend_recv_test(const T &data) {
       // T is an STL container without resize member, e.g., std::set
       std::vector<typename T::value_type> data_r;
       data_r.resize(data.size());
-      mpl::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
+      mplr::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
       comm_world.barrier();
       r.wait();
       return std::equal(begin(data_r), end(data_r), begin(data));
     } else {
       // T is some fundamental type
-      // mpl::communicator::irecv does not suffice in the cases above as the irecv performs a
+      // mplr::communicator::irecv does not suffice in the cases above as the irecv performs a
       // probe first to receive STL containers
 #if __cplusplus >= 202002L
       if constexpr (is_span_v<T>) {
@@ -242,7 +242,7 @@ bool rsend_recv_test(const T &data) {
         constexpr auto size = span_size<T>::value;
         std::array<element_type, size> array;
         std::span data_r(array);
-        mpl::irequest r{comm_world.irecv(data_r, 0)};
+        mplr::irequest r{comm_world.irecv(data_r, 0)};
         comm_world.barrier();
         r.wait();
         return std::equal(data.begin(), data.end(), data_r.begin(), data_r.end());
@@ -250,7 +250,7 @@ bool rsend_recv_test(const T &data) {
 #endif
       {
         T data_r;
-        mpl::irequest r{comm_world.irecv(data_r, 0)};
+        mplr::irequest r{comm_world.irecv(data_r, 0)};
         comm_world.barrier();
         r.wait();
         return data_r == data;
@@ -264,18 +264,18 @@ bool rsend_recv_test(const T &data) {
 
 template<typename T>
 bool rsend_recv_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
     comm_world.barrier();
     comm_world.rsend(std::begin(data), std::end(data), 1);
   } else if (comm_world.rank() == 1) {
-    // must ensure that MPI_Recv is called before mpl::communicator::rsend
+    // must ensure that MPI_Recv is called before mplr::communicator::rsend
     if constexpr (has_begin_end<T>() and has_size<T>() and has_resize<T>()) {
       T data_r;
       data_r.resize(data.size());
-      mpl::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
+      mplr::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
       comm_world.barrier();
       r.wait();
       return data_r == data;
@@ -283,16 +283,16 @@ bool rsend_recv_iter_test(const T &data) {
       // T is an STL container without resize member, e.g., std::set
       std::vector<typename T::value_type> data_r;
       data_r.resize(data.size());
-      mpl::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
+      mplr::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
       comm_world.barrier();
       r.wait();
       return std::equal(begin(data_r), end(data_r), begin(data));
     } else {
       // T is some fundamental type
-      // mpl::communicator::irecv does not suffice in the cases above as the irecv performs a
+      // mplr::communicator::irecv does not suffice in the cases above as the irecv performs a
       // probe first to receive STL containers
       T data_r;
-      mpl::irequest r{comm_world.irecv(data_r, 0)};
+      mplr::irequest r{comm_world.irecv(data_r, 0)};
       comm_world.barrier();
       r.wait();
       return data_r == data;
@@ -303,10 +303,10 @@ bool rsend_recv_iter_test(const T &data) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(send_recv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -364,7 +364,7 @@ BOOST_AUTO_TEST_CASE(send_recv) {
 
 
 BOOST_AUTO_TEST_CASE(bsend_recv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -422,7 +422,7 @@ BOOST_AUTO_TEST_CASE(bsend_recv) {
 
 
 BOOST_AUTO_TEST_CASE(ssend_recv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -480,7 +480,7 @@ BOOST_AUTO_TEST_CASE(ssend_recv) {
 
 
 BOOST_AUTO_TEST_CASE(rsend_recv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types

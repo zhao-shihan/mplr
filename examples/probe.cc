@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 template<typename I>
@@ -17,8 +17,8 @@ void print_range(const char *const str, I i_1, I i_2) {
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     return EXIT_FAILURE;
@@ -27,24 +27,24 @@ int main() {
     enum class tag { send = 29 };
     const int n{12};
     std::vector<int> v(n);
-    mpl::contiguous_layout<int> l(n);
+    mplr::contiguous_layout<int> l(n);
     std::iota(v.begin(), v.end(), 0);
     comm_world.send(v.data(), l, 1, tag::send);
   }
   if (comm_world.rank() == 1) {
     // receive a message of an a priori unknown number of elements from rank 0
     // first probe for a message from some arbitrary rank with any tag
-    mpl::status_t s(comm_world.probe(mpl::any_source, mpl::tag_t::any()));
+    mplr::status_t s(comm_world.probe(mplr::any_source, mplr::tag_t::any()));
     // decode the number of elements, the source and the tag
     const int n{s.get_count<int>()}, source{s.source()};
-    const mpl::tag_t tag(s.tag());
+    const mplr::tag_t tag(s.tag());
     std::cerr << "source : " << s.source() << '\n'
               << "tag    : " << s.tag() << '\n'
               << "error  : " << s.error() << '\n'
               << "count  : " << n << '\n';
     // reserve sufficient amount of memory to receive the message
     std::vector<int> v(n);
-    mpl::contiguous_layout<int> l(n);
+    mplr::contiguous_layout<int> l(n);
     // finally, receive the message
     comm_world.recv(v.data(), l, source, tag);
     print_range("v = ", v.begin(), v.end());

@@ -1,6 +1,6 @@
-#if !(defined MPL_DATATYPE_HPP)
+#if !(defined MPLR_DATATYPE_HPP)
 
-#define MPL_DATATYPE_HPP
+#define MPLR_DATATYPE_HPP
 
 #include <mpi.h>
 #include <cstddef>
@@ -26,7 +26,7 @@
 #endif
 
 
-namespace mpl {
+namespace mplr {
 
   namespace detail {
 
@@ -200,7 +200,7 @@ namespace mpl {
   /// \tparam T the structure or class type
   /// \note This template class needs to be specialized for each structure/class type that shall
   /// be used in message passing operations.  Specializations must derive from class
-  /// \c base_struct_builder. MPL provides some specializations for common types.
+  /// \c base_struct_builder. MPLR provides some specializations for common types.
   /// \see class \c base_struct_builder
   template<typename T>
   class struct_builder {
@@ -430,7 +430,7 @@ namespace mpl {
       using data_type_category = typename datatype_traits<underlying>::data_type_category;
     };
 
-#if defined MPL_HOMOGENEOUS
+#if defined MPLR_HOMOGENEOUS
     template<typename T>
     class datatype_traits_impl<
         T, std::enable_if_t<std::is_trivially_copyable_v<T> and std::is_copy_assignable_v<T> and
@@ -453,7 +453,7 @@ namespace mpl {
       using data_type_category = typename detail::datatype_traits_impl<T>::data_type_category;
     };
 
-#define MPL_DATATYPE_TRAITS(type, mpi_type)                      \
+#define MPLR_DATATYPE_TRAITS(type, mpi_type)                      \
   template<>                                                     \
   class datatype_traits<type> {                                  \
   public:                                                        \
@@ -463,47 +463,47 @@ namespace mpl {
     using data_type_category = detail::basic_or_fixed_size_type; \
   }
 
-    MPL_DATATYPE_TRAITS(char, MPI_CHAR);
+    MPLR_DATATYPE_TRAITS(char, MPI_CHAR);
 
-    MPL_DATATYPE_TRAITS(signed char, MPI_SIGNED_CHAR);
+    MPLR_DATATYPE_TRAITS(signed char, MPI_SIGNED_CHAR);
 
-    MPL_DATATYPE_TRAITS(unsigned char, MPI_UNSIGNED_CHAR);
+    MPLR_DATATYPE_TRAITS(unsigned char, MPI_UNSIGNED_CHAR);
 
-    MPL_DATATYPE_TRAITS(wchar_t, MPI_WCHAR);
+    MPLR_DATATYPE_TRAITS(wchar_t, MPI_WCHAR);
 
-    MPL_DATATYPE_TRAITS(signed short int, MPI_SHORT);
+    MPLR_DATATYPE_TRAITS(signed short int, MPI_SHORT);
 
-    MPL_DATATYPE_TRAITS(unsigned short int, MPI_UNSIGNED_SHORT);
+    MPLR_DATATYPE_TRAITS(unsigned short int, MPI_UNSIGNED_SHORT);
 
-    MPL_DATATYPE_TRAITS(signed int, MPI_INT);
+    MPLR_DATATYPE_TRAITS(signed int, MPI_INT);
 
-    MPL_DATATYPE_TRAITS(unsigned int, MPI_UNSIGNED);
+    MPLR_DATATYPE_TRAITS(unsigned int, MPI_UNSIGNED);
 
-    MPL_DATATYPE_TRAITS(signed long, MPI_LONG);
+    MPLR_DATATYPE_TRAITS(signed long, MPI_LONG);
 
-    MPL_DATATYPE_TRAITS(unsigned long, MPI_UNSIGNED_LONG);
+    MPLR_DATATYPE_TRAITS(unsigned long, MPI_UNSIGNED_LONG);
 
-    MPL_DATATYPE_TRAITS(signed long long, MPI_LONG_LONG);
+    MPLR_DATATYPE_TRAITS(signed long long, MPI_LONG_LONG);
 
-    MPL_DATATYPE_TRAITS(unsigned long long, MPI_UNSIGNED_LONG_LONG);
+    MPLR_DATATYPE_TRAITS(unsigned long long, MPI_UNSIGNED_LONG_LONG);
 
-    MPL_DATATYPE_TRAITS(bool, MPI_CXX_BOOL);
+    MPLR_DATATYPE_TRAITS(bool, MPI_CXX_BOOL);
 
-    MPL_DATATYPE_TRAITS(float, MPI_FLOAT);
+    MPLR_DATATYPE_TRAITS(float, MPI_FLOAT);
 
-    MPL_DATATYPE_TRAITS(double, MPI_DOUBLE);
+    MPLR_DATATYPE_TRAITS(double, MPI_DOUBLE);
 
-    MPL_DATATYPE_TRAITS(long double, MPI_LONG_DOUBLE);
+    MPLR_DATATYPE_TRAITS(long double, MPI_LONG_DOUBLE);
 
-    MPL_DATATYPE_TRAITS(std::byte, MPI_BYTE);
+    MPLR_DATATYPE_TRAITS(std::byte, MPI_BYTE);
 
-    MPL_DATATYPE_TRAITS(std::complex<float>, MPI_CXX_FLOAT_COMPLEX);
+    MPLR_DATATYPE_TRAITS(std::complex<float>, MPI_CXX_FLOAT_COMPLEX);
 
-    MPL_DATATYPE_TRAITS(std::complex<double>, MPI_CXX_DOUBLE_COMPLEX);
+    MPLR_DATATYPE_TRAITS(std::complex<double>, MPI_CXX_DOUBLE_COMPLEX);
 
-    MPL_DATATYPE_TRAITS(std::complex<long double>, MPI_CXX_LONG_DOUBLE_COMPLEX);
+    MPLR_DATATYPE_TRAITS(std::complex<long double>, MPI_CXX_LONG_DOUBLE_COMPLEX);
 
-#undef MPL_DATATYPE_TRAITS
+#undef MPLR_DATATYPE_TRAITS
 
 #if __cplusplus >= 202002L
     template<>
@@ -634,9 +634,9 @@ namespace mpl {
 
   }  // namespace detail
 
-}  // namespace mpl
+}  // namespace mplr
 
-#define MPL_GET_NTH_ARG(                                                                      \
+#define MPLR_GET_NTH_ARG(                                                                      \
     _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, \
     _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, \
     _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, \
@@ -646,150 +646,150 @@ namespace mpl {
     _108, _109, _110, _111, _112, _113, _114, _115, _116, _117, _118, _119, N, ...)           \
   N
 
-#define MPL_FE_0(MPL_CALL, ...)
-#define MPL_FE_1(MPL_CALL, x) MPL_CALL(x)
-#define MPL_FE_2(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_1(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_3(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_2(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_4(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_3(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_5(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_4(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_6(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_5(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_7(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_6(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_8(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_7(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_9(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_8(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_10(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_9(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_11(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_10(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_12(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_11(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_13(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_12(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_14(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_13(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_15(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_14(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_16(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_15(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_17(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_16(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_18(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_17(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_19(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_18(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_20(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_19(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_21(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_20(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_22(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_21(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_23(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_22(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_24(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_23(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_25(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_24(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_26(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_25(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_27(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_26(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_28(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_27(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_29(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_28(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_30(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_29(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_31(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_30(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_32(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_31(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_33(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_32(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_34(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_33(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_35(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_34(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_36(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_35(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_37(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_36(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_38(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_37(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_39(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_38(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_40(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_39(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_41(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_40(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_42(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_41(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_43(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_42(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_44(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_43(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_45(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_44(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_46(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_45(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_47(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_46(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_48(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_47(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_49(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_48(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_50(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_49(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_51(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_50(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_52(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_51(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_53(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_52(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_54(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_53(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_55(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_54(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_56(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_55(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_57(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_56(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_58(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_57(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_59(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_58(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_60(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_59(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_61(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_60(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_62(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_61(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_63(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_62(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_64(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_63(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_65(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_64(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_66(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_65(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_67(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_66(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_68(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_67(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_69(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_68(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_70(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_69(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_71(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_70(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_72(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_71(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_73(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_72(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_74(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_73(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_75(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_74(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_76(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_75(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_77(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_76(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_78(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_77(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_79(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_78(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_80(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_79(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_81(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_80(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_82(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_81(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_83(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_82(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_84(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_83(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_85(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_84(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_86(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_85(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_87(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_86(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_88(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_87(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_89(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_88(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_90(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_89(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_91(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_90(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_92(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_91(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_93(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_92(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_94(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_93(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_95(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_94(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_96(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_95(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_97(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_96(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_98(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_97(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_99(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_98(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_100(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_99(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_101(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_100(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_102(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_101(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_103(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_102(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_104(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_103(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_105(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_104(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_106(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_105(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_107(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_106(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_108(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_107(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_109(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_108(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_110(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_109(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_111(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_110(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_112(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_111(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_113(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_112(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_114(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_113(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_115(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_114(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_116(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_115(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_117(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_116(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_118(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_117(MPL_CALL, __VA_ARGS__)
-#define MPL_FE_119(MPL_CALL, x, ...) MPL_CALL(x) MPL_FE_118(MPL_CALL, __VA_ARGS__)
-#define MPL_CALL_MACRO_X_FOR_EACH(x, ...)                                                      \
-  MPL_GET_NTH_ARG(                                                                             \
-      "ignored", __VA_ARGS__, MPL_FE_119, MPL_FE_118, MPL_FE_117, MPL_FE_116, MPL_FE_115,      \
-      MPL_FE_114, MPL_FE_113, MPL_FE_112, MPL_FE_111, MPL_FE_110, MPL_FE_109, MPL_FE_108,      \
-      MPL_FE_107, MPL_FE_106, MPL_FE_105, MPL_FE_104, MPL_FE_103, MPL_FE_102, MPL_FE_101,      \
-      MPL_FE_100, MPL_FE_99, MPL_FE_98, MPL_FE_97, MPL_FE_96, MPL_FE_95, MPL_FE_94, MPL_FE_93, \
-      MPL_FE_92, MPL_FE_91, MPL_FE_90, MPL_FE_89, MPL_FE_88, MPL_FE_87, MPL_FE_86, MPL_FE_85,  \
-      MPL_FE_84, MPL_FE_83, MPL_FE_82, MPL_FE_81, MPL_FE_80, MPL_FE_79, MPL_FE_78, MPL_FE_77,  \
-      MPL_FE_76, MPL_FE_75, MPL_FE_74, MPL_FE_73, MPL_FE_72, MPL_FE_71, MPL_FE_70, MPL_FE_69,  \
-      MPL_FE_68, MPL_FE_67, MPL_FE_66, MPL_FE_65, MPL_FE_64, MPL_FE_63, MPL_FE_62, MPL_FE_61,  \
-      MPL_FE_60, MPL_FE_59, MPL_FE_58, MPL_FE_57, MPL_FE_56, MPL_FE_55, MPL_FE_54, MPL_FE_53,  \
-      MPL_FE_52, MPL_FE_51, MPL_FE_50, MPL_FE_49, MPL_FE_48, MPL_FE_47, MPL_FE_46, MPL_FE_45,  \
-      MPL_FE_44, MPL_FE_43, MPL_FE_42, MPL_FE_41, MPL_FE_40, MPL_FE_39, MPL_FE_38, MPL_FE_37,  \
-      MPL_FE_36, MPL_FE_35, MPL_FE_34, MPL_FE_33, MPL_FE_32, MPL_FE_31, MPL_FE_30, MPL_FE_29,  \
-      MPL_FE_28, MPL_FE_27, MPL_FE_26, MPL_FE_25, MPL_FE_24, MPL_FE_23, MPL_FE_22, MPL_FE_21,  \
-      MPL_FE_20, MPL_FE_19, MPL_FE_18, MPL_FE_17, MPL_FE_16, MPL_FE_15, MPL_FE_14, MPL_FE_13,  \
-      MPL_FE_12, MPL_FE_11, MPL_FE_10, MPL_FE_9, MPL_FE_8, MPL_FE_7, MPL_FE_6, MPL_FE_5,       \
-      MPL_FE_4, MPL_FE_3, MPL_FE_2, MPL_FE_1, MPL_FE_0)                                        \
+#define MPLR_FE_0(MPLR_CALL, ...)
+#define MPLR_FE_1(MPLR_CALL, x) MPLR_CALL(x)
+#define MPLR_FE_2(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_1(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_3(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_2(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_4(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_3(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_5(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_4(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_6(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_5(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_7(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_6(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_8(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_7(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_9(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_8(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_10(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_9(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_11(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_10(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_12(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_11(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_13(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_12(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_14(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_13(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_15(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_14(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_16(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_15(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_17(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_16(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_18(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_17(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_19(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_18(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_20(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_19(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_21(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_20(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_22(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_21(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_23(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_22(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_24(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_23(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_25(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_24(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_26(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_25(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_27(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_26(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_28(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_27(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_29(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_28(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_30(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_29(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_31(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_30(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_32(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_31(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_33(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_32(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_34(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_33(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_35(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_34(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_36(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_35(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_37(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_36(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_38(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_37(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_39(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_38(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_40(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_39(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_41(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_40(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_42(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_41(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_43(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_42(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_44(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_43(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_45(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_44(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_46(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_45(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_47(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_46(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_48(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_47(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_49(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_48(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_50(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_49(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_51(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_50(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_52(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_51(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_53(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_52(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_54(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_53(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_55(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_54(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_56(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_55(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_57(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_56(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_58(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_57(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_59(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_58(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_60(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_59(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_61(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_60(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_62(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_61(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_63(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_62(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_64(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_63(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_65(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_64(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_66(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_65(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_67(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_66(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_68(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_67(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_69(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_68(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_70(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_69(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_71(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_70(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_72(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_71(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_73(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_72(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_74(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_73(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_75(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_74(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_76(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_75(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_77(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_76(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_78(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_77(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_79(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_78(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_80(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_79(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_81(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_80(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_82(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_81(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_83(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_82(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_84(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_83(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_85(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_84(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_86(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_85(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_87(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_86(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_88(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_87(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_89(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_88(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_90(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_89(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_91(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_90(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_92(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_91(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_93(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_92(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_94(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_93(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_95(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_94(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_96(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_95(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_97(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_96(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_98(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_97(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_99(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_98(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_100(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_99(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_101(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_100(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_102(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_101(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_103(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_102(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_104(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_103(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_105(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_104(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_106(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_105(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_107(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_106(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_108(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_107(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_109(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_108(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_110(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_109(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_111(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_110(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_112(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_111(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_113(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_112(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_114(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_113(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_115(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_114(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_116(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_115(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_117(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_116(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_118(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_117(MPLR_CALL, __VA_ARGS__)
+#define MPLR_FE_119(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_118(MPLR_CALL, __VA_ARGS__)
+#define MPLR_CALL_MACRO_X_FOR_EACH(x, ...)                                                      \
+  MPLR_GET_NTH_ARG(                                                                             \
+      "ignored", __VA_ARGS__, MPLR_FE_119, MPLR_FE_118, MPLR_FE_117, MPLR_FE_116, MPLR_FE_115,      \
+      MPLR_FE_114, MPLR_FE_113, MPLR_FE_112, MPLR_FE_111, MPLR_FE_110, MPLR_FE_109, MPLR_FE_108,      \
+      MPLR_FE_107, MPLR_FE_106, MPLR_FE_105, MPLR_FE_104, MPLR_FE_103, MPLR_FE_102, MPLR_FE_101,      \
+      MPLR_FE_100, MPLR_FE_99, MPLR_FE_98, MPLR_FE_97, MPLR_FE_96, MPLR_FE_95, MPLR_FE_94, MPLR_FE_93, \
+      MPLR_FE_92, MPLR_FE_91, MPLR_FE_90, MPLR_FE_89, MPLR_FE_88, MPLR_FE_87, MPLR_FE_86, MPLR_FE_85,  \
+      MPLR_FE_84, MPLR_FE_83, MPLR_FE_82, MPLR_FE_81, MPLR_FE_80, MPLR_FE_79, MPLR_FE_78, MPLR_FE_77,  \
+      MPLR_FE_76, MPLR_FE_75, MPLR_FE_74, MPLR_FE_73, MPLR_FE_72, MPLR_FE_71, MPLR_FE_70, MPLR_FE_69,  \
+      MPLR_FE_68, MPLR_FE_67, MPLR_FE_66, MPLR_FE_65, MPLR_FE_64, MPLR_FE_63, MPLR_FE_62, MPLR_FE_61,  \
+      MPLR_FE_60, MPLR_FE_59, MPLR_FE_58, MPLR_FE_57, MPLR_FE_56, MPLR_FE_55, MPLR_FE_54, MPLR_FE_53,  \
+      MPLR_FE_52, MPLR_FE_51, MPLR_FE_50, MPLR_FE_49, MPLR_FE_48, MPLR_FE_47, MPLR_FE_46, MPLR_FE_45,  \
+      MPLR_FE_44, MPLR_FE_43, MPLR_FE_42, MPLR_FE_41, MPLR_FE_40, MPLR_FE_39, MPLR_FE_38, MPLR_FE_37,  \
+      MPLR_FE_36, MPLR_FE_35, MPLR_FE_34, MPLR_FE_33, MPLR_FE_32, MPLR_FE_31, MPLR_FE_30, MPLR_FE_29,  \
+      MPLR_FE_28, MPLR_FE_27, MPLR_FE_26, MPLR_FE_25, MPLR_FE_24, MPLR_FE_23, MPLR_FE_22, MPLR_FE_21,  \
+      MPLR_FE_20, MPLR_FE_19, MPLR_FE_18, MPLR_FE_17, MPLR_FE_16, MPLR_FE_15, MPLR_FE_14, MPLR_FE_13,  \
+      MPLR_FE_12, MPLR_FE_11, MPLR_FE_10, MPLR_FE_9, MPLR_FE_8, MPLR_FE_7, MPLR_FE_6, MPLR_FE_5,       \
+      MPLR_FE_4, MPLR_FE_3, MPLR_FE_2, MPLR_FE_1, MPLR_FE_0)                                        \
   (x, __VA_ARGS__)
 
-#define MPL_REGISTER(element) layout_.register_element(str.element);
+#define MPLR_REGISTER(element) layout_.register_element(str.element);
 
-#define MPL_REFLECTION(STRUCT, ...)                                     \
-  namespace mpl {                                                       \
+#define MPLR_REFLECTION(STRUCT, ...)                                     \
+  namespace mplr {                                                       \
     template<>                                                          \
     class struct_builder<STRUCT> : public base_struct_builder<STRUCT> { \
       struct_layout<STRUCT> layout_;                                    \
@@ -798,7 +798,7 @@ namespace mpl {
       struct_builder() {                                                \
         STRUCT str;                                                     \
         layout_.register_struct(str);                                   \
-        MPL_CALL_MACRO_X_FOR_EACH(MPL_REGISTER, __VA_ARGS__)            \
+        MPLR_CALL_MACRO_X_FOR_EACH(MPLR_REGISTER, __VA_ARGS__)            \
         define_struct(layout_);                                         \
       }                                                                 \
     };                                                                  \

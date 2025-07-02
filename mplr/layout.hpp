@@ -1,6 +1,6 @@
-#if !(defined MPL_LAYOUT_HPP)
+#if !(defined MPLR_LAYOUT_HPP)
 
-#define MPL_LAYOUT_HPP
+#define MPLR_LAYOUT_HPP
 
 #include <mpi.h>
 #include <cstddef>
@@ -13,7 +13,7 @@
 #include <vector>
 
 
-namespace mpl {
+namespace mplr {
 
   template<typename T>
   class layout;
@@ -136,7 +136,7 @@ namespace mpl {
     /// Get the underlying MPI handle of the data type.
     /// \return MPI handle of the data type
     /// \note This function returns a non-owning handle to the underlying MPI data type, which
-    /// may be useful when refactoring legacy MPI applications to MPL.
+    /// may be useful when refactoring legacy MPI applications to MPLR.
     /// \warning The handle must not be used to modify the MPI data type that the handle points
     /// to.
     [[nodiscard]] MPI_Datatype native_handle() const {
@@ -463,7 +463,7 @@ namespace mpl {
   /// \note Both types \c contiguous_layout and \c vector_layout represent contiguous
   /// storage.  \c contiguous_layout implements some additional bookkeeping as one important
   /// difference between both classes.  The class \c vector_layout is slightly more flexible
-  /// and should be used to represent contiguous storage unless the MPL library _requires_ the
+  /// and should be used to represent contiguous storage unless the MPLR library _requires_ the
   /// usage of \c contiguous_layout, e.g., in <tt>communicator::reduce</tt>.
   /// \see inherits all member methods of \c layout, \c vector_layout, \c contiguous_layouts
   template<typename T>
@@ -484,7 +484,7 @@ namespace mpl {
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (count_0 * extent > static_cast<size_t>(std::numeric_limits<MPI_Aint>::max()))
           throw invalid_size();
 #endif
@@ -578,7 +578,7 @@ namespace mpl {
   /// \note Both types \ref contiguous_layout and \c vector_layout represent contiguous
   /// storage.  \c contiguous_layout implements some additional bookkeeping as one important
   /// difference between both classes.  The class \c vector_layout is slightly more flexible
-  /// and should be used to represent contiguous storage unless the MPL library _requires_ the
+  /// and should be used to represent contiguous storage unless the MPLR library _requires_ the
   /// usage of \c contiguous_layout, e.g., in <tt>communicator::reduce</tt>.
   /// \see inherits all member methods of \c layout, \c contiguous_layout
   template<typename T>
@@ -599,7 +599,7 @@ namespace mpl {
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (count_0 * extent > static_cast<size_t>(std::numeric_limits<MPI_Aint>::max()))
           throw invalid_size();
 #endif
@@ -1305,7 +1305,7 @@ namespace mpl {
         const parameter &par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (par.displacements.size() >
           static_cast<decltype(par.displacements.size())>(std::numeric_limits<int>::max()))
         throw invalid_size();
@@ -1846,6 +1846,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

@@ -1,6 +1,6 @@
-#if !(defined MPL_REQUEST_HPP)
+#if !(defined MPLR_REQUEST_HPP)
 
-#define MPL_REQUEST_HPP
+#define MPLR_REQUEST_HPP
 
 #include <mpi.h>
 #include <utility>
@@ -8,10 +8,10 @@
 #include <vector>
 #include <thread>
 #include <limits>
-#include <mpl/utility.hpp>
+#include <mplr/utility.hpp>
 
 
-namespace mpl {
+namespace mplr {
 
   class duty_ratio {
   public:
@@ -37,7 +37,7 @@ namespace mpl {
     }
 
     constexpr explicit duty_ratio(double duty_ratio) : duty_ratio_{duty_ratio} {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (duty_ratio_ <= 0 or duty_ratio_ > 1) {
         throw invalid_argument{};
       }
@@ -466,7 +466,7 @@ namespace mpl {
     /// Default null request.
     irequest() = default;
 
-#if (!defined MPL_DOXYGEN_SHOULD_SKIP_THIS)
+#if (!defined MPLR_DOXYGEN_SHOULD_SKIP_THIS)
     irequest(const impl::base_irequest &r) : base{r} {
     }
 #endif
@@ -526,7 +526,7 @@ namespace mpl {
     /// Default null request.
     prequest() = default;
 
-#if (!defined MPL_DOXYGEN_SHOULD_SKIP_THIS)
+#if (!defined MPLR_DOXYGEN_SHOULD_SKIP_THIS)
     prequest(const impl::base_prequest &r) : base{r} {
     }
 #endif
@@ -591,6 +591,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

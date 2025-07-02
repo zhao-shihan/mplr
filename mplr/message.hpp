@@ -1,15 +1,15 @@
-#if !(defined MPL_MESSAGE_HPP)
+#if !(defined MPLR_MESSAGE_HPP)
 
-#define MPL_MESSAGE_HPP
+#define MPLR_MESSAGE_HPP
 
 #include <mpi.h>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Status of a received message.
   using message_t = MPI_Message;
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

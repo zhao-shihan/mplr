@@ -1,11 +1,11 @@
-#if !(defined MPL_STATUS_HPP)
+#if !(defined MPLR_STATUS_HPP)
 
-#define MPL_STATUS_HPP
+#define MPLR_STATUS_HPP
 
 #include <mpi.h>
 
 
-namespace mpl {
+namespace mplr {
 
   namespace impl {
 
@@ -30,8 +30,8 @@ namespace mpl {
     }
 
     /// \return tag value of the message
-    [[nodiscard]] mpl::tag_t tag() const {
-      return mpl::tag_t(MPI_Status::MPI_TAG);
+    [[nodiscard]] mplr::tag_t tag() const {
+      return mplr::tag_t(MPI_Status::MPI_TAG);
     }
 
     /// \return error code associated with the message
@@ -90,6 +90,6 @@ namespace mpl {
 
   static_assert(sizeof(MPI_Status) == sizeof(status_t));
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

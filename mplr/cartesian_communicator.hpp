@@ -1,6 +1,6 @@
-#if !(defined MPL_CARTESIAN_COMMUNICATOR_HPP)
+#if !(defined MPLR_CARTESIAN_COMMUNICATOR_HPP)
 
-#define MPL_CARTESIAN_COMMUNICATOR_HPP
+#define MPLR_CARTESIAN_COMMUNICATOR_HPP
 
 #include <mpi.h>
 #include <algorithm>
@@ -9,7 +9,7 @@
 #include <iterator>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Helper class to represent source and destination ranks within a Cartesian
   /// communicator.
@@ -418,7 +418,7 @@ namespace mpl {
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
     explicit cartesian_communicator(const cartesian_communicator &other,
-                                    const mpl::info &info = {})
+                                    const mplr::info &info = {})
         : topology_communicator{other, info} {
     }
 
@@ -445,7 +445,7 @@ namespace mpl {
     /// the communicator \c other with the same arguments.
     explicit cartesian_communicator(const cartesian_communicator &other,
                                     const included_tags &is_included) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (is_included.size() != other.dimensionality())
         throw invalid_size();
 #endif
@@ -549,21 +549,21 @@ namespace mpl {
     return dims;
   }
 
-}  // namespace mpl
+}  // namespace mplr
 
-#if !(defined MPL_DOXYGEN_SHOULD_SKIP_THIS)
+#if !(defined MPLR_DOXYGEN_SHOULD_SKIP_THIS)
 
 namespace std {
   template<>
-  struct tuple_size<mpl::cartesian_communicator::dimensions::dimension_periodicity_proxy>
+  struct tuple_size<mplr::cartesian_communicator::dimensions::dimension_periodicity_proxy>
       : std::integral_constant<std::size_t, 2> {};
 
   template<std::size_t N>
   struct tuple_element<N,
-                       mpl::cartesian_communicator::dimensions::dimension_periodicity_proxy> {
+                       mplr::cartesian_communicator::dimensions::dimension_periodicity_proxy> {
     using type =
         decltype(std::declval<
-                     mpl::cartesian_communicator::dimensions::dimension_periodicity_proxy>()
+                     mplr::cartesian_communicator::dimensions::dimension_periodicity_proxy>()
                      .get<N>());
   };
 }  // namespace std

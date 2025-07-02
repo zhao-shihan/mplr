@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator_alltoallv
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename T>
 bool alltoallv_with_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -15,10 +15,10 @@ bool alltoallv_with_displacements_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::layouts<T> sendls;
-  mpl::layouts<T> recvls;
-  mpl::displacements senddispls;
-  mpl::displacements recvdispls;
+  mplr::layouts<T> sendls;
+  mplr::layouts<T> recvls;
+  mplr::displacements senddispls;
+  mplr::displacements recvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -27,9 +27,9 @@ bool alltoallv_with_displacements_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::vector_layout<T>(N_send));
+    sendls.push_back(mplr::vector_layout<T>(N_send));
     senddispls.push_back(j * N_send);
-    recvls.push_back(mpl::vector_layout<T>(j + 1));
+    recvls.push_back(mplr::vector_layout<T>(j + 1));
     recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
@@ -42,7 +42,7 @@ bool alltoallv_with_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_with_displacements_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -50,10 +50,10 @@ bool alltoallv_with_displacements_contiguous_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::contiguous_layouts<T> sendls;
-  mpl::contiguous_layouts<T> recvls;
-  mpl::displacements senddispls;
-  mpl::displacements recvdispls;
+  mplr::contiguous_layouts<T> sendls;
+  mplr::contiguous_layouts<T> recvls;
+  mplr::displacements senddispls;
+  mplr::displacements recvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -62,9 +62,9 @@ bool alltoallv_with_displacements_contiguous_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::contiguous_layout<T>(N_send));
+    sendls.push_back(mplr::contiguous_layout<T>(N_send));
     senddispls.push_back(j * N_send);
-    recvls.push_back(mpl::contiguous_layout<T>(j + 1));
+    recvls.push_back(mplr::contiguous_layout<T>(j + 1));
     recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
@@ -77,7 +77,7 @@ bool alltoallv_with_displacements_contiguous_test(const T &val) {
 
 template<typename T>
 bool alltoallv_without_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -85,8 +85,8 @@ bool alltoallv_without_displacements_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::layouts<T> sendls;
-  mpl::layouts<T> recvls;
+  mplr::layouts<T> sendls;
+  mplr::layouts<T> recvls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -95,8 +95,8 @@ bool alltoallv_without_displacements_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::indexed_layout<T>({{N_send, j * N_send}}));
-    recvls.push_back(mpl::indexed_layout<T>({{j + 1, (j * j + j) / 2}}));
+    sendls.push_back(mplr::indexed_layout<T>({{N_send, j * N_send}}));
+    recvls.push_back(mplr::indexed_layout<T>({{j + 1, (j * j + j) / 2}}));
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -107,7 +107,7 @@ bool alltoallv_without_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_with_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -115,10 +115,10 @@ bool ialltoallv_with_displacements_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::layouts<T> sendls;
-  mpl::layouts<T> recvls;
-  mpl::displacements senddispls;
-  mpl::displacements recvdispls;
+  mplr::layouts<T> sendls;
+  mplr::layouts<T> recvls;
+  mplr::displacements senddispls;
+  mplr::displacements recvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -127,9 +127,9 @@ bool ialltoallv_with_displacements_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::vector_layout<T>(N_send));
+    sendls.push_back(mplr::vector_layout<T>(N_send));
     senddispls.push_back(j * N_send);
-    recvls.push_back(mpl::vector_layout<T>(j + 1));
+    recvls.push_back(mplr::vector_layout<T>(j + 1));
     recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
@@ -143,7 +143,7 @@ bool ialltoallv_with_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_with_displacements_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -151,10 +151,10 @@ bool ialltoallv_with_displacements_contiguous_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::contiguous_layouts<T> sendls;
-  mpl::contiguous_layouts<T> recvls;
-  mpl::displacements senddispls;
-  mpl::displacements recvdispls;
+  mplr::contiguous_layouts<T> sendls;
+  mplr::contiguous_layouts<T> recvls;
+  mplr::displacements senddispls;
+  mplr::displacements recvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -163,9 +163,9 @@ bool ialltoallv_with_displacements_contiguous_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::contiguous_layout<T>(N_send));
+    sendls.push_back(mplr::contiguous_layout<T>(N_send));
     senddispls.push_back(j * N_send);
-    recvls.push_back(mpl::contiguous_layout<T>(j + 1));
+    recvls.push_back(mplr::contiguous_layout<T>(j + 1));
     recvdispls.push_back((j * j + j) / 2);
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
@@ -179,7 +179,7 @@ bool ialltoallv_with_displacements_contiguous_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_without_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -187,8 +187,8 @@ bool ialltoallv_without_displacements_test(const T &val) {
   std::vector<T> send_data;
   std::vector<T> recv_data(N_recv);
   std::vector<T> expected;
-  mpl::layouts<T> sendls;
-  mpl::layouts<T> recvls;
+  mplr::layouts<T> sendls;
+  mplr::layouts<T> recvls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -197,8 +197,8 @@ bool ialltoallv_without_displacements_test(const T &val) {
     for (int i{0}; i < N_send; ++i)
       send_data.push_back(send_val);
     ++send_val;
-    sendls.push_back(mpl::indexed_layout<T>({{N_send, j * N_send}}));
-    recvls.push_back(mpl::indexed_layout<T>({{j + 1, (j * j + j) / 2}}));
+    sendls.push_back(mplr::indexed_layout<T>({{N_send, j * N_send}}));
+    recvls.push_back(mplr::indexed_layout<T>({{j + 1, (j * j + j) / 2}}));
     for (int i{0}; i < j + 1; ++i)
       expected.push_back(expected_val);
   }
@@ -210,12 +210,12 @@ bool ialltoallv_without_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_in_place_with_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
-  mpl::layouts<T> sendrecvls;
-  mpl::displacements sendrecvdispls;
+  mplr::layouts<T> sendrecvls;
+  mplr::displacements sendrecvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -227,7 +227,7 @@ bool alltoallv_in_place_with_displacements_test(const T &val) {
       sendrecv_data.push_back(send_val);
       expected.push_back(expected_val);
     }
-    sendrecvls.push_back(mpl::contiguous_layout<T>(N_sendrecv));
+    sendrecvls.push_back(mplr::contiguous_layout<T>(N_sendrecv));
     sendrecvdispls.push_back(displ);
     displ += N_sendrecv;
     ++expected_val;
@@ -239,11 +239,11 @@ bool alltoallv_in_place_with_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_in_place_without_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
-  mpl::layouts<T> sendrecvls;
+  mplr::layouts<T> sendrecvls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -255,7 +255,7 @@ bool alltoallv_in_place_without_displacements_test(const T &val) {
       sendrecv_data.push_back(send_val);
       expected.push_back(expected_val);
     }
-    sendrecvls.push_back(mpl::indexed_layout<T>({{N_sendrecv, displ}}));
+    sendrecvls.push_back(mplr::indexed_layout<T>({{N_sendrecv, displ}}));
     displ += N_sendrecv;
     ++expected_val;
   }
@@ -266,12 +266,12 @@ bool alltoallv_in_place_without_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_in_place_with_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
-  mpl::layouts<T> sendrecvls;
-  mpl::displacements sendrecvdispls;
+  mplr::layouts<T> sendrecvls;
+  mplr::displacements sendrecvdispls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -283,7 +283,7 @@ bool ialltoallv_in_place_with_displacements_test(const T &val) {
       sendrecv_data.push_back(send_val);
       expected.push_back(expected_val);
     }
-    sendrecvls.push_back(mpl::contiguous_layout<T>(N_sendrecv));
+    sendrecvls.push_back(mplr::contiguous_layout<T>(N_sendrecv));
     sendrecvdispls.push_back(displ);
     displ += N_sendrecv;
     ++expected_val;
@@ -296,11 +296,11 @@ bool ialltoallv_in_place_with_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_in_place_without_displacements_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
-  mpl::layouts<T> sendrecvls;
+  mplr::layouts<T> sendrecvls;
   T send_val{val};
   T expected_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -312,7 +312,7 @@ bool ialltoallv_in_place_without_displacements_test(const T &val) {
       sendrecv_data.push_back(send_val);
       expected.push_back(expected_val);
     }
-    sendrecvls.push_back(mpl::indexed_layout<T>({{N_sendrecv, displ}}));
+    sendrecvls.push_back(mplr::indexed_layout<T>({{N_sendrecv, displ}}));
     displ += N_sendrecv;
     ++expected_val;
   }
@@ -321,10 +321,10 @@ bool ialltoallv_in_place_without_displacements_test(const T &val) {
   return sendrecv_data == expected;
 }
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(alltoallv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(alltoallv_with_displacements_test(1.0));

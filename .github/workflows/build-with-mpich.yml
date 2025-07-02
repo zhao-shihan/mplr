@@ -1,8 +1,8 @@
 name: build-with-mpich
-run-name: Build MPL with MPICH
+run-name: Build MPLR with MPICH
 on: [push, pull_request, workflow_dispatch]
 jobs:
-  compile-mpl:
+  compile-mplr:
     runs-on: ubuntu-22.04
     steps:
       - name: Check out repository code
@@ -11,14 +11,14 @@ jobs:
         run: |
           sudo apt install libmpich-dev cmake ninja-build g++ libboost-test-dev
           mpichversion
-      - name: Build mpl
+      - name: Build mplr
         run: |
           mkdir build
           cd build
-          cmake -G Ninja -DCMAKE_INSTALL_PREFIX="$HOME/mpl" -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DMPL_BUILD_EXAMPLES=ON ..
+          cmake -G Ninja -DCMAKE_INSTALL_PREFIX="$HOME/mplr" -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DMPLR_BUILD_EXAMPLES=ON ..
           cmake --build . -j
           cmake --build . --target install
-      - name: Test mpl
+      - name: Test mplr
         run: |
           cd build
           ctest --output-on-failure

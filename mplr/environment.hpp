@@ -1,6 +1,6 @@
-#if !(defined MPL_ENVIRONMENT_HPP)
+#if !(defined MPLR_ENVIRONMENT_HPP)
 
-#define MPL_ENVIRONMENT_HPP
+#define MPLR_ENVIRONMENT_HPP
 
 #include <string>
 #include <memory>
@@ -9,21 +9,21 @@
 #include <mpi.h>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Represents the various levels of thread support that the underlying MPI
   /// implementation may provide.
   enum class threading_modes : int {
     /// the application is single-threaded
     single = MPI_THREAD_SINGLE,
-    /// the application is multi-threaded, however, all MPL calls will be issued from the main
+    /// the application is multi-threaded, however, all MPLR calls will be issued from the main
     /// thread only
     funneled = MPI_THREAD_FUNNELED,
-    /// the application is multi-threaded and any thread may issue MPL calls, however,
-    /// different threads will never issue MPL calls at the same time
+    /// the application is multi-threaded and any thread may issue MPLR calls, however,
+    /// different threads will never issue MPLR calls at the same time
     serialized = MPI_THREAD_SERIALIZED,
     /// the application is multi-threaded, any thread may issue MPI calls and different threads
-    /// may issue MPL calls at the same time
+    /// may issue MPLR calls at the same time
     multiple = MPI_THREAD_MULTIPLE
   };
 
@@ -78,12 +78,12 @@ namespace mpl {
     class environment {
     public:
       environment(int &argc, char **&argv,
-                  mpl::threading_modes threading_mode = mpl::threading_modes::multiple) {
+                  mplr::threading_modes threading_mode = mplr::threading_modes::multiple) {
         int _;
         MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode), &_);
       }
 
-      environment(mpl::threading_modes threading_mode = mpl::threading_modes::multiple) {
+      environment(mplr::threading_modes threading_mode = mplr::threading_modes::multiple) {
         int _;
         MPI_Init_thread(nullptr, nullptr, static_cast<int>(threading_mode), &_);
       }
@@ -166,7 +166,7 @@ namespace mpl {
       return MPI_Wtick();
     }
 
-    /// Provides to MPL a buffer in the user's memory to be used for buffering outgoing
+    /// Provides to MPLR a buffer in the user's memory to be used for buffering outgoing
     /// messages.
     /// \param buff pointer to user-provided buffer
     /// \param size size of the buffer in bytes, must be non-negative
@@ -175,7 +175,7 @@ namespace mpl {
       MPI_Buffer_attach(buff, size);
     }
 
-    /// Detach the buffer currently associated with MPL.
+    /// Detach the buffer currently associated with MPLR.
     /// \return pair representing the buffer location and size, i.e., the parameters provided to
     /// <tt>\ref buffer_attach</tt>
     /// \see \c buffer_attach
@@ -236,6 +236,6 @@ namespace mpl {
     auto &operator=(bsend_buffer &&other) = delete;
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

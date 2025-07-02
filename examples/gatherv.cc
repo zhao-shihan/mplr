@@ -1,26 +1,26 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   const auto c_rank{comm_world.rank()};
   const auto c_size{comm_world.size()};
   // fill vector with C_rank+1 elements, each having the value C_rank+1
   std::vector<int> x(c_rank + 1, c_rank + 1);
-  mpl::contiguous_layout<int> l(c_rank + 1);
+  mplr::contiguous_layout<int> l(c_rank + 1);
   // root rank will send and receive in gather operation
   if (c_rank == 0) {
     // messages of varying size will be received
     // need to specify appropriate memory layouts to define how many elements
     // will be received and where to store them
-    mpl::layouts<int> ls;
+    mplr::layouts<int> ls;
     for (int i{0}; i < c_size; ++i)
       // define layout for message to be received from rank i
-      ls.push_back(mpl::indexed_layout<int>({{
+      ls.push_back(mplr::indexed_layout<int>({{
           i + 1,           // number of int elements
           (i * i + i) / 2  // position of the first element in receive buffer
       }}));

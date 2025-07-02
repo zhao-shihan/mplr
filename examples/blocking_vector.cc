@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 template<typename I>
@@ -18,14 +18,14 @@ void print_range(const char *const str, I i_1, I i_2) {
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     return EXIT_FAILURE;
   const int n{12};
   std::vector<int> v(n);             // vector of n elements lying contiguously in memory
-  mpl::contiguous_layout<int> l(n);  // corresponding memory layout
+  mplr::contiguous_layout<int> l(n);  // corresponding memory layout
   // process 0 sends
   if (comm_world.rank() == 0) {
     // see MPI Standard for the semantics of standard send, buffered send,
@@ -38,7 +38,7 @@ int main() {
       // create a buffer for buffered send,
       // memory will be freed on leaving the scope
       const int size{comm_world.bsend_size(l)};
-      mpl::bsend_buffer buff{size};
+      mplr::bsend_buffer buff{size};
       comm_world.bsend(v.data(), l, 1);  // send x to rank 1 via buffered send
     }
     std::transform(v.begin(), v.end(), v.begin(), add_one);  // update data

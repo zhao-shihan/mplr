@@ -1,6 +1,6 @@
-#if !(defined MPL_OPERATOR_HPP)
+#if !(defined MPLR_OPERATOR_HPP)
 
-#define MPL_OPERATOR_HPP
+#define MPLR_OPERATOR_HPP
 
 #include <mpi.h>
 #include <functional>
@@ -9,7 +9,7 @@
 #include <ciso646>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Function object for calculating the maximum of two values in reduction operations
   /// as <tt>communicator::reduce</tt>.
@@ -289,6 +289,6 @@ namespace mpl {
 
   }  // namespace detail
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

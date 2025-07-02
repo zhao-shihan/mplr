@@ -4,7 +4,7 @@
 #include <tuple>
 #include <array>
 #include <utility>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // print elements of a pair
@@ -55,14 +55,14 @@ std::basic_ostream<ch, tr> &operator<<(std::basic_ostream<ch, tr> &out, const st
 
 // send some item of a standard type
 template<typename T>
-void send(const mpl::communicator &comm, const T &x) {
+void send(const mplr::communicator &comm, const T &x) {
   comm.send(x, 1);
 }
 
 
 // receive some item of a standard type
 template<typename T>
-void recv(const mpl::communicator &comm) {
+void recv(const mplr::communicator &comm) {
   T x;
   comm.recv(x, 0);
   std::cout << "x = " << std::boolalpha << x << '\n';
@@ -70,8 +70,8 @@ void recv(const mpl::communicator &comm) {
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     comm_world.abort(EXIT_FAILURE);

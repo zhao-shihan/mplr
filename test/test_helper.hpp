@@ -1,8 +1,8 @@
-#if !(defined MPL_TEST_HELPER_HPP)
-#define MPL_TEST_HELPER_HPP
+#if !(defined MPLR_TEST_HELPER_HPP)
+#define MPLR_TEST_HELPER_HPP
 
 #include <type_traits>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 template<typename, typename = void>
@@ -46,7 +46,7 @@ inline tuple operator+(const tuple &t1, const tuple &t2) {
   return tuple{t1.a + t2.a, t1.b + t2.b};
 }
 
-MPL_REFLECTION(tuple, a, b)
+MPLR_REFLECTION(tuple, a, b)
 
 
 template<typename T>
@@ -60,4 +60,4 @@ public:
 
 enum class use_non_root_overload { no, yes };
 
-#endif  // MPL_TEST_HELPER_HPP
+#endif  // MPLR_TEST_HELPER_HPP

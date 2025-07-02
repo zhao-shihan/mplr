@@ -1,7 +1,7 @@
 # 3.21 required for PROJECT_IS_TOP_LEVEL, 3.10 required for mpi targets, 3.5 required for boost targets
 cmake_minimum_required(VERSION 3.21)
 
-project(mpl VERSION 0.9.0 LANGUAGES CXX C)
+project(mplr VERSION 0.9.0 LANGUAGES CXX C)
 
 if(NOT DEFINED CACHE{BUILD_TESTING})
   set(BUILD_TESTING OFF CACHE BOOL "")
@@ -19,39 +19,39 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(MPI 3.1 REQUIRED C CXX)
 
-add_library(mpl INTERFACE)
-target_include_directories(mpl
+add_library(mplr INTERFACE)
+target_include_directories(mplr
     INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # convention for allowing use as a subdirectory
-add_library(mpl::mpl ALIAS mpl)
-target_link_libraries(mpl INTERFACE MPI::MPI_CXX)
+add_library(mplr::mplr ALIAS mplr)
+target_link_libraries(mplr INTERFACE MPI::MPI_CXX)
 
-option(MPL_BUILD_EXAMPLES "build the mpl examples" ${PROJECT_IS_TOP_LEVEL})
-if(MPL_BUILD_EXAMPLES)
+option(MPLR_BUILD_EXAMPLES "build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
+if(MPLR_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-option(MPL_INSTALL "Generate and install MPL target" ${PROJECT_IS_TOP_LEVEL})
-if(MPL_INSTALL)
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mplConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mpl)
+option(MPLR_INSTALL "Generate and install MPLR target" ${PROJECT_IS_TOP_LEVEL})
+if(MPLR_INSTALL)
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mplConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mplr)
 
-  install(DIRECTORY mpl DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(DIRECTORY mplr DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-  install(TARGETS mpl EXPORT mplTargets)
+  install(TARGETS mplr EXPORT mplTargets)
   export(EXPORT mplTargets
-      NAMESPACE mpl::
+      NAMESPACE mplr::
       FILE mplTargets.cmake)
   install(EXPORT mplTargets
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mpl
-      NAMESPACE mpl::
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mplr
+      NAMESPACE mplr::
       FILE mplTargets.cmake)
 endif()
 
-option(MPL_BUILD_DOCUMENTATION "build the mpl documentation using Doxygen and Sphinx" OFF)
-add_subdirectory(doc)
+# option(MPLR_BUILD_DOCUMENTATION "build the mplr documentation using Doxygen and Sphinx" OFF)
+# add_subdirectory(doc)

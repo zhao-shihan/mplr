@@ -1,11 +1,11 @@
 #include <cstdlib>
 #include <iostream>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     return EXIT_FAILURE;
@@ -21,7 +21,7 @@ int main() {
       // create a buffer for buffered send,
       // memory will be freed on leaving the scope
       int size{comm_world.bsend_size<decltype(x)>()};
-      mpl::bsend_buffer buff{size};
+      mplr::bsend_buffer buff{size};
       comm_world.bsend(x, 1);  // send x to rank 1 via buffered send
     }
     ++x;

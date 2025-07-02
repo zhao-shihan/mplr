@@ -1,6 +1,6 @@
-#if !(defined MPL_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP)
+#if !(defined MPLR_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP)
 
-#define MPL_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP
+#define MPLR_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP
 
 #include <mpi.h>
 #include <algorithm>
@@ -12,7 +12,7 @@
 #include <numeric>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Communicator with general graph topology.
   class distributed_graph_communicator : public impl::topology_communicator {
@@ -90,7 +90,7 @@ namespace mpl {
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
     explicit distributed_graph_communicator(const distributed_graph_communicator &other,
-                                            const mpl::info &info = {})
+                                            const mplr::info &info = {})
         : topology_communicator{other, info} {
     }
 
@@ -219,6 +219,6 @@ namespace mpl {
     return pair_1.rank != pair_2.rank or pair_1.weight != pair_2.weight;
   }
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

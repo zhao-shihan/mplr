@@ -1,18 +1,18 @@
-#if !(defined MPL_COMM_GROUP_HPP)
+#if !(defined MPLR_COMM_GROUP_HPP)
 
-#define MPL_COMM_GROUP_HPP
+#define MPLR_COMM_GROUP_HPP
 
 #include <mpi.h>
 #include <type_traits>
 #include <thread>
 #include <optional>
-#include <mpl/layout.hpp>
-#include <mpl/vector.hpp>
-#include <mpl/command_line.hpp>
-#include <mpl/info.hpp>
+#include <mplr/layout.hpp>
+#include <mplr/vector.hpp>
+#include <mplr/command_line.hpp>
+#include <mplr/info.hpp>
 
 
-namespace mpl {
+namespace mplr {
 
   class group;
 
@@ -192,7 +192,7 @@ namespace mpl {
     /// Get the underlying MPI handle of the group.
     /// \return MPI handle of the group
     /// \note This function returns a non-owning handle to the underlying MPI group, which may
-    /// be useful when refactoring legacy MPI applications to MPL.
+    /// be useful when refactoring legacy MPI applications to MPLR.
     /// \warning The handle must not be used to modify the MPI group that the handle points
     /// to.
     [[nodiscard]] MPI_Group native_handle() const {
@@ -305,28 +305,28 @@ namespace mpl {
       }
 
       void check_dest([[maybe_unused]] int dest) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (dest != proc_null and (dest < 0 or dest >= size()))
           throw invalid_rank();
 #endif
       }
 
       void check_source([[maybe_unused]] int source) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (source != proc_null and source != any_source and (source < 0 or source >= size()))
           throw invalid_rank();
 #endif
       }
 
       void check_send_tag([[maybe_unused]] tag_t t) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (static_cast<int>(t) < 0 or static_cast<int>(t) > static_cast<int>(tag_t::up()))
           throw invalid_tag();
 #endif
       }
 
       void check_recv_tag([[maybe_unused]] tag_t t) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (static_cast<int>(t) != static_cast<int>(tag_t::any()) and
             (static_cast<int>(t) < 0 or static_cast<int>(t) > static_cast<int>(tag_t::up())))
           throw invalid_tag();
@@ -334,15 +334,15 @@ namespace mpl {
       }
 
       void check_root([[maybe_unused]] int root_rank) const {
-#if defined MPL_DEBUG
-        if ((root_rank < 0 or root_rank >= size()) and root_rank != mpl::root and
-            root_rank != mpl::proc_null)
+#if defined MPLR_DEBUG
+        if ((root_rank < 0 or root_rank >= size()) and root_rank != mplr::root and
+            root_rank != mplr::proc_null)
           throw invalid_rank();
 #endif
       }
 
       void check_nonroot([[maybe_unused]] int root_rank) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         check_root(root_rank);
         if (root_rank == rank())
           throw invalid_rank();
@@ -351,7 +351,7 @@ namespace mpl {
 
       template<typename T>
       void check_size([[maybe_unused]] const layouts<T> &l) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (static_cast<int>(l.size()) > size())
           throw invalid_size();
 #endif
@@ -359,21 +359,21 @@ namespace mpl {
 
       template<typename T>
       void check_size([[maybe_unused]] const contiguous_layouts<T> &l) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (static_cast<int>(l.size()) > size())
           throw invalid_size();
 #endif
       }
 
       void check_size([[maybe_unused]] const displacements &d) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (static_cast<int>(d.size()) > size())
           throw invalid_size();
 #endif
       }
 
       void check_count([[maybe_unused]] int count) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (count == MPI_UNDEFINED)
           throw invalid_count();
 #endif
@@ -387,7 +387,7 @@ namespace mpl {
       template<typename T>
       void check_container_size([[maybe_unused]] const T &container,
                                 detail::stl_container) const {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (container.size() >
             static_cast<decltype(container.size())>(std::numeric_limits<int>::max()))
           throw invalid_count();
@@ -415,7 +415,7 @@ namespace mpl {
         displs_as_int.reserve(displs.size());
         std::transform(displs.begin(), displs.end(), std::back_inserter(displs_as_int),
                        [displ_unit](const auto &displ) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
                          if (displ * displ_unit > std::numeric_limits<int>::max())
                            throw invalid_displacement();
 #endif
@@ -460,7 +460,7 @@ namespace mpl {
       explicit base_communicator(MPI_Comm comm) : comm_(comm) {
       }
 
-      explicit base_communicator(const base_communicator &other, const mpl::info &info = {})
+      explicit base_communicator(const base_communicator &other, const mplr::info &info = {})
           : comm_{} {
         MPI_Comm_dup_with_info(other.comm_, info.info_, &comm_);
       }
@@ -510,14 +510,14 @@ namespace mpl {
         return result;
       }
 
-      void info(const mpl::info &i) const {
+      void info(const mplr::info &i) const {
         MPI_Comm_set_info(comm_, i.info_);
       }
 
-      [[nodiscard]] mpl::info info() const {
+      [[nodiscard]] mplr::info info() const {
         MPI_Info i;
         MPI_Comm_get_info(comm_, &i);
-        return mpl::info{i};
+        return mplr::info{i};
       }
 
       bool operator==(const base_communicator &other) const {
@@ -536,7 +536,7 @@ namespace mpl {
       /// Get the underlying MPI handle of the communicator.
       /// \return MPI handle of the communicator
       /// \note This function returns a non-owning handle to the underlying MPI communicator,
-      /// which may be useful when refactoring legacy MPI applications to MPL.
+      /// which may be useful when refactoring legacy MPI applications to MPLR.
       /// \warning The handle must not be used to modify the MPI communicator that the handle
       /// points to.
       [[nodiscard]] MPI_Comm native_handle() const {
@@ -2630,7 +2630,7 @@ namespace mpl {
         if (rank() == root_rank)
           alltoallv(send_data, sendls, senddispls, recv_data, recvls, recvdispls);
         else
-          alltoallv(send_data, sendls, senddispls, recv_data, mpl::layouts<T>(n), recvdispls);
+          alltoallv(send_data, sendls, senddispls, recv_data, mplr::layouts<T>(n), recvdispls);
       }
 
       /// Gather messages with a variable amount of data from all processes at a single
@@ -2706,7 +2706,7 @@ namespace mpl {
         if (rank() == root_rank)
           return ialltoallv(send_data, sendls, senddispls, recv_data, recvls, recvdispls);
         else
-          return ialltoallv(send_data, sendls, senddispls, recv_data, mpl::layouts<T>(n),
+          return ialltoallv(send_data, sendls, senddispls, recv_data, mplr::layouts<T>(n),
                             recvdispls);
       }
 
@@ -2778,7 +2778,7 @@ namespace mpl {
         layouts<T> sendls(n);
         sendls[root_rank] = sendl;
         alltoallv(send_data, sendls, sendrecvdispls, static_cast<T *>(nullptr),
-                  mpl::layouts<T>(n), sendrecvdispls);
+                  mplr::layouts<T>(n), sendrecvdispls);
       }
 
       /// Gather messages with a variable amount of data from all processes at a single
@@ -2818,7 +2818,7 @@ namespace mpl {
         layouts<T> sendls(n);
         sendls[root_rank] = sendl;
         return ialltoallv(send_data, sendls, sendrecvdispls, static_cast<T *>(nullptr),
-                          mpl::layouts<T>(n), sendrecvdispls);
+                          mplr::layouts<T>(n), sendrecvdispls);
       }
 
       /// Gather messages with a variable amount of data from all processes at a single
@@ -3224,7 +3224,7 @@ namespace mpl {
         if (rank() == root_rank)
           alltoallv(send_data, sendls, senddispls, recv_data, recvls, recvdispls);
         else
-          alltoallv(send_data, mpl::layouts<T>(n), senddispls, recv_data, recvls, recvdispls);
+          alltoallv(send_data, mplr::layouts<T>(n), senddispls, recv_data, recvls, recvdispls);
       }
 
       /// Scatter messages with a variable amount of data from a single root process to all
@@ -3301,7 +3301,7 @@ namespace mpl {
         if (rank() == root_rank)
           return ialltoallv(send_data, sendls, senddispls, recv_data, recvls, recvdispls);
         else
-          return ialltoallv(send_data, mpl::layouts<T>(n), senddispls, recv_data, recvls,
+          return ialltoallv(send_data, mplr::layouts<T>(n), senddispls, recv_data, recvls,
                             recvdispls);
       }
 
@@ -3372,7 +3372,7 @@ namespace mpl {
         displacements sendrecvdispls(n);
         layouts<T> recvls(n);
         recvls[root_rank] = recvl;
-        alltoallv(static_cast<const T *>(nullptr), mpl::layouts<T>(n), sendrecvdispls,
+        alltoallv(static_cast<const T *>(nullptr), mplr::layouts<T>(n), sendrecvdispls,
                   recv_data, recvls, sendrecvdispls);
       }
 
@@ -3412,7 +3412,7 @@ namespace mpl {
         displacements sendrecvdispls(n);
         layouts<T> recvls(n);
         recvls[root_rank] = recvl;
-        return ialltoallv(static_cast<const T *>(nullptr), mpl::layouts<T>(n), sendrecvdispls,
+        return ialltoallv(static_cast<const T *>(nullptr), mplr::layouts<T>(n), sendrecvdispls,
                           recv_data, recvls, sendrecvdispls);
       }
 
@@ -4350,7 +4350,7 @@ namespace mpl {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit communicator(const communicator &other, const mpl::info &info = {})
+    explicit communicator(const communicator &other, const mplr::info &info = {})
         : base{other, info} {
     }
 
@@ -4472,13 +4472,13 @@ namespace mpl {
 
     /// Updates the hints of the communicator.
     /// \param i info object with new hints
-    void info(const mpl::info &i) const {
+    void info(const mplr::info &i) const {
       base::info(i);
     }
 
     /// Get the hints of the communicator.
     /// \return hints of the communicator
-    [[nodiscard]] mpl::info info() const {
+    [[nodiscard]] mplr::info info() const {
       return base::info();
     }
 
@@ -5220,7 +5220,7 @@ namespace mpl {
     /// overload) by all processes in the communicator.
     [[nodiscard]] inter_communicator spawn(int root_rank, int max_procs,
                                            const command_line &command,
-                                           const mpl::info &i) const;
+                                           const mplr::info &i) const;
 
     /// Spawns new processes and establishes communication, non-root variant.
     /// \param root_rank the root process
@@ -5251,7 +5251,7 @@ namespace mpl {
     /// overload) by all processes in the communicator.
     [[nodiscard]] inter_communicator spawn_multiple(int root_rank,
                                                     const command_lines &commands,
-                                                    const mpl::infos &i) const;
+                                                    const mplr::infos &i) const;
 
     /// Spawns new processes and establishes communication, non-root variant.
     /// \param root_rank the root process
@@ -5311,7 +5311,7 @@ namespace mpl {
     /// remote processes of the inter-communicator \c other.  Inter-communicators should not be
     /// copied unless a new independent communicator is wanted.  Inter-Communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    explicit inter_communicator(const inter_communicator &other, const mpl::info &info = {})
+    explicit inter_communicator(const inter_communicator &other, const mplr::info &info = {})
         : base{other, info} {
     }
 
@@ -5433,7 +5433,7 @@ namespace mpl {
     check_root(root_rank);
     MPI_Comm comm;
     if (root_rank == rank()) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (command.size() < 1)
         throw invalid_argument();
 #endif
@@ -5459,11 +5459,11 @@ namespace mpl {
 
   inline inter_communicator communicator::spawn(int root_rank, int max_procs,
                                                 const command_line &command,
-                                                const mpl::info &i) const {
+                                                const mplr::info &i) const {
     check_root(root_rank);
     MPI_Comm comm;
     if (root_rank == rank()) {
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
       if (command.size() < 1)
         throw invalid_argument();
 #endif
@@ -5514,7 +5514,7 @@ namespace mpl {
       vector_of_maxprocs.reserve(commands.size());
       for (const auto &command : commands) {
         ++count;
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (command.size() < 1)
           throw invalid_argument();
 #endif
@@ -5549,9 +5549,9 @@ namespace mpl {
 
   inline inter_communicator communicator::spawn_multiple(int root_rank,
                                                          const command_lines &commands,
-                                                         const mpl::infos &i) const {
+                                                         const mplr::infos &i) const {
     check_root(root_rank);
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
     if (commands.size() != i.size())
       throw invalid_argument();
 #endif
@@ -5573,7 +5573,7 @@ namespace mpl {
       vector_of_maxprocs.reserve(commands.size());
       for (const auto &command : commands) {
         ++count;
-#if defined MPL_DEBUG
+#if defined MPLR_DEBUG
         if (command.size() < 1)
           throw invalid_argument();
 #endif
@@ -5653,7 +5653,7 @@ namespace mpl {
 
   /// Specifies the communication context for a communication operation.
   /// \note This is a non-owning wrapper around a raw MPI communicator. It is provided
-  /// for interoperability of MPL with MPI.
+  /// for interoperability of MPLR with MPI.
   class mpi_communicator : public communicator {
     using base = communicator;
 
@@ -5687,7 +5687,7 @@ namespace mpl {
   /// Specifies the communication context for a communication operation between two
   /// non-overlapping groups.
   /// \note This is a non-owning wrapper around a raw MPI communicator. It is provided
-  /// for interoperability of MPL with MPI.
+  /// for interoperability of MPLR with MPI.
   class mpi_inter_communicator : public inter_communicator {
     using base = inter_communicator;
 
@@ -5716,6 +5716,6 @@ namespace mpl {
     mpi_inter_communicator &operator=(mpi_inter_communicator &&other) noexcept = default;
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

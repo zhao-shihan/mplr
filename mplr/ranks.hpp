@@ -1,13 +1,13 @@
-#if !(defined MPL_RANKS_HPP)
+#if !(defined MPLR_RANKS_HPP)
 
-#define MPL_RANKS_HPP
+#define MPLR_RANKS_HPP
 
 #include <cstddef>
 #include <vector>
 #include <utility>
 
 
-namespace mpl {
+namespace mplr {
 
   /// Represents a collection of ranks.
   /// \see class \c group
@@ -61,6 +61,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

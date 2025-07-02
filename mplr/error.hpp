@@ -1,13 +1,13 @@
-#if !(defined MPL_ERROR_HPP)
+#if !(defined MPLR_ERROR_HPP)
 
-#define MPL_ERROR_HPP
+#define MPLR_ERROR_HPP
 
 #include <exception>
 
 
-namespace mpl {
+namespace mplr {
 
-  /// Base class for all MPL exception classes that will be thrown in case of run-time errors.
+  /// Base class for all MPLR exception classes that will be thrown in case of run-time errors.
   class error : public ::std::exception {
   private:
     const char *const messsage_;
@@ -103,6 +103,6 @@ namespace mpl {
     }
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
 #endif

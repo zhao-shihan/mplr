@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE communicator_scatter
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 template<typename T>
 bool scatter_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T recv;
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size(), val);
@@ -20,8 +20,8 @@ bool scatter_test(const T &val) {
 
 template<typename T>
 bool scatter_test(const std::vector<T> &send, const std::vector<T> &expected,
-                  const mpl::layout<T> &l) {
-  const auto comm_world{mpl::environment::comm_world()};
+                  const mplr::layout<T> &l) {
+  const auto comm_world{mplr::environment::comm_world()};
   std::vector<T> recv(send.size());
   if (comm_world.rank() == 0) {
     std::vector<T> v_send;
@@ -37,7 +37,7 @@ bool scatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 
 template<typename T>
 bool iscatter_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T recv;
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size(), val);
@@ -53,8 +53,8 @@ bool iscatter_test(const T &val) {
 
 template<typename T>
 bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
-                   const mpl::layout<T> &l) {
-  const auto comm_world{mpl::environment::comm_world()};
+                   const mplr::layout<T> &l) {
+  const auto comm_world{mplr::environment::comm_world()};
   std::vector<T> recv(send.size());
   if (comm_world.rank() == 0) {
     std::vector<T> v_send;
@@ -70,10 +70,10 @@ bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(scatter) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(scatter_test(1.0));
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(scatter) {
   {
     const std::vector send{1, 2, 3, 4, 5, 6};
     const std::vector expected{0, 2, 3, 0, 5, 0};
-    mpl::indexed_layout<int> l{{{2, 1}, {1, 4}}};
+    mplr::indexed_layout<int> l{{{2, 1}, {1, 4}}};
     l.resize(0, 6);
     BOOST_TEST(scatter_test(send, expected, l));
   }
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(scatter) {
   {
     const std::vector send{1, 2, 3, 4, 5, 6};
     const std::vector expected{0, 2, 3, 0, 5, 0};
-    mpl::indexed_layout<int> l{{{2, 1}, {1, 4}}};
+    mplr::indexed_layout<int> l{{{2, 1}, {1, 4}}};
     l.resize(0, 6);
     BOOST_TEST(iscatter_test(send, expected, l));
   }

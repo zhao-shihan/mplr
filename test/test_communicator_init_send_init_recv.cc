@@ -6,13 +6,13 @@
 #include <complex>
 #include <tuple>
 #include <utility>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename T>
 bool send_init_recv_init_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -42,7 +42,7 @@ bool send_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool send_init_recv_init_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -90,7 +90,7 @@ bool send_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool bsend_init_recv_init_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -99,7 +99,7 @@ bool bsend_init_recv_init_test(const T &data) {
       size = comm_world.bsend_size<typename T::value_type>(data.size());
     else
       size = comm_world.bsend_size<T>();
-    mpl::bsend_buffer buff(size);
+    mplr::bsend_buffer buff(size);
     auto r{comm_world.bsend_init(data, 1)};
     r.start();
     r.wait();
@@ -126,7 +126,7 @@ bool bsend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool bsend_init_recv_init_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -135,7 +135,7 @@ bool bsend_init_recv_init_iter_test(const T &data) {
       size = comm_world.bsend_size<typename T::value_type>(data.size());
     else
       size = comm_world.bsend_size<T>();
-    mpl::bsend_buffer buff(size);
+    mplr::bsend_buffer buff(size);
     auto r{comm_world.bsend_init(std::begin(data), std::end(data), 1)};
     r.start();
     r.wait();
@@ -180,7 +180,7 @@ bool bsend_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool ssend_init_recv_init_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -210,7 +210,7 @@ bool ssend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool ssend_init_recv_init_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -258,7 +258,7 @@ bool ssend_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool rsend_init_recv_init_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -294,7 +294,7 @@ bool rsend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool rsend_init_recv_init_iter_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -348,10 +348,10 @@ bool rsend_init_recv_init_iter_test(const T &data) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(send_init_recv_init) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(send_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -441,7 +441,7 @@ BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types
@@ -486,7 +486,7 @@ BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(rsend_init_recv_init) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types

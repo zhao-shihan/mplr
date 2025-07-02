@@ -12,7 +12,7 @@
 #include <utility>
 #include <algorithm>
 #include <type_traits>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 #if __cplusplus >= 202002L
@@ -39,13 +39,13 @@ struct span_size<std::span<T, N>> {
 
 template<typename T>
 bool send_recv_test(const T &data) {
-  const auto comm_world = mpl::environment::comm_world();
+  const auto comm_world = mplr::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
 
   MPI_Comm new_comm;
   MPI_Comm_dup(MPI_COMM_WORLD, &new_comm);
-  mpl::mpi_communicator mpi_comm{new_comm};
+  mplr::mpi_communicator mpi_comm{new_comm};
 
   if (mpi_comm.rank() == 0) {
     mpi_comm.send(data, 1);
@@ -74,10 +74,10 @@ bool send_recv_test(const T &data) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(send_recv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   // integer types

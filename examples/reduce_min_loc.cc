@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // data type to store the data and the position of the global minimum
@@ -13,8 +13,8 @@ using pair_t = std::pair<double, int>;
 
 
 int main() {
-  mpl::environment::environment env;
-  const auto comm_world{mpl::environment::comm_world()};
+  mplr::environment::environment env;
+  const auto comm_world{mplr::environment::comm_world()};
   // generate data
   std::mt19937_64 g(std::time(nullptr) * comm_world.rank());  // random seed
   std::uniform_real_distribution<> uniform;
@@ -26,11 +26,11 @@ int main() {
   });
   // calculate minimum and its location and send result to rank root
   const int root{0};
-  mpl::contiguous_layout<pair_t> layout(n);
+  mplr::contiguous_layout<pair_t> layout(n);
   if (comm_world.rank() == root) {
     std::vector<pair_t> result(n);
     // calculate minimum
-    comm_world.reduce(mpl::min<pair_t>(), root, v.data(), result.data(), layout);
+    comm_world.reduce(mplr::min<pair_t>(), root, v.data(), result.data(), layout);
     // display data from all ranks
     std::cout << "arguments:\n";
     for (int r{0}; r < comm_world.size(); ++r) {
@@ -47,7 +47,7 @@ int main() {
     std::cout << '\n';
   } else {
     // calculate minimum and its location and send result to rank 0
-    comm_world.reduce(mpl::min<pair_t>(), root, v.data(), layout);
+    comm_world.reduce(mplr::min<pair_t>(), root, v.data(), layout);
     // send data to rank 0 for display
     comm_world.send(v.data(), layout, root);
   }

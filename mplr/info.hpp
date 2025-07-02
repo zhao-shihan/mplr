@@ -1,12 +1,12 @@
-#if !(defined MPL_INFO_HPP)
+#if !(defined MPLR_INFO_HPP)
 
-#define MPL_INFO_HPP
+#define MPLR_INFO_HPP
 
 #include <string>
 #include <optional>
 
 
-namespace mpl {
+namespace mplr {
 
   namespace impl {
     class base_communicator;
@@ -175,6 +175,6 @@ namespace mpl {
     using base::push_back;
   };
 
-}  // namespace mpl
+}  // namespace mplr
 
-#endif  // MPL_INFO_HPP
+#endif  // MPLR_INFO_HPP

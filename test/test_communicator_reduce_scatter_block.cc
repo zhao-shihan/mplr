@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE communicator_reduce_scatter_block
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include "test_helper.hpp"
 
 
 template<typename F, typename T>
 bool reduce_scatter_block_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -29,7 +29,7 @@ bool reduce_scatter_block_test(F f, const T &val) {
 template<typename F, typename T>
 bool reduce_scatter_block_test_with_layout(F f, const T &val) {
   const int block_size{3};
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -38,7 +38,7 @@ bool reduce_scatter_block_test_with_layout(F f, const T &val) {
     ++x;
   }
   std::vector<T> v_y(block_size);
-  mpl::contiguous_layout<T> l(block_size);
+  mplr::contiguous_layout<T> l(block_size);
   comm_world.reduce_scatter_block(f, v_x.data(), v_y.data(), l);
   x = val;
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -53,7 +53,7 @@ bool reduce_scatter_block_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool ireduce_scatter_block_test(F f, const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -76,7 +76,7 @@ bool ireduce_scatter_block_test(F f, const T &val) {
 template<typename F, typename T>
 bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
   const int block_size{3};
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -85,7 +85,7 @@ bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
     ++x;
   }
   std::vector<T> v_y(block_size);
-  mpl::contiguous_layout<T> l(block_size);
+  mplr::contiguous_layout<T> l(block_size);
   auto r{comm_world.ireduce_scatter_block(f, v_x.data(), v_y.data(), l)};
   x = val;
   for (int i{0}; i < comm_world.rank(); ++i)
@@ -99,38 +99,38 @@ bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
 }
 
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(reduce_scatter_block) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(reduce_scatter_block_test(add<double>(), 1.0));
   BOOST_TEST(reduce_scatter_block_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(reduce_scatter_block_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(reduce_scatter_block_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(reduce_scatter_block_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(reduce_scatter_block_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(reduce_scatter_block_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(reduce_scatter_block_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(reduce_scatter_block_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(reduce_scatter_block_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(reduce_scatter_block_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(reduce_scatter_block_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(reduce_scatter_block_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(reduce_scatter_block_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(reduce_scatter_block_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(reduce_scatter_block_test_with_layout([](auto a, auto b) { return a + b; },
                                                    tuple{1, 2.0}));
 
   BOOST_TEST(ireduce_scatter_block_test(add<double>(), 1.0));
   BOOST_TEST(ireduce_scatter_block_test(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(ireduce_scatter_block_test(mpl::plus<double>(), 1.0));
-  BOOST_TEST(ireduce_scatter_block_test(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(ireduce_scatter_block_test(mplr::plus<double>(), 1.0));
+  BOOST_TEST(ireduce_scatter_block_test(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(ireduce_scatter_block_test([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(ireduce_scatter_block_test([](auto a, auto b) { return a + b; }, tuple{1, 2.0}));
 
   BOOST_TEST(ireduce_scatter_block_test_with_layout(add<double>(), 1.0));
   BOOST_TEST(ireduce_scatter_block_test_with_layout(add<tuple>(), tuple{1, 2.0}));
-  BOOST_TEST(ireduce_scatter_block_test_with_layout(mpl::plus<double>(), 1.0));
-  BOOST_TEST(ireduce_scatter_block_test_with_layout(mpl::plus<tuple>(), tuple{1, 2.0}));
+  BOOST_TEST(ireduce_scatter_block_test_with_layout(mplr::plus<double>(), 1.0));
+  BOOST_TEST(ireduce_scatter_block_test_with_layout(mplr::plus<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(ireduce_scatter_block_test_with_layout([](auto a, auto b) { return a + b; }, 1.0));
   BOOST_TEST(ireduce_scatter_block_test_with_layout([](auto a, auto b) { return a + b; },
                                                     tuple{1, 2.0}));

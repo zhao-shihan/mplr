@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <mpi.h>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 
 
 // a custom initializer
@@ -26,12 +26,12 @@ public:
 
 
 int main(int argc, char *argv[]) {
-  // custom initialization of the MPI environment before any MPL call
+  // custom initialization of the MPI environment before any MPLR call
   my_initializer::init(&argc, &argv);
 
-  // do some MPL operations
-  const auto comm_world{mpl::environment::comm_world()};
-  std::cout << "Hello world! I am running on \"" << mpl::environment::processor_name()
+  // do some MPLR operations
+  const auto comm_world{mplr::environment::comm_world()};
+  std::cout << "Hello world! I am running on \"" << mplr::environment::processor_name()
             << "\". My rank is " << comm_world.rank() << " out of " << comm_world.size()
             << " processes.\n";
   if (comm_world.size() >= 2) {
@@ -45,6 +45,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // exit the program and implicitly deinitialize MPL first and MPI afterward
+  // exit the program and implicitly deinitialize MPLR first and MPI afterward
   return EXIT_SUCCESS;
 }

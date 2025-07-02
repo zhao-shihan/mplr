@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE communicator_allgatherv
 
 #include <boost/test/included/unit_test.hpp>
-#include <mpl/mpl.hpp>
+#include <mplr/mplr.hpp>
 #include <numeric>
 #include <vector>
 #include "test_helper.hpp"
@@ -9,14 +9,14 @@
 
 template<typename T>
 bool allgatherv_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
   std::iota(begin(v1), end(v1), val);
-  mpl::layouts<T> l;
+  mplr::layouts<T> l;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    l.push_back(mpl::indexed_layout<T>({{i + 1, offset}}));
+    l.push_back(mplr::indexed_layout<T>({{i + 1, offset}}));
     offset += i + 1;
   }
   comm_world.allgatherv(v1.data(), l[comm_world.rank()], v2.data(), l);
@@ -26,15 +26,15 @@ bool allgatherv_test(const T &val) {
 
 template<typename T>
 bool allgatherv_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
   std::iota(begin(v1), end(v1), val);
-  mpl::contiguous_layouts<T> l;
-  mpl::displacements displacements;
+  mplr::contiguous_layouts<T> l;
+  mplr::displacements displacements;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    l.push_back(mpl::contiguous_layout<T>(i + 1));
+    l.push_back(mplr::contiguous_layout<T>(i + 1));
     displacements.push_back(offset);
     offset += i + 1;
   }
@@ -46,14 +46,14 @@ bool allgatherv_contiguous_test(const T &val) {
 
 template<typename T>
 bool iallgatherv_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
   std::iota(begin(v1), end(v1), val);
-  mpl::layouts<T> l;
+  mplr::layouts<T> l;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    l.push_back(mpl::indexed_layout<T>({{i + 1, offset}}));
+    l.push_back(mplr::indexed_layout<T>({{i + 1, offset}}));
     offset += i + 1;
   }
   auto r{comm_world.iallgatherv(v1.data(), l[comm_world.rank()], v2.data(), l)};
@@ -64,15 +64,15 @@ bool iallgatherv_test(const T &val) {
 
 template<typename T>
 bool iallgatherv_contiguous_test(const T &val) {
-  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mplr::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
   std::iota(begin(v1), end(v1), val);
-  mpl::contiguous_layouts<T> l;
-  mpl::displacements displacements;
+  mplr::contiguous_layouts<T> l;
+  mplr::displacements displacements;
   for (int i{0}, i_end{comm_world.size()}, offset{0}; i < i_end; ++i) {
-    l.push_back(mpl::contiguous_layout<T>(i + 1));
+    l.push_back(mplr::contiguous_layout<T>(i + 1));
     displacements.push_back(offset);
     offset += i + 1;
   }
@@ -83,10 +83,10 @@ bool iallgatherv_contiguous_test(const T &val) {
   return v1 == v2;
 }
 
-std::optional<mpl::environment::environment> env;
+std::optional<mplr::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(allgatherv) {
-  if (not mpl::environment::initialized())
+  if (not mplr::environment::initialized())
     env.emplace();
 
   BOOST_TEST(allgatherv_test(1.0));
