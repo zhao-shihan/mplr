@@ -1,13 +1,14 @@
+#include "mplr/mplr.hpp"
+
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <iterator>
-#include <vector>
 #include <list>
 #include <map>
 #include <string>
 #include <utility>
-#include <cmath>
-#include "mplr/mplr.hpp"
+#include <vector>
 
 
 // print elements of a pair

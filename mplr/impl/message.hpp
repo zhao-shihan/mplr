@@ -3,7 +3,6 @@
 #define MPLR_MESSAGE_HPP
 
 
-
 namespace mplr {
 
   /// Status of a received message.

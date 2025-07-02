@@ -3,12 +3,11 @@
 #define MPLR_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP
 
 #include <algorithm>
-#include <vector>
-#include <utility>
+#include <numeric>
 #include <set>
 #include <tuple>
-#include <algorithm>
-#include <numeric>
+#include <utility>
+#include <vector>
 
 
 namespace mplr {

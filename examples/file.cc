@@ -1,10 +1,10 @@
-#include <cstdlib>
-#include <cstdint>
-#include <iostream>
-#include <array>
-#include <vector>
-// include MPLR header file
 #include "mplr/mplr.hpp"
+
+#include <array>
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 
 int main() {

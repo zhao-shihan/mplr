@@ -69,7 +69,8 @@ bool communicator_comm_world_split_test() {
 bool communicator_comm_world_split_shared_memory_test() {
   const auto comm_world{mplr::environment::comm_world()};
   const int rank{comm_world.rank()};
-  mplr::communicator comm_new{mplr::communicator::split_shared_memory, comm_world, rank % 2 == 0};
+  mplr::communicator comm_new{mplr::communicator::split_shared_memory, comm_world,
+                              rank % 2 == 0};
   if (not comm_new.is_valid())
     return false;
   return true;

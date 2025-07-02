@@ -1,11 +1,12 @@
+#include "mplr/mplr.hpp"
+
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <iostream>
 #include <iomanip>
-#include <vector>
-#include <algorithm>
+#include <iostream>
 #include <random>
-#include "mplr/mplr.hpp"
+#include <vector>
 
 
 // data type to store the data and the position of the global minimum

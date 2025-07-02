@@ -2,9 +2,10 @@
 
 #define MPLR_DISTRIBUTED_GRID_HPP
 
-#include <vector>
 #include "mplr/impl/cartesian_communicator.hpp"
 #include "mplr/impl/layout.hpp"
+
+#include <vector>
 
 
 namespace mplr {

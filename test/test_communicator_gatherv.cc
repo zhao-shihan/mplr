@@ -2,8 +2,9 @@
 
 #include "boost/test/included/unit_test.hpp"
 #include "mplr/mplr.hpp"
-#include <tuple>
 #include "test_helper.hpp"
+
+#include <tuple>
 
 
 template<use_non_root_overload variant, typename T>

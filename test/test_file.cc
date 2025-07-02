@@ -1084,8 +1084,8 @@ BOOST_AUTO_TEST_CASE(read_shared_write_shared) {
 
   BOOST_TEST(read_shared_write_shared_test(1.0));
   BOOST_TEST(read_shared_write_shared_test(std::array{1, 2, 3, 4}));
-  BOOST_TEST(
-      read_shared_write_shared_test(std::vector{1.0, 2.0, 3.0}, mplr::vector_layout<double>(3)));
+  BOOST_TEST(read_shared_write_shared_test(std::vector{1.0, 2.0, 3.0},
+                                           mplr::vector_layout<double>(3)));
 }
 
 BOOST_AUTO_TEST_CASE(iread_shared_iwrite_shared) {
@@ -1104,8 +1104,8 @@ BOOST_AUTO_TEST_CASE(read_at_all_write_at_all) {
 
   BOOST_TEST(read_at_all_write_at_all_test(1.0));
   BOOST_TEST(read_at_all_write_at_all_test(std::array{1, 2, 3, 4}));
-  BOOST_TEST(
-      read_at_all_write_at_all_test(std::vector{1.0, 2.0, 3.0}, mplr::vector_layout<double>(3)));
+  BOOST_TEST(read_at_all_write_at_all_test(std::vector{1.0, 2.0, 3.0},
+                                           mplr::vector_layout<double>(3)));
 }
 
 BOOST_AUTO_TEST_CASE(iread_at_all_iwrite_at_all) {

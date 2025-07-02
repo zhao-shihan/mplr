@@ -2,10 +2,10 @@
 
 #define MPLR_ENVIRONMENT_HPP
 
-#include <string>
-#include <memory>
-#include <vector>
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
 
 
 namespace mplr {

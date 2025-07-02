@@ -1,8 +1,9 @@
 #if !(defined MPLR_TEST_HELPER_HPP)
 #define MPLR_TEST_HELPER_HPP
 
-#include <type_traits>
 #include "mplr/mplr.hpp"
+
+#include <type_traits>
 
 
 template<typename, typename = void>

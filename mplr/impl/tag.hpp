@@ -3,8 +3,9 @@
 #define MPLR_TAG_HPP
 
 #include "mplr/impl/utility.hpp"
-#include <ostream>
+
 #include <istream>
+#include <ostream>
 
 
 namespace mplr {

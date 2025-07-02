@@ -1,9 +1,10 @@
 // solve the one-dimensional wave equation
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
 #include "mpi.h"
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 const int N = 1001;  // total global number of grid points

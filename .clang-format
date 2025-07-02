@@ -1,5 +1,4 @@
-﻿---
-BasedOnStyle: Google
+﻿BasedOnStyle: Google
 AccessModifierOffset: -2
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
@@ -12,8 +11,15 @@ NamespaceIndentation: All
 RequiresClausePosition: OwnLine
 IndentRequiresClause: false
 SpaceAfterTemplateKeyword: false
-SortIncludes: false
+SortIncludes: CaseSensitive
 SortUsingDeclarations: false
-CommentPragmas: '^/'
-Standard: c++20
-...
+CommentPragmas: "^/"
+Standard: Latest
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '".*"'
+    Priority: 0
+  - Regex: '"mpi.h"'
+    Priority: 1
+  - Regex: "<.*>"
+    Priority: 2

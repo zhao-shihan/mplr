@@ -2,9 +2,10 @@
 
 #include "boost/test/included/unit_test.hpp"
 #include "mplr/mplr.hpp"
+#include "test_helper.hpp"
+
 #include <numeric>
 #include <vector>
-#include "test_helper.hpp"
 
 
 template<typename T>

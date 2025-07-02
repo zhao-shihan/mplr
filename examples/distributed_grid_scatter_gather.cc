@@ -1,6 +1,7 @@
+#include "mplr/mplr.hpp"
+
 #include <cstdlib>
 #include <iostream>
-#include "mplr/mplr.hpp"
 
 
 template<std::size_t dim, typename T, typename A>
@@ -39,7 +40,7 @@ int main() {
   mplr::environment::environment env;
   const auto comm_world{mplr::environment::comm_world()};
   mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::periodic,
-                                               mplr::cartesian_communicator::non_periodic};
+                                                mplr::cartesian_communicator::non_periodic};
   const int nx{21}, ny{13};
   mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
   mplr::distributed_grid<2, int> grid{comm_c, {{nx, 1}, {ny, 1}}};

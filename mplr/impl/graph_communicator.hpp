@@ -2,11 +2,11 @@
 
 #define MPLR_GRAPH_COMMUNICATOR_HPP
 
-#include <vector>
-#include <tuple>
-#include <set>
 #include <algorithm>
 #include <numeric>
+#include <set>
+#include <tuple>
+#include <vector>
 
 
 namespace mplr {

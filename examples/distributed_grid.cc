@@ -1,6 +1,7 @@
+#include "mplr/mplr.hpp"
+
 #include <cstdlib>
 #include <iostream>
-#include "mplr/mplr.hpp"
 
 
 template<std::size_t dim, typename T, typename A>
@@ -50,7 +51,7 @@ int main() {
     // build a two-dimensional Cartesian communicator
     // Cartesian is cyclic along 1st dimension, non-cyclic along 2nd dimension
     mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::periodic,
-                                                 mplr::cartesian_communicator::non_periodic};
+                                                  mplr::cartesian_communicator::non_periodic};
     mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
     // create a distributed grid of 11x13 total grid points and 2 respectively 1
     // shadow grid points to mirror data between adjacent processes

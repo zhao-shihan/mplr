@@ -3,8 +3,8 @@
 #define MPLR_DISPLACEMENTS_HPP
 
 #include <cstddef>
-#include <vector>
 #include <utility>
+#include <vector>
 
 
 namespace mplr {

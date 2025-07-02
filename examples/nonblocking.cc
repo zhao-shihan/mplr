@@ -1,9 +1,10 @@
+#include "mplr/mplr.hpp"
+
+#include <array>
 #include <cstdlib>
 #include <iostream>
-#include <array>
-#include <vector>
 #include <numeric>
-#include "mplr/mplr.hpp"
+#include <vector>
 
 
 template<typename I>
@@ -32,7 +33,7 @@ int main() {
     // synchronous send and ready send
     double x{1.23456};
     mplr::irequest r(comm_world.isend(x, 1));  // send x to rank 1 via standard send
-    r.wait();                                 // wait until send has finished
+    r.wait();                                  // wait until send has finished
     ++x;
     {
       // create a buffer for buffered send,
@@ -89,7 +90,7 @@ int main() {
   if (comm_world.rank() == 1) {
     double x;
     mplr::irequest r(comm_world.irecv(x, 0));  // receive x from rank 0
-    r.wait();                                 // wait until receive has finished
+    r.wait();                                  // wait until receive has finished
     std::cout << "x = " << x << '\n';
     r = comm_world.irecv(x, 0);  // receive x from rank 0
     r.wait();                    // wait until receive has finished

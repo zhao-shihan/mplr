@@ -1,11 +1,12 @@
-#include <cstdlib>
-#include <vector>
-#include <list>
-#include <set>
-#include <iostream>
-#include <numeric>
-#include <algorithm>
 #include "mplr/mplr.hpp"
+
+#include <algorithm>
+#include <cstdlib>
+#include <iostream>
+#include <list>
+#include <numeric>
+#include <set>
+#include <vector>
 
 
 int main() {

@@ -1,12 +1,13 @@
 #define BOOST_TEST_MODULE communicator_sendrecv
 
 #include "boost/test/included/unit_test.hpp"
-#include <limits>
-#include <cstddef>
-#include <complex>
-#include <type_traits>
 #include "mplr/mplr.hpp"
 #include "test_helper.hpp"
+
+#include <complex>
+#include <cstddef>
+#include <limits>
+#include <type_traits>
 
 
 template<typename T>

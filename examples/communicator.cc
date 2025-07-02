@@ -1,6 +1,7 @@
+#include "mplr/mplr.hpp"
+
 #include <cstdlib>
 #include <iostream>
-#include "mplr/mplr.hpp"
 
 
 int main() {
@@ -23,7 +24,7 @@ int main() {
   // split comm_world into a communicator which contains all processes
   // except rank 0 of comm_world and carry out some collective communication
   mplr::communicator comm_without_0(mplr::communicator::split, comm_world,
-                                   comm_world.rank() == 0 ? mplr::undefined : 1);
+                                    comm_world.rank() == 0 ? mplr::undefined : 1);
   if (comm_world.rank() != 0) {
     double data{1};
     comm_without_0.allreduce(mplr::plus<double>(), data);

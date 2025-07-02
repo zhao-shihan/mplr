@@ -30,7 +30,8 @@ bool graph_communicator_test_2() {
   const int size{comm_world.size()};
   const int rank{comm_world.rank()};
   if (size >= 4) {
-    mplr::communicator communicator_4{mplr::communicator::split, comm_world, rank < 4 ? 0 : rank};
+    mplr::communicator communicator_4{mplr::communicator::split, comm_world,
+                                      rank < 4 ? 0 : rank};
     if (communicator_4.size() < 4)
       return true;
     mplr::graph_communicator::edge_set es{{0, 1}, {0, 3}, {1, 0}, {2, 3}, {3, 0}, {3, 2}};

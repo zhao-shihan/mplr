@@ -2,12 +2,12 @@
 
 #define MPLR_UTILITY_HPP
 
+#include <chrono>
 #include <iterator>
 #include <limits>
 #include <type_traits>
-#include <vector>
 #include <valarray>
-#include <chrono>
+#include <vector>
 
 
 namespace mplr::detail {

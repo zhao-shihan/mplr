@@ -1,7 +1,8 @@
-#include <cstdlib>
-#include <iostream>
-#include <iomanip>
 #include "mplr/mplr.hpp"
+
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
 
 
 int main() {

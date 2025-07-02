@@ -2,24 +2,23 @@
 
 #define MPLR_DATATYPE_HPP
 
+#include <array>
+#include <complex>
 #include <cstddef>
 #include <cstdint>
-#include <vector>
 #include <deque>
 #include <forward_list>
 #include <list>
-#include <set>
 #include <map>
-#include <unordered_set>
-#include <unordered_map>
+#include <set>
 #include <string>
-#include <valarray>
-#include <complex>
-#include <utility>
 #include <tuple>
-#include <array>
-#include <cstddef>
 #include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <valarray>
+#include <vector>
 #if __cplusplus >= 202002L
 #include <span>
 #endif
@@ -180,7 +179,7 @@ namespace mplr {
 
   public:
     base_struct_builder(const base_struct_builder &) = delete;
-    auto& operator=(const base_struct_builder &) = delete;
+    auto &operator=(const base_struct_builder &) = delete;
 
   protected:
     ~base_struct_builder() {
@@ -452,7 +451,7 @@ namespace mplr {
       using data_type_category = typename detail::datatype_traits_impl<T>::data_type_category;
     };
 
-#define MPLR_DATATYPE_TRAITS(type, mpi_type)                      \
+#define MPLR_DATATYPE_TRAITS(type, mpi_type)                     \
   template<>                                                     \
   class datatype_traits<type> {                                  \
   public:                                                        \
@@ -635,7 +634,7 @@ namespace mplr {
 
 }  // namespace mplr
 
-#define MPLR_GET_NTH_ARG(                                                                      \
+#define MPLR_GET_NTH_ARG(                                                                     \
     _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, \
     _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, \
     _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, \
@@ -765,30 +764,32 @@ namespace mplr {
 #define MPLR_FE_117(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_116(MPLR_CALL, __VA_ARGS__)
 #define MPLR_FE_118(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_117(MPLR_CALL, __VA_ARGS__)
 #define MPLR_FE_119(MPLR_CALL, x, ...) MPLR_CALL(x) MPLR_FE_118(MPLR_CALL, __VA_ARGS__)
-#define MPLR_CALL_MACRO_X_FOR_EACH(x, ...)                                                      \
-  MPLR_GET_NTH_ARG(                                                                             \
-      "ignored", __VA_ARGS__, MPLR_FE_119, MPLR_FE_118, MPLR_FE_117, MPLR_FE_116, MPLR_FE_115,      \
-      MPLR_FE_114, MPLR_FE_113, MPLR_FE_112, MPLR_FE_111, MPLR_FE_110, MPLR_FE_109, MPLR_FE_108,      \
-      MPLR_FE_107, MPLR_FE_106, MPLR_FE_105, MPLR_FE_104, MPLR_FE_103, MPLR_FE_102, MPLR_FE_101,      \
-      MPLR_FE_100, MPLR_FE_99, MPLR_FE_98, MPLR_FE_97, MPLR_FE_96, MPLR_FE_95, MPLR_FE_94, MPLR_FE_93, \
-      MPLR_FE_92, MPLR_FE_91, MPLR_FE_90, MPLR_FE_89, MPLR_FE_88, MPLR_FE_87, MPLR_FE_86, MPLR_FE_85,  \
-      MPLR_FE_84, MPLR_FE_83, MPLR_FE_82, MPLR_FE_81, MPLR_FE_80, MPLR_FE_79, MPLR_FE_78, MPLR_FE_77,  \
-      MPLR_FE_76, MPLR_FE_75, MPLR_FE_74, MPLR_FE_73, MPLR_FE_72, MPLR_FE_71, MPLR_FE_70, MPLR_FE_69,  \
-      MPLR_FE_68, MPLR_FE_67, MPLR_FE_66, MPLR_FE_65, MPLR_FE_64, MPLR_FE_63, MPLR_FE_62, MPLR_FE_61,  \
-      MPLR_FE_60, MPLR_FE_59, MPLR_FE_58, MPLR_FE_57, MPLR_FE_56, MPLR_FE_55, MPLR_FE_54, MPLR_FE_53,  \
-      MPLR_FE_52, MPLR_FE_51, MPLR_FE_50, MPLR_FE_49, MPLR_FE_48, MPLR_FE_47, MPLR_FE_46, MPLR_FE_45,  \
-      MPLR_FE_44, MPLR_FE_43, MPLR_FE_42, MPLR_FE_41, MPLR_FE_40, MPLR_FE_39, MPLR_FE_38, MPLR_FE_37,  \
-      MPLR_FE_36, MPLR_FE_35, MPLR_FE_34, MPLR_FE_33, MPLR_FE_32, MPLR_FE_31, MPLR_FE_30, MPLR_FE_29,  \
-      MPLR_FE_28, MPLR_FE_27, MPLR_FE_26, MPLR_FE_25, MPLR_FE_24, MPLR_FE_23, MPLR_FE_22, MPLR_FE_21,  \
-      MPLR_FE_20, MPLR_FE_19, MPLR_FE_18, MPLR_FE_17, MPLR_FE_16, MPLR_FE_15, MPLR_FE_14, MPLR_FE_13,  \
-      MPLR_FE_12, MPLR_FE_11, MPLR_FE_10, MPLR_FE_9, MPLR_FE_8, MPLR_FE_7, MPLR_FE_6, MPLR_FE_5,       \
-      MPLR_FE_4, MPLR_FE_3, MPLR_FE_2, MPLR_FE_1, MPLR_FE_0)                                        \
+#define MPLR_CALL_MACRO_X_FOR_EACH(x, ...)                                                     \
+  MPLR_GET_NTH_ARG(                                                                            \
+      "ignored", __VA_ARGS__, MPLR_FE_119, MPLR_FE_118, MPLR_FE_117, MPLR_FE_116, MPLR_FE_115, \
+      MPLR_FE_114, MPLR_FE_113, MPLR_FE_112, MPLR_FE_111, MPLR_FE_110, MPLR_FE_109,            \
+      MPLR_FE_108, MPLR_FE_107, MPLR_FE_106, MPLR_FE_105, MPLR_FE_104, MPLR_FE_103,            \
+      MPLR_FE_102, MPLR_FE_101, MPLR_FE_100, MPLR_FE_99, MPLR_FE_98, MPLR_FE_97, MPLR_FE_96,   \
+      MPLR_FE_95, MPLR_FE_94, MPLR_FE_93, MPLR_FE_92, MPLR_FE_91, MPLR_FE_90, MPLR_FE_89,      \
+      MPLR_FE_88, MPLR_FE_87, MPLR_FE_86, MPLR_FE_85, MPLR_FE_84, MPLR_FE_83, MPLR_FE_82,      \
+      MPLR_FE_81, MPLR_FE_80, MPLR_FE_79, MPLR_FE_78, MPLR_FE_77, MPLR_FE_76, MPLR_FE_75,      \
+      MPLR_FE_74, MPLR_FE_73, MPLR_FE_72, MPLR_FE_71, MPLR_FE_70, MPLR_FE_69, MPLR_FE_68,      \
+      MPLR_FE_67, MPLR_FE_66, MPLR_FE_65, MPLR_FE_64, MPLR_FE_63, MPLR_FE_62, MPLR_FE_61,      \
+      MPLR_FE_60, MPLR_FE_59, MPLR_FE_58, MPLR_FE_57, MPLR_FE_56, MPLR_FE_55, MPLR_FE_54,      \
+      MPLR_FE_53, MPLR_FE_52, MPLR_FE_51, MPLR_FE_50, MPLR_FE_49, MPLR_FE_48, MPLR_FE_47,      \
+      MPLR_FE_46, MPLR_FE_45, MPLR_FE_44, MPLR_FE_43, MPLR_FE_42, MPLR_FE_41, MPLR_FE_40,      \
+      MPLR_FE_39, MPLR_FE_38, MPLR_FE_37, MPLR_FE_36, MPLR_FE_35, MPLR_FE_34, MPLR_FE_33,      \
+      MPLR_FE_32, MPLR_FE_31, MPLR_FE_30, MPLR_FE_29, MPLR_FE_28, MPLR_FE_27, MPLR_FE_26,      \
+      MPLR_FE_25, MPLR_FE_24, MPLR_FE_23, MPLR_FE_22, MPLR_FE_21, MPLR_FE_20, MPLR_FE_19,      \
+      MPLR_FE_18, MPLR_FE_17, MPLR_FE_16, MPLR_FE_15, MPLR_FE_14, MPLR_FE_13, MPLR_FE_12,      \
+      MPLR_FE_11, MPLR_FE_10, MPLR_FE_9, MPLR_FE_8, MPLR_FE_7, MPLR_FE_6, MPLR_FE_5,           \
+      MPLR_FE_4, MPLR_FE_3, MPLR_FE_2, MPLR_FE_1, MPLR_FE_0)                                   \
   (x, __VA_ARGS__)
 
 #define MPLR_REGISTER(element) layout_.register_element(str.element);
 
-#define MPLR_REFLECTION(STRUCT, ...)                                     \
-  namespace mplr {                                                       \
+#define MPLR_REFLECTION(STRUCT, ...)                                    \
+  namespace mplr {                                                      \
     template<>                                                          \
     class struct_builder<STRUCT> : public base_struct_builder<STRUCT> { \
       struct_layout<STRUCT> layout_;                                    \
@@ -797,7 +798,7 @@ namespace mplr {
       struct_builder() {                                                \
         STRUCT str;                                                     \
         layout_.register_struct(str);                                   \
-        MPLR_CALL_MACRO_X_FOR_EACH(MPLR_REGISTER, __VA_ARGS__)            \
+        MPLR_CALL_MACRO_X_FOR_EACH(MPLR_REGISTER, __VA_ARGS__)          \
         define_struct(layout_);                                         \
       }                                                                 \
     };                                                                  \

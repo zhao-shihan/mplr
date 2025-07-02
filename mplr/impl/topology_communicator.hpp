@@ -101,7 +101,7 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_allgather(const T *senddata, const layout<T> &sendl, T *recvdata,
-                                      const layout<T> &recvl) const {
+                                       const layout<T> &recvl) const {
       MPI_Request req;
       MPI_Ineighbor_allgather(
           senddata, 1, detail::datatype_traits<layout<T>>::get_datatype(sendl), recvdata, 1,
@@ -160,8 +160,8 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_allgatherv(const T *senddata, const layout<T> &sendl, T *recvdata,
-                                       const layouts<T> &recvls,
-                                       const displacements &recvdispls) const {
+                                        const layouts<T> &recvls,
+                                        const displacements &recvdispls) const {
       const int n(recvdispls.size());
       const displacements senddispls(n);
       const layouts<T> sendls(n, sendl);
@@ -181,7 +181,7 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_allgatherv(const T *senddata, const layout<T> &sendl, T *recvdata,
-                                       const layouts<T> &recvls) const {
+                                        const layouts<T> &recvls) const {
       return ineighbor_allgatherv(senddata, sendl, recvdata, recvls, displacements(size()));
     }
 
@@ -277,7 +277,7 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_alltoall(const T *senddata, const layout<T> &sendl, T *recvdata,
-                                     const layout<T> &recvl) const {
+                                      const layout<T> &recvl) const {
       MPI_Request req;
       MPI_Ineighbor_alltoall(
           senddata, 1, detail::datatype_traits<layout<T>>::get_datatype(sendl), recvdata, 1,
@@ -378,9 +378,9 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_alltoallv(const T *senddata, const layouts<T> &sendls,
-                                      const displacements &senddispls, T *recvdata,
-                                      const layouts<T> &recvls,
-                                      const displacements &recvdispls) const {
+                                       const displacements &senddispls, T *recvdata,
+                                       const layouts<T> &recvls,
+                                       const displacements &recvdispls) const {
       std::vector<int> counts(recvls.size(), 1);
       MPI_Request req;
       static_assert(
@@ -417,7 +417,7 @@ namespace mplr::impl {
     /// overload) by all processes in the communicator.
     template<typename T>
     mplr::irequest ineighbor_alltoallv(const T *senddata, const layouts<T> &sendls, T *recvdata,
-                                      const layouts<T> &recvls) const {
+                                       const layouts<T> &recvls) const {
       const displacements sendrecvdispls(size());
       return ineighbor_alltoallv(senddata, sendls, sendrecvdispls, recvdata, recvls,
                                  sendrecvdispls);

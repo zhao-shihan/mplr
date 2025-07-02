@@ -2,6 +2,7 @@
 
 #include "boost/test/included/unit_test.hpp"
 #include "mplr/mplr.hpp"
+
 #include <algorithm>
 #include <array>
 #include <vector>

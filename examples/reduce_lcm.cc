@@ -1,10 +1,11 @@
+#include "mplr/mplr.hpp"
+
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <random>
-#include "mplr/mplr.hpp"
+#include <vector>
 
 
 // calculate the least common multiple of two arguments

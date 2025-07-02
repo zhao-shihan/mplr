@@ -2,10 +2,10 @@
 
 #define MPLR_OPERATOR_HPP
 
-#include <functional>
-#include <type_traits>
-#include <memory>
 #include <ciso646>
+#include <functional>
+#include <memory>
+#include <type_traits>
 
 
 namespace mplr {
@@ -278,7 +278,7 @@ namespace mplr {
         MPI_Op_free(&mpi_op);
       }
 
-      auto& operator=(op const &) = delete;
+      auto &operator=(op const &) = delete;
 
       friend op &get_op<>(F);
     };

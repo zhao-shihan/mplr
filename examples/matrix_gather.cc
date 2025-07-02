@@ -1,8 +1,9 @@
+#include "mplr/mplr.hpp"
+
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 #include <vector>
-#include "mplr/mplr.hpp"
 
 
 // some basic matrix class

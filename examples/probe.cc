@@ -1,8 +1,9 @@
+#include "mplr/mplr.hpp"
+
 #include <cstdlib>
 #include <iostream>
-#include <vector>
 #include <numeric>
-#include "mplr/mplr.hpp"
+#include <vector>
 
 
 template<typename I>

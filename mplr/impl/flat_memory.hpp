@@ -2,12 +2,13 @@
 
 #define MPLR_FLAT_MEMORY_HPP
 
-#include <cstddef>
-#include <vector>
-#include <iterator>
-#include <algorithm>
-#include <type_traits>
 #include "mplr/impl/utility.hpp"
+
+#include <algorithm>
+#include <cstddef>
+#include <iterator>
+#include <type_traits>
+#include <vector>
 
 
 namespace mplr::detail {

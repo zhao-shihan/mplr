@@ -79,7 +79,7 @@ which is also printed.
 ```C++
 #include <cstdlib>
 #include <iostream>
-// include MPLR header file
+
 #include "mplr/mplr.hpp"
 
 int main() {

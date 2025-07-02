@@ -1,17 +1,18 @@
+#include "mplr/mplr.hpp"
+
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
-#include <tuple>
 #include <random>
-#include "mplr/mplr.hpp"
+#include <tuple>
 
 using double_2 = std::tuple<double, double>;
 
 
 template<std::size_t dim, typename T, typename A>
 mplr::irequest_pool update_overlap(const mplr::cartesian_communicator &communicator,
-                                  mplr::distributed_grid<dim, T, A> &distributed_grid,
-                                  mplr::tag_t tag = mplr::tag_t()) {
+                                   mplr::distributed_grid<dim, T, A> &distributed_grid,
+                                   mplr::tag_t tag = mplr::tag_t()) {
   mplr::shift_ranks ranks;
   mplr::irequest_pool r;
   for (std::size_t i{0}; i < dim; ++i) {
@@ -70,7 +71,7 @@ int main() {
   const auto comm_world{mplr::environment::comm_world()};
   // construct a two-dimensional Cartesian communicator with no periodic boundary conditions
   mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::non_periodic,
-                                               mplr::cartesian_communicator::non_periodic};
+                                                mplr::cartesian_communicator::non_periodic};
   mplr::cartesian_communicator comm_c{comm_world, mplr::dims_create(comm_world.size(), size)};
   // total number of inner grid points
   const int n_x{768}, n_y{512};

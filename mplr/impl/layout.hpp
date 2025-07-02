@@ -2,13 +2,13 @@
 
 #define MPLR_LAYOUT_HPP
 
-#include <cstddef>
-#include <iterator>
-#include <initializer_list>
-#include <type_traits>
-#include <limits>
-#include <utility>
 #include <algorithm>
+#include <cstddef>
+#include <initializer_list>
+#include <iterator>
+#include <limits>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 
@@ -552,7 +552,7 @@ namespace mplr {
 
     /// exchanges two contiguous layouts
     /// \param other the layout to swap with
-    void swap(contiguous_layout&other) noexcept {
+    void swap(contiguous_layout &other) noexcept {
       std::swap(type_, other.type_);
       std::swap(count_, other.count_);
     }

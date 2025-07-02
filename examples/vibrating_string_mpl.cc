@@ -1,11 +1,12 @@
 // solve the time-dependent one-dimensional wave equation
 // via a finite difference discretization and explicit time stepping
 
+#include "mplr/mplr.hpp"
+
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 #include <vector>
-#include "mplr/mplr.hpp"
 
 
 const int n{1001};        // total number of grid points

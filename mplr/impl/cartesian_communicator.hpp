@@ -3,9 +3,9 @@
 #define MPLR_CARTESIAN_COMMUNICATOR_HPP
 
 #include <algorithm>
-#include <vector>
-#include <tuple>
 #include <iterator>
+#include <tuple>
+#include <vector>
 
 
 namespace mplr {

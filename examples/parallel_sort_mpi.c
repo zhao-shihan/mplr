@@ -1,8 +1,9 @@
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
 #include "mpi.h"
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 
