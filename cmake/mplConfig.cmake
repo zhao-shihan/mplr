@@ -1,7 +1,5 @@
 include(CMakeFindDependencyMacro)
 
-find_dependency(Threads)
-find_dependency(MPI)
-
+find_dependency(MPI REQUIRED CXX)
 
 include(${CMAKE_CURRENT_LIST_DIR}/mplTargets.cmake)

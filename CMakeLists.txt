@@ -17,7 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(MPI 3.1 REQUIRED C CXX)
+find_package(MPI 3.1 REQUIRED CXX)
 
 add_library(mplr INTERFACE)
 target_include_directories(mplr
@@ -31,6 +31,7 @@ target_link_libraries(mplr INTERFACE MPI::MPI_CXX)
 
 option(MPLR_BUILD_EXAMPLES "build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
 if(MPLR_BUILD_EXAMPLES)
+  find_package(MPI 3.1 REQUIRED C)
   add_subdirectory(examples)
 endif()
 if(BUILD_TESTING)
