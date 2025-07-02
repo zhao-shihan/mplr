@@ -77,14 +77,15 @@ namespace mpl {
     /// @brief Initialize and finalize MPI in an RAII style.
     class environment {
     public:
-      environment(int &argc, char **&argv) {
+      environment(int &argc, char **&argv,
+                  mpl::threading_modes threading_mode = mpl::threading_modes::multiple) {
         int _;
-        MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &_);
+        MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode), &_);
       }
 
-      environment() {
+      environment(mpl::threading_modes threading_mode = mpl::threading_modes::multiple) {
         int _;
-        MPI_Init_thread(nullptr, nullptr, MPI_THREAD_MULTIPLE, &_);
+        MPI_Init_thread(nullptr, nullptr, static_cast<int>(threading_mode), &_);
       }
 
       ~environment() {
