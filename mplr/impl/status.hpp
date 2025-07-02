@@ -2,7 +2,6 @@
 
 #define MPLR_STATUS_HPP
 
-#include <mpi.h>
 
 
 namespace mplr {

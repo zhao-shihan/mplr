@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <numeric>
-#include <mplr/mplr.hpp>
+#include "mplr/mplr.hpp"
 
 
 struct my_array {

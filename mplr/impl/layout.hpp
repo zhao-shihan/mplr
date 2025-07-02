@@ -2,7 +2,6 @@
 
 #define MPLR_LAYOUT_HPP
 
-#include <mpi.h>
 #include <cstddef>
 #include <iterator>
 #include <initializer_list>
@@ -471,21 +470,21 @@ namespace mplr {
     using layout<T>::type_;
 
     static MPI_Datatype build(
-        size_t count, MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
+        std::size_t count, MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
-      if (count <= static_cast<size_t>(std::numeric_limits<int>::max())) {
+      if (count <= static_cast<std::size_t>(std::numeric_limits<int>::max())) {
         MPI_Type_contiguous(static_cast<int>(count), old_type, &new_type);
       } else {
-        const size_t modulus{std::numeric_limits<int>::max()};
-        const size_t count_1{count / modulus};
-        const size_t count_0{count - count_1 * modulus};
+        const std::size_t modulus{std::numeric_limits<int>::max()};
+        const std::size_t count_1{count / modulus};
+        const std::size_t count_0{count - count_1 * modulus};
         MPI_Count lb, extent;
         MPI_Type_get_extent_x(old_type, &lb, &extent);
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
 #if defined MPLR_DEBUG
-        if (count_0 * extent > static_cast<size_t>(std::numeric_limits<MPI_Aint>::max()))
+        if (count_0 * extent > static_cast<std::size_t>(std::numeric_limits<MPI_Aint>::max()))
           throw invalid_size();
 #endif
         std::vector<MPI_Aint> displacements{0, static_cast<MPI_Aint>(count_0 * extent)};
@@ -496,23 +495,23 @@ namespace mplr {
       return new_type;
     }
 
-    size_t count_;
+    std::size_t count_;
 
-    [[nodiscard]] size_t size() const {
+    [[nodiscard]] std::size_t size() const {
       return count_;
     }
 
   public:
     /// constructs layout for contiguous storage several objects of type T
     /// \param count number of objects
-    explicit contiguous_layout(size_t count = 0) : layout<T>(build(count)), count_(count) {
+    explicit contiguous_layout(std::size_t count = 0) : layout<T>(build(count)), count_(count) {
     }
 
     /// constructs layout for data with memory layout that is a homogenous sequence of
     /// some other contiguous layout
     /// \param count number of layouts in sequence
     /// \param l the layout of a single element
-    explicit contiguous_layout(size_t count, const contiguous_layout &l)
+    explicit contiguous_layout(std::size_t count, const contiguous_layout &l)
         : layout<T>(build(count, l.type_)), count_(l.count_ * count) {
     }
 
@@ -586,21 +585,21 @@ namespace mplr {
     using layout<T>::type_;
 
     static MPI_Datatype build(
-        size_t count, MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
+        std::size_t count, MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
-      if (count <= static_cast<size_t>(std::numeric_limits<int>::max())) {
+      if (count <= static_cast<std::size_t>(std::numeric_limits<int>::max())) {
         MPI_Type_contiguous(static_cast<int>(count), old_type, &new_type);
       } else {
-        const size_t modulus{std::numeric_limits<int>::max()};
-        const size_t count_1{count / modulus};
-        const size_t count_0{count - count_1 * modulus};
+        const std::size_t modulus{std::numeric_limits<int>::max()};
+        const std::size_t count_1{count / modulus};
+        const std::size_t count_0{count - count_1 * modulus};
         MPI_Count lb, extent;
         MPI_Type_get_extent_x(old_type, &lb, &extent);
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
 #if defined MPLR_DEBUG
-        if (count_0 * extent > static_cast<size_t>(std::numeric_limits<MPI_Aint>::max()))
+        if (count_0 * extent > static_cast<std::size_t>(std::numeric_limits<MPI_Aint>::max()))
           throw invalid_size();
 #endif
         std::vector<MPI_Aint> displacements{0, static_cast<MPI_Aint>(count_0 * extent)};
@@ -614,14 +613,14 @@ namespace mplr {
   public:
     /// constructs layout for contiguous storage several objects of type T
     /// \param count number of objects
-    explicit vector_layout(size_t count = 0) : layout<T>(build(count)) {
+    explicit vector_layout(std::size_t count = 0) : layout<T>(build(count)) {
     }
 
     /// constructs layout for data with memory layout that is a homogenous sequence of some
     /// other layout
     /// \param count number of layouts in sequence
     /// \param l the layout of a single element
-    explicit vector_layout(size_t count, const layout<T> &l)
+    explicit vector_layout(std::size_t count, const layout<T> &l)
         : layout<T>(build(count, l.type_)) {
     }
 

@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
-#include <mpi.h>
 
 
 namespace mplr {

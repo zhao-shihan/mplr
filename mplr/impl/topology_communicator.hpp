@@ -2,7 +2,6 @@
 
 #define MPLR_TOPOLOGY_COMMUNICATOR_HPP
 
-#include <mpi.h>
 #include <vector>
 
 

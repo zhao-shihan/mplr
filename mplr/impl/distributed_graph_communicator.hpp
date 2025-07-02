@@ -2,7 +2,6 @@
 
 #define MPLR_DISTRIBUTED_GRAPH_COMMUNICATOR_HPP
 
-#include <mpi.h>
 #include <algorithm>
 #include <vector>
 #include <utility>

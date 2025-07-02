@@ -2,13 +2,12 @@
 
 #define MPLR_REQUEST_HPP
 
-#include <mpi.h>
 #include <utility>
 #include <optional>
 #include <vector>
 #include <thread>
 #include <limits>
-#include <mplr/utility.hpp>
+#include "mplr/impl/utility.hpp"
 
 
 namespace mplr {
@@ -410,9 +409,9 @@ namespace mplr {
         if (count != MPI_UNDEFINED) {
           return std::make_pair(
               test_result::completed,
-              std::vector<size_t>(out_indices.begin(), out_indices.begin() + count));
+              std::vector<std::size_t>(out_indices.begin(), out_indices.begin() + count));
         }
-        return std::make_pair(test_result::no_active_requests, std::vector<size_t>{});
+        return std::make_pair(test_result::no_active_requests, std::vector<std::size_t>{});
       }
 
       /// A lazy-spin waitsome.
@@ -430,7 +429,7 @@ namespace mplr {
           }
           if (count != 0) {
             return {test_result::completed,
-                    std::vector<size_t>(out_indices.begin(), out_indices.begin() + count)};
+                    std::vector<std::size_t>(out_indices.begin(), out_indices.begin() + count)};
           }
           const auto t1{detail::steady_high_resolution_clock::now()};
           std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
@@ -447,9 +446,9 @@ namespace mplr {
         if (count != MPI_UNDEFINED) {
           return std::make_pair(
               count == 0 ? test_result::no_completed : test_result::completed,
-              std::vector<size_t>(out_indices.begin(), out_indices.begin() + count));
+              std::vector<std::size_t>(out_indices.begin(), out_indices.begin() + count));
         }
-        return std::make_pair(test_result::no_active_requests, std::vector<size_t>{});
+        return std::make_pair(test_result::no_active_requests, std::vector<std::size_t>{});
       }
     };
 

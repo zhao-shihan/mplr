@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE cartesian_communicator
 
-#include <boost/test/included/unit_test.hpp>
-#include <mplr/mplr.hpp>
+#include "boost/test/included/unit_test.hpp"
+#include "mplr/mplr.hpp"
 #include "test_helper.hpp"
 
 

@@ -2,14 +2,13 @@
 
 #define MPLR_COMM_GROUP_HPP
 
-#include <mpi.h>
 #include <type_traits>
 #include <thread>
 #include <optional>
-#include <mplr/layout.hpp>
-#include <mplr/vector.hpp>
-#include <mplr/command_line.hpp>
-#include <mplr/info.hpp>
+#include "mplr/impl/layout.hpp"
+#include "mplr/impl/vector.hpp"
+#include "mplr/impl/command_line.hpp"
+#include "mplr/impl/info.hpp"
 
 
 namespace mplr {

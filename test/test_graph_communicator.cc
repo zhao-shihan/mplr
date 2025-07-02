@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE graph_communicator
 
-#include <boost/test/included/unit_test.hpp>
-#include <mplr/mplr.hpp>
+#include "boost/test/included/unit_test.hpp"
+#include "mplr/mplr.hpp"
 
 
 bool graph_communicator_test() {

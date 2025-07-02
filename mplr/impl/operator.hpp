@@ -2,7 +2,6 @@
 
 #define MPLR_OPERATOR_HPP
 
-#include <mpi.h>
 #include <functional>
 #include <type_traits>
 #include <memory>

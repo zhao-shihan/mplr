@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <mplr/mplr.hpp>
+#include "mplr/mplr.hpp"
 
 
 const int n{1001};        // total number of grid points

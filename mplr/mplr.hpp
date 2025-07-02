@@ -2,7 +2,8 @@
 
 #define MPLR_HPP
 
-#include <mpi.h>
+#include "mpi.h"
+
 #include <cstddef>
 
 
@@ -35,33 +36,32 @@ namespace mplr {
   /// \anchor bsend_overhead
   constexpr int bsend_overhead = MPI_BSEND_OVERHEAD;
 
-  /// Unsigned integer type used for array indexing and address arithmetic.
-  using size_t = std::size_t;
-
   /// Signed integer type used for array indexing and address arithmetic.
   using ssize_t = std::ptrdiff_t;
 
 }  // namespace mplr
 
-#include <mplr/error.hpp>
-#include <mplr/displacements.hpp>
-#include <mplr/tag.hpp>
-#include <mplr/ranks.hpp>
-#include <mplr/flat_memory.hpp>
-#include <mplr/datatype.hpp>
-#include <mplr/layout.hpp>
-#include <mplr/status.hpp>
-#include <mplr/message.hpp>
-#include <mplr/operator.hpp>
-#include <mplr/request.hpp>
-#include <mplr/info.hpp>
-#include <mplr/comm_group.hpp>
-#include <mplr/environment.hpp>
-#include <mplr/topology_communicator.hpp>
-#include <mplr/cartesian_communicator.hpp>
-#include <mplr/graph_communicator.hpp>
-#include <mplr/file.hpp>
-#include <mplr/distributed_graph_communicator.hpp>
-#include <mplr/distributed_grid.hpp>
+// clang-format off
+#include "mplr/impl/error.hpp"
+#include "mplr/impl/displacements.hpp"
+#include "mplr/impl/tag.hpp"
+#include "mplr/impl/ranks.hpp"
+#include "mplr/impl/flat_memory.hpp"
+#include "mplr/impl/datatype.hpp"
+#include "mplr/impl/layout.hpp"
+#include "mplr/impl/status.hpp"
+#include "mplr/impl/message.hpp"
+#include "mplr/impl/operator.hpp"
+#include "mplr/impl/request.hpp"
+#include "mplr/impl/info.hpp"
+#include "mplr/impl/comm_group.hpp"
+#include "mplr/impl/environment.hpp"
+#include "mplr/impl/topology_communicator.hpp"
+#include "mplr/impl/cartesian_communicator.hpp"
+#include "mplr/impl/graph_communicator.hpp"
+#include "mplr/impl/file.hpp"
+#include "mplr/impl/distributed_graph_communicator.hpp"
+#include "mplr/impl/distributed_grid.hpp"
+// clang-format on
 
 #endif

@@ -2,7 +2,6 @@
 
 #define MPLR_GRAPH_COMMUNICATOR_HPP
 
-#include <mpi.h>
 #include <vector>
 #include <tuple>
 #include <set>

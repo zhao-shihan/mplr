@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE communicator_send_recv
 
-#include <boost/test/included/unit_test.hpp>
+#include "boost/test/included/unit_test.hpp"
 #include <limits>
 #include <cstddef>
 #include <complex>
@@ -12,7 +12,7 @@
 #include <utility>
 #include <algorithm>
 #include <type_traits>
-#include <mplr/mplr.hpp>
+#include "mplr/mplr.hpp"
 #include "test_helper.hpp"
 
 

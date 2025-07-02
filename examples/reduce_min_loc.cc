@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <mplr/mplr.hpp>
+#include "mplr/mplr.hpp"
 
 
 // data type to store the data and the position of the global minimum

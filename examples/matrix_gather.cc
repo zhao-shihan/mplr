@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <mplr/mplr.hpp>
+#include "mplr/mplr.hpp"
 
 
 // some basic matrix class

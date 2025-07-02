@@ -2,7 +2,6 @@
 
 #define MPLR_MESSAGE_HPP
 
-#include <mpi.h>
 
 
 namespace mplr {
