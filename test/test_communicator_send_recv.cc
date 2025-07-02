@@ -40,7 +40,7 @@ struct span_size<std::span<T, N>> {
 
 template<typename T>
 bool send_recv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -68,7 +68,7 @@ bool send_recv_test(const T &data) {
 
 template<typename T>
 bool send_recv_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -91,7 +91,7 @@ bool send_recv_iter_test(const T &data) {
 
 template<typename T>
 bool bsend_recv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -126,7 +126,7 @@ bool bsend_recv_test(const T &data) {
 
 template<typename T>
 bool bsend_recv_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -157,7 +157,7 @@ bool bsend_recv_iter_test(const T &data) {
 
 template<typename T>
 bool ssend_recv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -185,7 +185,7 @@ bool ssend_recv_test(const T &data) {
 
 template<typename T>
 bool ssend_recv_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -208,7 +208,7 @@ bool ssend_recv_iter_test(const T &data) {
 
 template<typename T>
 bool rsend_recv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -264,7 +264,7 @@ bool rsend_recv_test(const T &data) {
 
 template<typename T>
 bool rsend_recv_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -303,7 +303,12 @@ bool rsend_recv_iter_test(const T &data) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(send_recv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(send_recv_test(std::byte(77)));
   BOOST_TEST(send_recv_test(std::numeric_limits<char>::max() - 1));
@@ -359,6 +364,9 @@ BOOST_AUTO_TEST_CASE(send_recv) {
 
 
 BOOST_AUTO_TEST_CASE(bsend_recv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(bsend_recv_test(std::byte(77)));
   BOOST_TEST(bsend_recv_test(std::numeric_limits<char>::max() - 1));
@@ -414,6 +422,9 @@ BOOST_AUTO_TEST_CASE(bsend_recv) {
 
 
 BOOST_AUTO_TEST_CASE(ssend_recv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(ssend_recv_test(std::byte(77)));
   BOOST_TEST(ssend_recv_test(std::numeric_limits<char>::max() - 1));
@@ -469,6 +480,9 @@ BOOST_AUTO_TEST_CASE(ssend_recv) {
 
 
 BOOST_AUTO_TEST_CASE(rsend_recv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(rsend_recv_test(std::byte(77)));
   BOOST_TEST(rsend_recv_test(std::numeric_limits<char>::max() - 1));

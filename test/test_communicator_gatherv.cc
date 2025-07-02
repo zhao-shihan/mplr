@@ -8,7 +8,7 @@
 
 template<use_non_root_overload variant, typename T>
 bool gatherv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -39,7 +39,7 @@ bool gatherv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool gatherv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -72,7 +72,7 @@ bool gatherv_contiguous_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool igatherv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -107,7 +107,7 @@ bool igatherv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool igatherv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -144,7 +144,12 @@ bool igatherv_contiguous_test(const T &val) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(gatherv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(gatherv_test<use_non_root_overload::no>(1.0));
   BOOST_TEST(gatherv_test<use_non_root_overload::no>(tuple{1, 2.0}));
 
@@ -158,7 +163,7 @@ BOOST_AUTO_TEST_CASE(gatherv) {
   BOOST_TEST(gatherv_contiguous_test<use_non_root_overload::yes>(tuple{1, 2.0}));
 
   // skip tests for older versions of MPICH due to a bug in MPICH's implementation of Alltoallw
-#if !defined MPICH || MPICH_NUMVERSION >= 40101000
+#if (defined MPICH and MPICH_NUMVERSION >= 40101000) || defined OPENMPI
   BOOST_TEST(igatherv_test<use_non_root_overload::no>(1.0));
   BOOST_TEST(igatherv_test<use_non_root_overload::no>(tuple{1, 2.0}));
 

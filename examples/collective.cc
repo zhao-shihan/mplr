@@ -33,7 +33,8 @@ my_array operator+(const my_array &a, const my_array &b) {
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   int root{0};
 
   // synchronize processes via barrier

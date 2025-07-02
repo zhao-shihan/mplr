@@ -9,7 +9,7 @@
 
 template<typename T>
 bool allgatherv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
@@ -26,7 +26,7 @@ bool allgatherv_test(const T &val) {
 
 template<typename T>
 bool allgatherv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
@@ -46,7 +46,7 @@ bool allgatherv_contiguous_test(const T &val) {
 
 template<typename T>
 bool iallgatherv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
@@ -64,7 +64,7 @@ bool iallgatherv_test(const T &val) {
 
 template<typename T>
 bool iallgatherv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v1(N);
   std::vector<T> v2(N);
@@ -83,8 +83,12 @@ bool iallgatherv_contiguous_test(const T &val) {
   return v1 == v2;
 }
 
+std::optional<mpl::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(allgatherv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(allgatherv_test(1.0));
   BOOST_TEST(allgatherv_test(tuple{1, 2.0}));
 

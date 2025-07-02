@@ -7,7 +7,7 @@
 
 template<typename F, typename T>
 bool exscan_test(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -27,7 +27,7 @@ bool exscan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_with_layout(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -51,7 +51,7 @@ bool exscan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -72,7 +72,7 @@ bool iexscan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_with_layout(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -97,7 +97,7 @@ bool iexscan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_inplace(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -116,7 +116,7 @@ bool exscan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool exscan_test_with_layout_inplace(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -139,7 +139,7 @@ bool exscan_test_with_layout_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_inplace(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -159,7 +159,7 @@ bool iexscan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iexscan_test_with_layout_inplace(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -181,7 +181,12 @@ bool iexscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(exscan) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(exscan_test(add<double>(), 1.0));
   BOOST_TEST(exscan_test(add<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(exscan_test(mpl::plus<double>(), 1.0));

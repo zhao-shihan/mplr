@@ -7,7 +7,7 @@
 
 template<typename T>
 bool alltoall_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -26,7 +26,7 @@ bool alltoall_test(const T &val) {
 
 template<typename T>
 bool alltoall_layout_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -48,7 +48,7 @@ bool alltoall_layout_test(const T &val) {
 
 template<typename T>
 bool alltoall_inplace_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -66,7 +66,7 @@ bool alltoall_inplace_test(const T &val) {
 
 template<typename T>
 bool ialltoall_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -86,7 +86,7 @@ bool ialltoall_test(const T &val) {
 
 template<typename T>
 bool ialltoall_layout_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -109,7 +109,7 @@ bool ialltoall_layout_test(const T &val) {
 
 template<typename T>
 bool ialltoall_inplace_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T send_val{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++send_val;
@@ -125,8 +125,12 @@ bool ialltoall_inplace_test(const T &val) {
   return sendrecv_data == expected;
 }
 
+std::optional<mpl::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(alltoall) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(alltoall_test(1.0));
   BOOST_TEST(alltoall_test(tuple{1, 2.0}));
 

@@ -5,7 +5,8 @@
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   const auto c_rank{comm_world.rank()};
   const auto c_size{comm_world.size()};
   // fill vector with C_rank+1 elements, each having the value C_rank+1

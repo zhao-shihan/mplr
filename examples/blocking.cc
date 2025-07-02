@@ -4,7 +4,8 @@
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     return EXIT_FAILURE;

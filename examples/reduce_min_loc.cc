@@ -13,7 +13,8 @@ using pair_t = std::pair<double, int>;
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   // generate data
   std::mt19937_64 g(std::time(nullptr) * comm_world.rank());  // random seed
   std::uniform_real_distribution<> uniform;

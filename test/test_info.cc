@@ -4,8 +4,13 @@
 #include <mpl/mpl.hpp>
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(info) {
-  [[maybe_unused]] const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  if (not mpl::environment::initialized())
+    env.emplace();
+
+  [[maybe_unused]] const auto comm_world{mpl::environment::comm_world()};
 
   mpl::info info_1;
   BOOST_TEST(info_1.size() == 0);

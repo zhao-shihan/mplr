@@ -11,7 +11,7 @@
 
 template<typename T>
 bool sendrecv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   const int rank{comm_world.rank()};
   const int size{comm_world.size()};
   T data_r;
@@ -24,7 +24,7 @@ bool sendrecv_test(const T &data) {
 template<typename T>
 bool sendrecv_iter_test(const T &data) {
   static_assert(has_size<T>());
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   std::vector<typename T::value_type> data_r(data.size());
@@ -89,7 +89,7 @@ struct data_type_helper<std::list<T>> {
 
 template<typename T>
 bool sendrecv_replace_test() {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   const int rank{comm_world.rank()};
   int size{comm_world.size()};
   T x, expected;
@@ -108,7 +108,7 @@ bool sendrecv_replace_test() {
 
 template<typename T>
 bool sendrecv_replace_iter_test() {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   const int rank{comm_world.rank()};
   int size{comm_world.size()};
   T x = data_type_helper<T>::get(rank);
@@ -119,7 +119,12 @@ bool sendrecv_replace_iter_test() {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(sendrecv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(sendrecv_test(std::byte(77)));
   BOOST_TEST(sendrecv_test(std::numeric_limits<char>::max() - 1));
@@ -162,6 +167,9 @@ BOOST_AUTO_TEST_CASE(sendrecv) {
 
 
 BOOST_AUTO_TEST_CASE(sendrecv_replace) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(sendrecv_replace_test<std::byte>());
   BOOST_TEST(sendrecv_replace_test<char>());

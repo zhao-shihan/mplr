@@ -12,7 +12,7 @@
 
 template<typename T>
 bool send_init_recv_init_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -42,7 +42,7 @@ bool send_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool send_init_recv_init_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -90,7 +90,7 @@ bool send_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool bsend_init_recv_init_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -126,7 +126,7 @@ bool bsend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool bsend_init_recv_init_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -180,7 +180,7 @@ bool bsend_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool ssend_init_recv_init_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -210,7 +210,7 @@ bool ssend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool ssend_init_recv_init_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -258,7 +258,7 @@ bool ssend_init_recv_init_iter_test(const T &data) {
 
 template<typename T>
 bool rsend_init_recv_init_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -294,7 +294,7 @@ bool rsend_init_recv_init_test(const T &data) {
 
 template<typename T>
 bool rsend_init_recv_init_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -348,7 +348,12 @@ bool rsend_init_recv_init_iter_test(const T &data) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(send_init_recv_init) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(send_init_recv_init_test(std::byte(77)));
   BOOST_TEST(send_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -391,6 +396,9 @@ BOOST_AUTO_TEST_CASE(send_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(bsend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(bsend_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -433,6 +441,9 @@ BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(ssend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(ssend_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -475,6 +486,9 @@ BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
 
 
 BOOST_AUTO_TEST_CASE(rsend_init_recv_init) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(rsend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(rsend_init_recv_init_test(std::numeric_limits<char>::max() - 1));

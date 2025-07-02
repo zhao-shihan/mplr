@@ -6,7 +6,7 @@
 
 
 bool cartesian_communicator_test() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic,
                                                      mpl::cartesian_communicator::non_periodic};
   mpl::cartesian_communicator comm_c{comm_world,
@@ -83,7 +83,7 @@ bool cartesian_communicator_test() {
 
 template<typename T>
 bool cartesian_communicator_neighbor_alltoall_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
   mpl::cartesian_communicator comm_c{comm_world,
                                      mpl::dims_create(comm_world.size(), dimensions)};
@@ -108,7 +108,7 @@ bool cartesian_communicator_neighbor_alltoall_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_neighbor_alltoall_layout_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
   mpl::cartesian_communicator comm_c{comm_world,
                                      mpl::dims_create(comm_world.size(), dimensions)};
@@ -137,7 +137,7 @@ bool cartesian_communicator_neighbor_alltoall_layout_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_ineighbor_alltoall_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
   mpl::cartesian_communicator comm_c{comm_world,
                                      mpl::dims_create(comm_world.size(), dimensions)};
@@ -163,7 +163,7 @@ bool cartesian_communicator_ineighbor_alltoall_test(const T &val) {
 
 template<typename T>
 bool cartesian_communicator_ineighbor_alltoall_layout_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic};
   mpl::cartesian_communicator comm_c{comm_world,
                                      mpl::dims_create(comm_world.size(), dimensions)};
@@ -191,12 +191,20 @@ bool cartesian_communicator_ineighbor_alltoall_layout_test(const T &val) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(cartesian_communicator) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(cartesian_communicator_test());
 }
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_vector) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   mpl::cartesian_communicator::vector vector{1, 2, 3, 4, 5};
   BOOST_TEST(vector.dimensions() == 5);
   vector.add(6);
@@ -207,6 +215,9 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator_vector) {
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_include_tags) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   const auto included = mpl::cartesian_communicator::included;
   const auto excluded = mpl::cartesian_communicator::excluded;
   mpl::cartesian_communicator::included_tags is_included{10};
@@ -220,6 +231,9 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator_include_tags) {
 
 
 BOOST_AUTO_TEST_CASE(cartesian_communicator_dimensions) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   mpl::cartesian_communicator::dimensions dimensions{mpl::cartesian_communicator::periodic,
                                                      mpl::cartesian_communicator::non_periodic,
                                                      mpl::cartesian_communicator::non_periodic};
@@ -239,8 +253,10 @@ BOOST_AUTO_TEST_CASE(cartesian_communicator_dimensions) {
               dimensions.end()));
 }
 
-
 BOOST_AUTO_TEST_CASE(cartesian_communicator_neighbor_alltoall) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(cartesian_communicator_neighbor_alltoall_test(1.0));
   BOOST_TEST(cartesian_communicator_neighbor_alltoall_test(tuple{1, 2.0}));
 

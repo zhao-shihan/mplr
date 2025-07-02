@@ -6,7 +6,7 @@
 
 template<typename T>
 bool scatter_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T recv;
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size(), val);
@@ -21,7 +21,7 @@ bool scatter_test(const T &val) {
 template<typename T>
 bool scatter_test(const std::vector<T> &send, const std::vector<T> &expected,
                   const mpl::layout<T> &l) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::vector<T> recv(send.size());
   if (comm_world.rank() == 0) {
     std::vector<T> v_send;
@@ -37,7 +37,7 @@ bool scatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 
 template<typename T>
 bool iscatter_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T recv;
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size(), val);
@@ -54,7 +54,7 @@ bool iscatter_test(const T &val) {
 template<typename T>
 bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
                    const mpl::layout<T> &l) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::vector<T> recv(send.size());
   if (comm_world.rank() == 0) {
     std::vector<T> v_send;
@@ -70,7 +70,12 @@ bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(scatter) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(scatter_test(1.0));
   BOOST_TEST(scatter_test(std::array{1, 2, 3, 4}));
   {

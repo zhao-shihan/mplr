@@ -39,7 +39,7 @@ struct span_size<std::span<T, N>> {
 
 template<typename T>
 bool send_recv_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
 
@@ -74,7 +74,12 @@ bool send_recv_test(const T &data) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(send_recv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(send_recv_test(std::byte(77)));
   BOOST_TEST(send_recv_test(std::numeric_limits<char>::max() - 1));

@@ -4,7 +4,12 @@
 #include <mpl/mpl.hpp>
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(displacements) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   mpl::displacements displacements_1(10);
   mpl::displacements displacements_2{1, 2, 3};
   displacements_2.push_back(10);

@@ -9,7 +9,7 @@
 
 template<typename T>
 bool allgather_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::vector<T> v(comm_world.size());
   comm_world.allgather(val, v.data());
   return std::all_of(v.begin(), v.end(), [&val](const auto &x) { return x == val; });
@@ -18,15 +18,19 @@ bool allgather_test(const T &val) {
 
 template<typename T>
 bool iallgather_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::vector<T> v(comm_world.size());
   auto r{comm_world.iallgather(val, v.data())};
   r.wait();
   return std::all_of(v.begin(), v.end(), [&val](const auto &x) { return x == val; });
 }
 
+std::optional<mpl::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(allgather) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(allgather_test(1.0));
   BOOST_TEST(allgather_test(std::array{1, 2, 3, 4}));
 

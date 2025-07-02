@@ -39,7 +39,8 @@ public:
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   const int p{comm_world.size()};  // total numbers of processors
   const int p_l{comm_world.rank()};
   // find integer px and py such that px*py=p and px and py as close as possible

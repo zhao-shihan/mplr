@@ -4,8 +4,9 @@
 
 
 int main() {
+  mpl::environment::environment env;
   // check communicator properties of comm_world
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::cout << "comm_world  rank: " << comm_world.rank() << "\tsize: " << comm_world.size()
             << std::endl;
   comm_world.barrier();

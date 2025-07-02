@@ -5,7 +5,8 @@
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   double x{1.23456 + comm_world.rank()};
   mpl::irequest r_send(comm_world.isend(x, 0));  // nonblocking send to rank 0
   // rank 0 receives data from all ranks

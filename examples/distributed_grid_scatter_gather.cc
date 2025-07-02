@@ -36,7 +36,8 @@ void gather(const mpl::cartesian_communicator &communicator, int root,
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   mpl::cartesian_communicator::dimensions size{mpl::cartesian_communicator::periodic,
                                                mpl::cartesian_communicator::non_periodic};
   const int nx{21}, ny{13};

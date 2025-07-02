@@ -37,7 +37,8 @@ public:
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   // generate data
   std::mt19937_64 g(std::time(nullptr) * comm_world.rank());  // random seed
   std::uniform_int_distribution uniform{1, 12};

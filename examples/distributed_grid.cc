@@ -21,7 +21,8 @@ void update_overlap(const mpl::cartesian_communicator &cartesian_communicator,
 
 
 int main() {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  mpl::environment::environment env;
+  const auto comm_world{mpl::environment::comm_world()};
   {
     // build a one-dimensional Cartesian communicator
     // Cartesian is non-cyclic

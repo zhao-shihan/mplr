@@ -4,9 +4,14 @@
 #include <mpl/mpl.hpp>
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(group) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
-  const mpl::communicator &comm_self{mpl::environment::comm_self()};
+  if (not mpl::environment::initialized())
+    env.emplace();
+
+  const auto comm_world{mpl::environment::comm_world()};
+  const auto comm_self{mpl::environment::comm_self()};
 
   mpl::group group_world{comm_world};
   mpl::group group_self{comm_self};

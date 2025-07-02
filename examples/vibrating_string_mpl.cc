@@ -45,9 +45,10 @@ inline double u_0_dt([[maybe_unused]] double x) {
 
 
 int main() {
+  mpl::environment::environment env;
   const double dx{l / (n - 1)};  // grid spacing
   const double eps{dt * dt * c * c / (dx * dx)};
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int c_size{comm_world.size()};
   const int c_rank{comm_world.rank()};
   std::vector<int> n_l, n_0_l;

@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   my_initializer::init(&argc, &argv);
 
   // do some MPL operations
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   std::cout << "Hello world! I am running on \"" << mpl::environment::processor_name()
             << "\". My rank is " << comm_world.rank() << " out of " << comm_world.size()
             << " processes.\n";

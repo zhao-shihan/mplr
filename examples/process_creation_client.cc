@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
   using namespace std::string_literals;
 
   // get a reference to communicator "world"
-  [[maybe_unused]] const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  [[maybe_unused]] const auto comm_world{mpl::environment::comm_world()};
   // get the parent inter-communicator
   auto &inter_comm{mpl::inter_communicator::parent()};
   std::cout << "Hello world! I am running on \"" << mpl::environment::processor_name()

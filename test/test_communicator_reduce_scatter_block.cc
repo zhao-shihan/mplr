@@ -7,7 +7,7 @@
 
 template<typename F, typename T>
 bool reduce_scatter_block_test(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -29,7 +29,7 @@ bool reduce_scatter_block_test(F f, const T &val) {
 template<typename F, typename T>
 bool reduce_scatter_block_test_with_layout(F f, const T &val) {
   const int block_size{3};
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -53,7 +53,7 @@ bool reduce_scatter_block_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool ireduce_scatter_block_test(F f, const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -76,7 +76,7 @@ bool ireduce_scatter_block_test(F f, const T &val) {
 template<typename F, typename T>
 bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
   const int block_size{3};
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   T x{val};
   std::vector<T> v_x;
   for (int i{0}; i < comm_world.size(); ++i) {
@@ -99,7 +99,12 @@ bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(reduce_scatter_block) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(reduce_scatter_block_test(add<double>(), 1.0));
   BOOST_TEST(reduce_scatter_block_test(add<tuple>(), tuple{1, 2.0}));
   BOOST_TEST(reduce_scatter_block_test(mpl::plus<double>(), 1.0));

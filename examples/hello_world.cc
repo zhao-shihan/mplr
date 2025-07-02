@@ -5,8 +5,9 @@
 
 
 int main() {
+  mpl::environment::environment env;
   // get a reference to communicator "world"
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   // each process prints a message containing the processor name, the rank
   // in communicator world and the size of communicator world
   // output may depend on MPI implementation

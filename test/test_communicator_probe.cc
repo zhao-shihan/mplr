@@ -16,7 +16,7 @@
 
 template<typename T>
 bool probe_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -42,7 +42,7 @@ bool probe_test(const T &data) {
 
 template<typename T>
 bool probe_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -66,7 +66,7 @@ bool probe_iter_test(const T &data) {
 
 template<typename T>
 bool iprobe_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -97,7 +97,7 @@ bool iprobe_test(const T &data) {
 
 template<typename T>
 bool iprobe_iter_test(const T &data) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0)
@@ -124,7 +124,12 @@ bool iprobe_iter_test(const T &data) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(probe) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(probe_test(std::byte(77)));
   BOOST_TEST(probe_test(std::numeric_limits<char>::max() - 1));
@@ -172,6 +177,9 @@ BOOST_AUTO_TEST_CASE(probe) {
 
 
 BOOST_AUTO_TEST_CASE(iprobe) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   // integer types
   BOOST_TEST(iprobe_test(std::byte(77)));
   BOOST_TEST(iprobe_test(std::numeric_limits<char>::max() - 1));

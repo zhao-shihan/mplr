@@ -8,7 +8,7 @@
 
 template<use_non_root_overload variant, typename T>
 bool scatterv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
@@ -39,7 +39,7 @@ bool scatterv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool scatterv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
@@ -72,7 +72,7 @@ bool scatterv_contiguous_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool iscatterv_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
@@ -107,7 +107,7 @@ bool iscatterv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool iscatterv_contiguous_test(const T &val) {
-  const mpl::communicator &comm_world{mpl::environment::comm_world()};
+  const auto comm_world{mpl::environment::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_scatter(N);
   std::vector<T> v_recv(comm_world.rank() + 1);
@@ -144,7 +144,12 @@ bool iscatterv_contiguous_test(const T &val) {
 }
 
 
+std::optional<mpl::environment::environment> env;
+
 BOOST_AUTO_TEST_CASE(scatterv) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(scatterv_test<use_non_root_overload::no>(1.0));
   BOOST_TEST(scatterv_test<use_non_root_overload::no>(tuple{1, 2.0}));
 

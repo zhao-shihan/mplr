@@ -6,7 +6,7 @@
 
 template<typename T>
 bool bcast_test(const T &val) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   T x{};
   if (comm_world.rank() == 0)
     x = val;
@@ -18,7 +18,7 @@ bool bcast_test(const T &val) {
 template<typename T>
 bool bcast_test(const std::vector<T> &send, const std::vector<T> &expected,
                 const mpl::layout<T> &l) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   std::vector<T> x(send.size(), {});
   if (comm_world.rank() == 0)
     x = send;
@@ -32,7 +32,7 @@ bool bcast_test(const std::vector<T> &send, const std::vector<T> &expected,
 
 template<typename T>
 bool ibcast_test(const T &val) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   T x{};
   if (comm_world.rank() == 0)
     x = val;
@@ -45,7 +45,7 @@ bool ibcast_test(const T &val) {
 template<typename T>
 bool ibcast_test(const std::vector<T> &send, const std::vector<T> &expected,
                  const mpl::layout<T> &l) {
-  const mpl::communicator &comm_world = mpl::environment::comm_world();
+  const auto comm_world = mpl::environment::comm_world();
   std::vector<T> x(send.size(), {});
   if (comm_world.rank() == 0)
     x = send;
@@ -57,8 +57,12 @@ bool ibcast_test(const std::vector<T> &send, const std::vector<T> &expected,
     return x == expected;
 }
 
+std::optional<mpl::environment::environment> env;
 
 BOOST_AUTO_TEST_CASE(bcast) {
+  if (not mpl::environment::initialized())
+    env.emplace();
+
   BOOST_TEST(bcast_test(1.0));
   BOOST_TEST(bcast_test(std::array{1, 2, 3, 4}));
   BOOST_TEST(bcast_test(std::vector{1, 2, 3, 4, 5, 6}, std::vector{0, 2, 3, 0, 5, 0},
