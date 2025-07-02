@@ -4,10 +4,10 @@
 #include "mplr/mplr.hpp"
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(displacements) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   mplr::displacements displacements_1(10);

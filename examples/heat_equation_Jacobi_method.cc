@@ -66,9 +66,9 @@ void gather(const mplr::cartesian_communicator &communicator, int root,
 
 
 int main() {
-  mplr::environment::environment env;
+  mplr::environment env;
   // world communicator
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   // construct a two-dimensional Cartesian communicator with no periodic boundary conditions
   mplr::cartesian_communicator::dimensions size{mplr::cartesian_communicator::non_periodic,
                                                 mplr::cartesian_communicator::non_periodic};

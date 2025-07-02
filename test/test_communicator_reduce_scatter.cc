@@ -7,7 +7,7 @@
 
 template<typename F, typename T>
 bool reduce_scatter_test(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   std::vector<T> v_x;
   mplr::contiguous_layouts<T> l;
@@ -34,7 +34,7 @@ bool reduce_scatter_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool ireduce_scatter_test(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   std::vector<T> v_x;
   mplr::contiguous_layouts<T> l;
@@ -60,10 +60,10 @@ bool ireduce_scatter_test(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(reduce_scatter) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(reduce_scatter_test(add<double>(), 1.0));

@@ -6,8 +6,8 @@
 
 
 int main() {
-  mplr::environment::environment env;
-  const auto comm_world{mplr::environment::comm_world()};
+  mplr::environment env;
+  const auto comm_world{mplr::comm_world()};
   const auto c_rank{comm_world.rank()};
   const auto c_size{comm_world.size()};
   // gather a single int from all ranks to rank root=0

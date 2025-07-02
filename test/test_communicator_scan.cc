@@ -7,7 +7,7 @@
 
 template<typename F, typename T>
 bool scan_test(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -25,7 +25,7 @@ bool scan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool scan_test_with_layout(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -47,7 +47,7 @@ bool scan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool iscan_test(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -66,7 +66,7 @@ bool iscan_test(F f, const T &val) {
 
 template<typename F, typename T>
 bool iscan_test_with_layout(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -89,7 +89,7 @@ bool iscan_test_with_layout(F f, const T &val) {
 
 template<typename F, typename T>
 bool scan_test_inplace(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -106,7 +106,7 @@ bool scan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool scan_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -127,7 +127,7 @@ bool scan_test_with_layout_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iscan_test_inplace(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -145,7 +145,7 @@ bool iscan_test_inplace(F f, const T &val) {
 
 template<typename F, typename T>
 bool iscan_test_with_layout_inplace(F f, const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   T x{val};
   for (int i{0}; i < comm_world.rank(); ++i)
     ++x;
@@ -165,10 +165,10 @@ bool iscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(scan) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(scan_test(add<double>(), 1.0));

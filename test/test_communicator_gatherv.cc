@@ -9,7 +9,7 @@
 
 template<use_non_root_overload variant, typename T>
 bool gatherv_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -40,7 +40,7 @@ bool gatherv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool gatherv_contiguous_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -73,7 +73,7 @@ bool gatherv_contiguous_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool igatherv_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -108,7 +108,7 @@ bool igatherv_test(const T &val) {
 
 template<use_non_root_overload variant, typename T>
 bool igatherv_contiguous_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N{(comm_world.size() * comm_world.size() + comm_world.size()) / 2};
   std::vector<T> v_gather(N);
   std::vector<T> v_send(comm_world.rank() + 1);
@@ -145,10 +145,10 @@ bool igatherv_contiguous_test(const T &val) {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(gatherv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(gatherv_test<use_non_root_overload::no>(1.0));

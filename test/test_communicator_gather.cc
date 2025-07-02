@@ -8,7 +8,7 @@
 
 template<typename T>
 bool gather_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size());
     comm_world.gather(0, val, v.data());
@@ -26,7 +26,7 @@ bool gather_test(const T &val) {
 template<typename T>
 bool gather_test(const std::vector<T> &send, const std::vector<T> &expected,
                  const mplr::layout<T> &l) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size() * send.size());
     comm_world.gather(0, send.data(), l, v.data(), l);
@@ -43,7 +43,7 @@ bool gather_test(const std::vector<T> &send, const std::vector<T> &expected,
 
 template<typename T>
 bool igather_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size());
     auto r{comm_world.igather(0, val, v.data())};
@@ -63,7 +63,7 @@ bool igather_test(const T &val) {
 template<typename T>
 bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
                   const mplr::layout<T> &l) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   if (comm_world.rank() == 0) {
     std::vector<T> v(comm_world.size() * send.size());
     auto r{comm_world.igather(0, send.data(), l, v.data(), l)};
@@ -80,10 +80,10 @@ bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(gather) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(gather_test(1.0));

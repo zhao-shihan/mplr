@@ -5,7 +5,7 @@
 
 
 bool dist_graph_communicator_test() {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int size{comm_world.size()};
   const int rank{comm_world.rank()};
   mplr::distributed_graph_communicator::neighbours_set sources;
@@ -35,10 +35,10 @@ bool dist_graph_communicator_test() {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(dist_graph_communicator) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(dist_graph_communicator_test());

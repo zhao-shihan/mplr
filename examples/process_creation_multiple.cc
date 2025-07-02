@@ -4,10 +4,10 @@
 
 
 int main() {
-  mplr::environment::environment env;
+  mplr::environment env;
   using namespace std::string_literals;
   // get a reference to communicator "world"
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   // spawn 2 new processes
   mplr::info info;
   info.set("host", "localhost");

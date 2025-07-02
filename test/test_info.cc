@@ -4,13 +4,13 @@
 #include "mplr/mplr.hpp"
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(info) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
-  [[maybe_unused]] const auto comm_world{mplr::environment::comm_world()};
+  [[maybe_unused]] const auto comm_world{mplr::comm_world()};
 
   mplr::info info_1;
   BOOST_TEST(info_1.size() == 0);

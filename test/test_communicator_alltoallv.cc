@@ -7,7 +7,7 @@
 
 template<typename T>
 bool alltoallv_with_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -42,7 +42,7 @@ bool alltoallv_with_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_with_displacements_contiguous_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -77,7 +77,7 @@ bool alltoallv_with_displacements_contiguous_test(const T &val) {
 
 template<typename T>
 bool alltoallv_without_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -107,7 +107,7 @@ bool alltoallv_without_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_with_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -143,7 +143,7 @@ bool ialltoallv_with_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_with_displacements_contiguous_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -179,7 +179,7 @@ bool ialltoallv_with_displacements_contiguous_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_without_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   const int N_send{comm_world.rank() + 1};  // number of elements to send to each process
   const int N_recv{(N_processes * N_processes + N_processes) /
@@ -210,7 +210,7 @@ bool ialltoallv_without_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_in_place_with_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
@@ -239,7 +239,7 @@ bool alltoallv_in_place_with_displacements_test(const T &val) {
 
 template<typename T>
 bool alltoallv_in_place_without_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
@@ -266,7 +266,7 @@ bool alltoallv_in_place_without_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_in_place_with_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
@@ -296,7 +296,7 @@ bool ialltoallv_in_place_with_displacements_test(const T &val) {
 
 template<typename T>
 bool ialltoallv_in_place_without_displacements_test(const T &val) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int N_processes{comm_world.size()};
   std::vector<T> sendrecv_data;
   std::vector<T> expected;
@@ -321,10 +321,10 @@ bool ialltoallv_in_place_without_displacements_test(const T &val) {
   return sendrecv_data == expected;
 }
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(alltoallv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(alltoallv_with_displacements_test(1.0));

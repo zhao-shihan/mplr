@@ -37,7 +37,7 @@ void fill_random(std::vector<double> &v) {
 //
 template<typename T>
 void parallel_sort(std::vector<T> &v) {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int rank{comm_world.rank()};
   const int size{comm_world.size()};
   std::vector<T> local_pivots, pivots(size * (size - 1));
@@ -76,8 +76,8 @@ void parallel_sort(std::vector<T> &v) {
 
 
 int main() {
-  mplr::environment::environment env;
-  const auto comm_world{mplr::environment::comm_world()};
+  mplr::environment env;
+  const auto comm_world{mplr::comm_world()};
   const int size{comm_world.size()};
 
   const std::size_t N{100000000 / static_cast<std::size_t>(size)};

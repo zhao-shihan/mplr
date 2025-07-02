@@ -67,8 +67,8 @@ MPLR_REFLECTION(structure_2, d, str)
 
 
 int main() {
-  mplr::environment::environment env;
-  const auto comm_world{mplr::environment::comm_world()};
+  mplr::environment env;
+  const auto comm_world{mplr::comm_world()};
   // run the program with two or more processes
   if (comm_world.size() < 2)
     comm_world.abort(EXIT_FAILURE);

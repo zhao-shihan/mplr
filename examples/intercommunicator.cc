@@ -6,8 +6,8 @@
 
 
 int main() {
-  mplr::environment::environment env;
-  const auto comm_world{mplr::environment::comm_world()};
+  mplr::environment env;
+  const auto comm_world{mplr::comm_world()};
   // split communicator comm_world into two groups consisting of processes with odd and even
   // rank in comm_world
   const int world_rank{comm_world.rank()};

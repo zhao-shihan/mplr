@@ -5,7 +5,7 @@
 
 
 bool graph_communicator_test() {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int size{comm_world.size()};
   mplr::graph_communicator::edge_set es;
   for (int i{1}; i < size; ++i) {
@@ -26,7 +26,7 @@ bool graph_communicator_test() {
 
 
 bool graph_communicator_test_2() {
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   const int size{comm_world.size()};
   const int rank{comm_world.rank()};
   if (size >= 4) {
@@ -57,10 +57,10 @@ bool graph_communicator_test_2() {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(graph_communicator) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(graph_communicator_test());

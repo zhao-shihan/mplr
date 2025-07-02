@@ -5,10 +5,10 @@
 
 
 bool initialization_test() {
-  mplr::environment::environment{};
+  mplr::environment{};
   // Do some MPLR stuff.
-  return mplr::environment::comm_world().is_valid() and
-         mplr::environment::comm_self().is_valid();
+  return mplr::comm_world().is_valid() and
+         mplr::comm_self().is_valid();
 }
 
 

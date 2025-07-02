@@ -5,23 +5,23 @@
 
 
 bool barrier_test() {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   comm_world.barrier();
   return true;
 }
 
 
 bool ibarrier_test() {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   auto r{comm_world.ibarrier()};
   r.wait();
   return true;
 }
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(barrier) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   BOOST_TEST(barrier_test());

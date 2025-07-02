@@ -8,9 +8,9 @@
 
 
 int main() {
-  mplr::environment::environment env;
+  mplr::environment env;
   // get a reference to communicator "world"
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   // generate some data
   using value_type = std::array<std::uint8_t, 2>;
   std::vector<value_type> vec;

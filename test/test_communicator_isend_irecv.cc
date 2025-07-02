@@ -17,7 +17,7 @@
 
 template<typename T>
 bool isend_irecv_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -37,7 +37,7 @@ bool isend_irecv_test(const T &data) {
 
 template<typename T>
 bool isend_irecv_iter_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -66,7 +66,7 @@ bool isend_irecv_iter_test(const T &data) {
 
 template<typename T>
 bool ibsend_irecv_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -92,7 +92,7 @@ bool ibsend_irecv_test(const T &data) {
 
 template<typename T>
 bool ibsend_irecv_iter_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -127,7 +127,7 @@ bool ibsend_irecv_iter_test(const T &data) {
 
 template<typename T>
 bool issend_irecv_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -147,7 +147,7 @@ bool issend_irecv_test(const T &data) {
 
 template<typename T>
 bool issend_irecv_iter_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -176,7 +176,7 @@ bool issend_irecv_iter_test(const T &data) {
 
 template<typename T>
 bool irsend_irecv_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -221,7 +221,7 @@ bool irsend_irecv_test(const T &data) {
 
 template<typename T>
 bool irsend_irecv_iter_test(const T &data) {
-  const auto comm_world = mplr::environment::comm_world();
+  const auto comm_world = mplr::comm_world();
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
@@ -265,10 +265,10 @@ bool irsend_irecv_iter_test(const T &data) {
 }
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(isend_irecv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   // integer types
@@ -319,7 +319,7 @@ BOOST_AUTO_TEST_CASE(isend_irecv) {
 
 
 BOOST_AUTO_TEST_CASE(ibsend_irecv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   // integer types
@@ -370,7 +370,7 @@ BOOST_AUTO_TEST_CASE(ibsend_irecv) {
 
 
 BOOST_AUTO_TEST_CASE(issend_irecv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   // integer types
@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE(issend_irecv) {
 
 
 BOOST_AUTO_TEST_CASE(irsend_irecv) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
   // integer types

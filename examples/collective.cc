@@ -34,13 +34,13 @@ my_array operator+(const my_array &a, const my_array &b) {
 
 
 int main() {
-  mplr::environment::environment env;
-  const auto comm_world{mplr::environment::comm_world()};
+  mplr::environment env;
+  const auto comm_world{mplr::comm_world()};
   int root{0};
 
   // synchronize processes via barrier
   comm_world.barrier();
-  std::cout << mplr::environment::processor_name() << " has passed barrier\n";
+  std::cout << mplr::processor_name() << " has passed barrier\n";
   comm_world.barrier();
   double x{0};
   if (comm_world.rank() == root)

@@ -4,14 +4,14 @@
 #include "mplr/mplr.hpp"
 
 
-std::optional<mplr::environment::environment> env;
+std::optional<mplr::environment> env;
 
 // test inter-communicator creation
 BOOST_AUTO_TEST_CASE(inter_communicator_create) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   // split communicator comm_world into two groups consisting of processes with odd and even
   // rank in comm_world
   const int world_rank{comm_world.rank()};
@@ -37,10 +37,10 @@ BOOST_AUTO_TEST_CASE(inter_communicator_create) {
 
 // test inter-communicator merge
 BOOST_AUTO_TEST_CASE(inter_communicator_merge) {
-  if (not mplr::environment::initialized())
+  if (not mplr::initialized())
     env.emplace();
 
-  const auto comm_world{mplr::environment::comm_world()};
+  const auto comm_world{mplr::comm_world()};
   // split communicator comm_world into two groups consisting of processes with odd and even
   // rank in comm_world
   const int world_rank{comm_world.rank()};
