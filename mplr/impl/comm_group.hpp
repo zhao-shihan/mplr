@@ -3857,10 +3857,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void reduce(F f, int root_rank, const T &send_data, T &recv_data) const {
+      void reduce(F &&f, int root_rank, const T &send_data, T &recv_data) const {
         check_root(root_rank);
         MPI_Reduce(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                   comm_);
       }
 
       /// Performs a reduction operation over all processes.
@@ -3879,11 +3880,12 @@ namespace mplr {
       /// overload) by all processes in the communicator.
       /// \anchor communicator_reduce_contiguous_layout
       template<typename T, typename F>
-      void reduce(F f, int root_rank, const T *send_data, T *recv_data,
+      void reduce(F &&f, int root_rank, const T *send_data, T *recv_data,
                   const contiguous_layout<T> &l) const {
         check_root(root_rank);
         MPI_Reduce(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                   comm_);
       }
 
       // --- non-blocking reduce ---
@@ -3901,11 +3903,12 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest ireduce(F f, int root_rank, const T &send_data, T &recv_data) const {
+      irequest ireduce(F &&f, int root_rank, const T &send_data, T &recv_data) const {
         check_root(root_rank);
         MPI_Request req;
         MPI_Ireduce(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
         return base_irequest{req};
       }
 
@@ -3925,12 +3928,13 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest ireduce(F f, int root_rank, const T *send_data, T *recv_data,
+      irequest ireduce(F &&f, int root_rank, const T *send_data, T *recv_data,
                        const contiguous_layout<T> &l) const {
         check_root(root_rank);
         MPI_Request req;
         MPI_Ireduce(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
         return base_irequest{req};
       }
 
@@ -3948,9 +3952,9 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void allreduce(F f, const T &send_data, T &recv_data) const {
+      void allreduce(F &&f, const T &send_data, T &recv_data) const {
         MPI_Allreduce(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                      detail::get_op<T, F>(f).mpi_op, comm_);
+                      detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       /// Performs a reduction operation over all processes and broadcasts the result.
@@ -3966,11 +3970,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void allreduce(F f, const T *send_data, T *recv_data,
+      void allreduce(F &&f, const T *send_data, T *recv_data,
                      const contiguous_layout<T> &l) const {
         MPI_Allreduce(send_data, recv_data, l.size(),
                       detail::datatype_traits<T>::get_datatype(),
-                      detail::get_op<T, F>(f).mpi_op, comm_);
+                      detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       // --- non-blocking all-reduce ---
@@ -3988,10 +3992,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iallreduce(F f, const T &send_data, T &recv_data) const {
+      irequest iallreduce(F &&f, const T &send_data, T &recv_data) const {
         MPI_Request req;
         MPI_Iallreduce(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                       detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                       detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_,
+                       &req);
         return base_irequest{req};
       }
 
@@ -4010,12 +4015,12 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iallreduce(F f, const T *send_data, T *recv_data,
+      irequest iallreduce(F &&f, const T *send_data, T *recv_data,
                           const contiguous_layout<T> &l) const {
         MPI_Request req;
-        MPI_Iallreduce(send_data, recv_data, l.size(),
-                       detail::datatype_traits<T>::get_datatype(),
-                       detail::get_op<T, F>(f).mpi_op, comm_, &req);
+        MPI_Iallreduce(
+            send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4034,10 +4039,10 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void reduce_scatter_block(F f, const T *send_data, T &recv_data) const {
-        MPI_Reduce_scatter_block(send_data, &recv_data, 1,
-                                 detail::datatype_traits<T>::get_datatype(),
-                                 detail::get_op<T, F>(f).mpi_op, comm_);
+      void reduce_scatter_block(F &&f, const T *send_data, T &recv_data) const {
+        MPI_Reduce_scatter_block(
+            send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       /// Performs a reduction operation over all processes and scatters the result.
@@ -4055,11 +4060,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void reduce_scatter_block(F f, const T *send_data, T *recv_data,
+      void reduce_scatter_block(F &&f, const T *send_data, T *recv_data,
                                 const contiguous_layout<T> &recvcount) const {
-        MPI_Reduce_scatter_block(send_data, recv_data, recvcount.size(),
-                                 detail::datatype_traits<T>::get_datatype(),
-                                 detail::get_op<T, F>(f).mpi_op, comm_);
+        MPI_Reduce_scatter_block(
+            send_data, recv_data, recvcount.size(), detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       // --- non-blocking reduce-scatter-block ---
@@ -4078,11 +4083,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest ireduce_scatter_block(F f, const T *send_data, T &recv_data) const {
+      irequest ireduce_scatter_block(F &&f, const T *send_data, T &recv_data) const {
         MPI_Request req;
-        MPI_Ireduce_scatter_block(send_data, &recv_data, 1,
-                                  detail::datatype_traits<T>::get_datatype(),
-                                  detail::get_op<T, F>(f).mpi_op, comm_, &req);
+        MPI_Ireduce_scatter_block(
+            send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4103,12 +4108,12 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest ireduce_scatter_block(F f, const T *send_data, T *recv_data,
+      irequest ireduce_scatter_block(F &&f, const T *send_data, T *recv_data,
                                      const contiguous_layout<T> &recvcount) const {
         MPI_Request req;
-        MPI_Ireduce_scatter_block(send_data, recv_data, recvcount.size(),
-                                  detail::datatype_traits<T>::get_datatype(),
-                                  detail::get_op<T, F>(f).mpi_op, comm_, &req);
+        MPI_Ireduce_scatter_block(
+            send_data, recv_data, recvcount.size(), detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4129,11 +4134,12 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void reduce_scatter(F f, const T *send_data, T *recv_data,
+      void reduce_scatter(F &&f, const T *send_data, T *recv_data,
                           const contiguous_layouts<T> &recvcounts) const {
         MPI_Reduce_scatter(send_data, recv_data, recvcounts.sizes(),
                            detail::datatype_traits<T>::get_datatype(),
-                           detail::get_op<T, F>(f).mpi_op, comm_);
+                           detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op,
+                           comm_);
       }
 
       // --- non-blocking reduce-scatter ---
@@ -4154,12 +4160,13 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest ireduce_scatter(F f, const T *send_data, T *recv_data,
+      irequest ireduce_scatter(F &&f, const T *send_data, T *recv_data,
                                contiguous_layouts<T> &recvcounts) const {
         MPI_Request req;
         MPI_Ireduce_scatter(send_data, recv_data, recvcounts.sizes(),
                             detail::datatype_traits<T>::get_datatype(),
-                            detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op,
+                            comm_, &req);
         return base_irequest{req};
       }
 
@@ -4177,9 +4184,9 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void scan(F f, const T &send_data, T &recv_data) const {
+      void scan(F &&f, const T &send_data, T &recv_data) const {
         MPI_Scan(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                 detail::get_op<T, F>(f).mpi_op, comm_);
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       /// Performs a partial reduction operation (scan) over all processes.
@@ -4195,9 +4202,9 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void scan(F f, const T *send_data, T *recv_data, const contiguous_layout<T> &l) const {
+      void scan(F &&f, const T *send_data, T *recv_data, const contiguous_layout<T> &l) const {
         MPI_Scan(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                 detail::get_op<T, F>(f).mpi_op, comm_);
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       // --- non-blocking scan ---
@@ -4215,10 +4222,10 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iscan(F f, const T &send_data, T &recv_data) const {
+      irequest iscan(F &&f, const T &send_data, T &recv_data) const {
         MPI_Request req;
         MPI_Iscan(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                  detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4237,11 +4244,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iscan(F f, const T *send_data, T *recv_data,
+      irequest iscan(F &&f, const T *send_data, T *recv_data,
                      const contiguous_layout<T> &l) const {
         MPI_Request req;
         MPI_Iscan(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                  detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4259,9 +4266,9 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void exscan(F f, const T &send_data, T &recv_data) const {
+      void exscan(F &&f, const T &send_data, T &recv_data) const {
         MPI_Exscan(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       /// Performs a partial reduction operation (exclusive scan) over all processes.
@@ -4277,9 +4284,10 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      void exscan(F f, const T *send_data, T *recv_data, const contiguous_layout<T> &l) const {
+      void exscan(F &&f, const T *send_data, T *recv_data,
+                  const contiguous_layout<T> &l) const {
         MPI_Exscan(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
       }
 
       // --- non-blocking exscan ---
@@ -4297,10 +4305,10 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iexscan(F f, const T &send_data, T &recv_data) const {
+      irequest iexscan(F &&f, const T &send_data, T &recv_data) const {
         MPI_Request req;
         MPI_Iexscan(&send_data, &recv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
 
@@ -4319,11 +4327,11 @@ namespace mplr {
       /// \note This is a collective operation and must be called (possibly by utilizing another
       /// overload) by all processes in the communicator.
       template<typename T, typename F>
-      irequest iexscan(F f, const T *send_data, T *recv_data,
+      irequest iexscan(F &&f, const T *send_data, T *recv_data,
                        const contiguous_layout<T> &l) const {
         MPI_Request req;
         MPI_Iexscan(send_data, recv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
         return base_irequest{req};
       }
     };
@@ -4766,14 +4774,16 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void reduce(F f, int root_rank, T &sendrecv_data) const {
+    void reduce(F &&f, int root_rank, T &sendrecv_data) const {
       check_root(root_rank);
       if (rank() == root_rank)
         MPI_Reduce(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                   comm_);
       else
         MPI_Reduce(&sendrecv_data, nullptr, 1, detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                   comm_);
     }
 
     /// Performs a reduction operation over all processes, non-root in-place variant.
@@ -4789,10 +4799,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void reduce(F f, int root_rank, const T &send_data) const {
+    void reduce(F &&f, int root_rank, const T &send_data) const {
       check_nonroot(root_rank);
       MPI_Reduce(&send_data, nullptr, 1, detail::datatype_traits<T>::get_datatype(),
-                 detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                 comm_);
     }
 
     /// Performs a reduction operation over all processes, in-place variant.
@@ -4809,14 +4820,15 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void reduce(F f, int root_rank, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    void reduce(F &&f, int root_rank, T *sendrecv_data, const contiguous_layout<T> &l) const {
       if (rank() == root_rank)
-        MPI_Reduce(MPI_IN_PLACE, sendrecv_data, l.size(),
-                   detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                   root_rank, comm_);
+        MPI_Reduce(
+            MPI_IN_PLACE, sendrecv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
+            detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank, comm_);
       else
         MPI_Reduce(sendrecv_data, nullptr, l.size(), detail::datatype_traits<T>::get_datatype(),
-                   detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                   detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                   comm_);
     }
 
     /// Performs a reduction operation over all processes, non-root in-place variant.
@@ -4833,10 +4845,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void reduce(F f, int root_rank, const T *send_data, const contiguous_layout<T> &l) const {
+    void reduce(F &&f, int root_rank, const T *send_data, const contiguous_layout<T> &l) const {
       check_nonroot(root_rank);
       MPI_Reduce(send_data, nullptr, l.size(), detail::datatype_traits<T>::get_datatype(),
-                 detail::get_op<T, F>(f).mpi_op, root_rank, comm_);
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                 comm_);
     }
 
     // --- non-blocking reduce, in place ---
@@ -4855,15 +4868,17 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest ireduce(F f, int root_rank, T &sendrecv_data) const {
+    irequest ireduce(F &&f, int root_rank, T &sendrecv_data) const {
       check_root(root_rank);
       MPI_Request req;
       if (rank() == root_rank)
         MPI_Ireduce(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
       else
         MPI_Ireduce(&sendrecv_data, nullptr, 1, detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -4881,11 +4896,12 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest ireduce(F f, int root_rank, const T &send_data) const {
+    irequest ireduce(F &&f, int root_rank, const T &send_data) const {
       check_nonroot(root_rank);
       MPI_Request req;
       MPI_Ireduce(&send_data, nullptr, 1, detail::datatype_traits<T>::get_datatype(),
-                  detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                  comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -4905,18 +4921,20 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest ireduce(F f, int root_rank, T *sendrecv_data,
+    irequest ireduce(F &&f, int root_rank, T *sendrecv_data,
                      const contiguous_layout<T> &l) const {
       check_root(root_rank);
       MPI_Request req;
       if (rank() == root_rank)
         MPI_Ireduce(MPI_IN_PLACE, sendrecv_data, l.size(),
-                    detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                    root_rank, comm_, &req);
+                    detail::datatype_traits<T>::get_datatype(),
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
       else
         MPI_Ireduce(sendrecv_data, nullptr, l.size(),
-                    detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                    root_rank, comm_, &req);
+                    detail::datatype_traits<T>::get_datatype(),
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                    comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -4936,12 +4954,13 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest ireduce(F f, int root_rank, const T *send_data,
+    irequest ireduce(F &&f, int root_rank, const T *send_data,
                      const contiguous_layout<T> &l) const {
       check_nonroot(root_rank);
       MPI_Request req;
       MPI_Ireduce(send_data, nullptr, l.size(), detail::datatype_traits<T>::get_datatype(),
-                  detail::get_op<T, F>(f).mpi_op, root_rank, comm_, &req);
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, root_rank,
+                  comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -4962,9 +4981,9 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void allreduce(F f, T &sendrecv_data) const {
+    void allreduce(F &&f, T &sendrecv_data) const {
       MPI_Allreduce(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                    detail::get_op<T, F>(f).mpi_op, comm_);
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     /// Performs a reduction operation over all processes and broadcasts the result,
@@ -4980,10 +4999,10 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void allreduce(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    void allreduce(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Allreduce(MPI_IN_PLACE, sendrecv_data, l.size(),
-                    detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                    comm_);
+                    detail::datatype_traits<T>::get_datatype(),
+                    detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     // --- non-blocking all-reduce, in place ---
@@ -5000,11 +5019,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iallreduce(F f, T &sendrecv_data) const {
+    irequest iallreduce(F &&f, T &sendrecv_data) const {
       MPI_Request req;
-      MPI_Iallreduce(MPI_IN_PLACE, &sendrecv_data, 1,
-                     detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                     comm_, &req);
+      MPI_Iallreduce(
+          MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
+          detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5022,11 +5041,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iallreduce(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    irequest iallreduce(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Request req;
-      MPI_Iallreduce(MPI_IN_PLACE, sendrecv_data, l.size(),
-                     detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                     comm_, &req);
+      MPI_Iallreduce(
+          MPI_IN_PLACE, sendrecv_data, l.size(), detail::datatype_traits<T>::get_datatype(),
+          detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5047,9 +5066,9 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void scan(F f, T &sendrecv_data) const {
+    void scan(F &&f, T &sendrecv_data) const {
       MPI_Scan(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-               detail::get_op<T, F>(f).mpi_op, comm_);
+               detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     /// Performs a partial reduction operation (scan) over all processes, in-place
@@ -5065,10 +5084,10 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void scan(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    void scan(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Scan(MPI_IN_PLACE, sendrecv_data, l.size(),
-               detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-               comm_);
+               detail::datatype_traits<T>::get_datatype(),
+               detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     // --- non-blocking scan, in place ---
@@ -5085,10 +5104,10 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iscan(F f, T &sendrecv_data) const {
+    irequest iscan(F &&f, T &sendrecv_data) const {
       MPI_Request req;
       MPI_Iscan(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5106,11 +5125,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iscan(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    irequest iscan(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Request req;
       MPI_Iscan(MPI_IN_PLACE, sendrecv_data, l.size(),
-                detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                comm_, &req);
+                detail::datatype_traits<T>::get_datatype(),
+                detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5131,9 +5150,9 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void exscan(F f, T &sendrecv_data) const {
+    void exscan(F &&f, T &sendrecv_data) const {
       MPI_Exscan(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                 detail::get_op<T, F>(f).mpi_op, comm_);
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     /// Performs a partial reduction operation (exclusive scan) over all processes,
@@ -5149,10 +5168,10 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    void exscan(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    void exscan(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Exscan(MPI_IN_PLACE, sendrecv_data, l.size(),
-                 detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                 comm_);
+                 detail::datatype_traits<T>::get_datatype(),
+                 detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_);
     }
 
     // --- non-blocking exscan, in place ---
@@ -5169,10 +5188,10 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iexscan(F f, T &sendrecv_data) const {
+    irequest iexscan(F &&f, T &sendrecv_data) const {
       MPI_Request req;
       MPI_Iexscan(MPI_IN_PLACE, &sendrecv_data, 1, detail::datatype_traits<T>::get_datatype(),
-                  detail::get_op<T, F>(f).mpi_op, comm_, &req);
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5190,11 +5209,11 @@ namespace mplr {
     /// \note This is a collective operation and must be called (possibly by utilizing another
     /// overload) by all processes in the communicator.
     template<typename T, typename F>
-    irequest iexscan(F f, T *sendrecv_data, const contiguous_layout<T> &l) const {
+    irequest iexscan(F &&f, T *sendrecv_data, const contiguous_layout<T> &l) const {
       MPI_Request req;
       MPI_Iexscan(MPI_IN_PLACE, sendrecv_data, l.size(),
-                  detail::datatype_traits<T>::get_datatype(), detail::get_op<T, F>(f).mpi_op,
-                  comm_, &req);
+                  detail::datatype_traits<T>::get_datatype(),
+                  detail::get_op<T, std::decay_t<F>>(std::forward<F>(f)).mpi_op, comm_, &req);
       return impl::base_irequest{req};
     }
 
@@ -5324,12 +5343,11 @@ namespace mplr {
     /// \return inter-communicator that establishes a communication channel between the
     /// spawning process group and the new spawned processes
     static const inter_communicator &parent() {
-      static auto get_parent = []() {
+      static inter_communicator s_parent{[]() {
         MPI_Comm comm;
         MPI_Comm_get_parent(&comm);
         return comm;
-      };
-      static inter_communicator s_parent{get_parent()};
+      }()};
       return s_parent;
     }
 

@@ -435,7 +435,7 @@ namespace mplr {
                             not std::is_enum_v<T> and not std::is_array_v<T>>> {
     public:
       static MPI_Datatype get_datatype() {
-        return datatype_traits_impl<unsigned char[sizeof(T)]>::get_datatype();
+        return datatype_traits_impl<std::byte[sizeof(T)]>::get_datatype();
       }
       using data_type_category = typename datatype_traits_impl<T>::data_type_category;
     };

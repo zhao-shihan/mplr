@@ -237,9 +237,10 @@ namespace mplr {
     template<typename T, typename F>
     class op;
 
-    template<typename T, typename F>
-    inline op<T, F> &get_op(F f) {
-      static op<T, F> op_(f);
+    template<typename T, typename F, typename F1,
+             std::enable_if_t<std::is_same_v<std::decay_t<F1>, F>, bool> = true>
+    inline op<T, F> &get_op(F1 &&f) {
+      static op<T, F> op_{std::forward<F1>(f)};
       return op_;
     }
 
@@ -255,8 +256,7 @@ namespace mplr {
       static constexpr bool is_commutative = op_traits<functor>::is_commutative;
       static std::unique_ptr<functor> f;
 
-      static void apply(void *in_vector, void *in_out_vector, int *len,
-                        [[maybe_unused]] MPI_Datatype *datatype) {
+      static void apply(void *in_vector, void *in_out_vector, int *len, MPI_Datatype *) {
         auto *i_1{static_cast<T *>(in_vector)};
         auto *i_2{static_cast<T *>(in_out_vector)};
         for (int i{0}, i_end{*len}; i < i_end; ++i, ++i_1, ++i_2)
@@ -266,12 +266,16 @@ namespace mplr {
       MPI_Op mpi_op{MPI_OP_NULL};
 
     private:
-      explicit op(F f_) {
-        f.reset(new F(f_));
+      explicit op(const F &f_) {
+        f = std::make_unique<F>(f_);
         MPI_Op_create(op::apply, is_commutative, &mpi_op);
       }
 
-    public:
+      explicit op(F &&f_) {
+        f = std::make_unique<F>(std::move(f_));
+        MPI_Op_create(op::apply, is_commutative, &mpi_op);
+      }
+
       op(op const &) = delete;
 
       ~op() {
@@ -280,7 +284,10 @@ namespace mplr {
 
       auto &operator=(op const &) = delete;
 
-      friend op &get_op<>(F);
+      friend op &get_op<>(F &);
+      friend op &get_op<>(const F &);
+      friend op &get_op<>(F &&);
+      friend op &get_op<>(const F &&);
     };
 
     template<typename T, typename F>
