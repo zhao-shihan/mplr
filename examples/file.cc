@@ -8,7 +8,7 @@
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   // get a reference to communicator "world"
   const auto comm_world{mplr::comm_world()};
   // generate some data

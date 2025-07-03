@@ -26,11 +26,10 @@ bool iallgather_test(const T &val) {
   return std::all_of(v.begin(), v.end(), [&val](const auto &x) { return x == val; });
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(allgather) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(allgather_test(1.0));
   BOOST_TEST(allgather_test(std::array{1, 2, 3, 4}));

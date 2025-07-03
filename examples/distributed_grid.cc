@@ -22,7 +22,7 @@ void update_overlap(const mplr::cartesian_communicator &cartesian_communicator,
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   {
     // build a one-dimensional Cartesian communicator

@@ -18,11 +18,10 @@ bool ibarrier_test() {
   return true;
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(barrier) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(barrier_test());
   BOOST_TEST(ibarrier_test());

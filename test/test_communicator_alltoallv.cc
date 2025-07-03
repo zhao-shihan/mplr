@@ -321,11 +321,10 @@ bool ialltoallv_in_place_without_displacements_test(const T &val) {
   return sendrecv_data == expected;
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(alltoallv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(alltoallv_with_displacements_test(1.0));
   BOOST_TEST(alltoallv_with_displacements_test(tuple{1, 2.0}));

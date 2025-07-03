@@ -34,7 +34,7 @@ my_array operator+(const my_array &a, const my_array &b) {
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   int root{0};
 

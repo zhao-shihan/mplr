@@ -120,11 +120,10 @@ bool sendrecv_replace_iter_test() {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(sendrecv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(sendrecv_test(std::byte(77)));
@@ -169,7 +168,7 @@ BOOST_AUTO_TEST_CASE(sendrecv) {
 
 BOOST_AUTO_TEST_CASE(sendrecv_replace) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(sendrecv_replace_test<std::byte>());

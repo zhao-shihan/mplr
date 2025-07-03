@@ -46,7 +46,7 @@ inline double u_0_dt([[maybe_unused]] double x) {
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const double dx{l / (n - 1)};  // grid spacing
   const double eps{dt * dt * c * c / (dx * dx)};
   const auto comm_world{mplr::comm_world()};

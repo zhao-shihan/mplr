@@ -5,7 +5,7 @@
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   using namespace std::string_literals;
   // get a reference to communicator "world"
   const auto comm_world{mplr::comm_world()};

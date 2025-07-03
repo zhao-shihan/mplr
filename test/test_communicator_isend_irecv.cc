@@ -265,11 +265,10 @@ bool irsend_irecv_iter_test(const T &data) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(isend_irecv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(isend_irecv_test(std::byte(77)));
@@ -320,7 +319,7 @@ BOOST_AUTO_TEST_CASE(isend_irecv) {
 
 BOOST_AUTO_TEST_CASE(ibsend_irecv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(ibsend_irecv_test(std::byte(77)));
@@ -371,7 +370,7 @@ BOOST_AUTO_TEST_CASE(ibsend_irecv) {
 
 BOOST_AUTO_TEST_CASE(issend_irecv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(issend_irecv_test(std::byte(77)));
@@ -422,7 +421,7 @@ BOOST_AUTO_TEST_CASE(issend_irecv) {
 
 BOOST_AUTO_TEST_CASE(irsend_irecv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(irsend_irecv_test(std::byte(77)));

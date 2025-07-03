@@ -6,7 +6,7 @@
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   const auto c_rank{comm_world.rank()};
   const auto c_size{comm_world.size()};

@@ -80,11 +80,10 @@ bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(gather) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(gather_test(1.0));
   BOOST_TEST(gather_test(std::array{1, 2, 3, 4}));

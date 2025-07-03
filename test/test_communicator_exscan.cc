@@ -181,11 +181,10 @@ bool iexscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(exscan) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(exscan_test(add<double>(), 1.0));
   BOOST_TEST(exscan_test(add<tuple>(), tuple{1, 2.0}));

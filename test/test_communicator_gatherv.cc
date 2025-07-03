@@ -145,11 +145,10 @@ bool igatherv_contiguous_test(const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(gatherv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(gatherv_test<use_non_root_overload::no>(1.0));
   BOOST_TEST(gatherv_test<use_non_root_overload::no>(tuple{1, 2.0}));

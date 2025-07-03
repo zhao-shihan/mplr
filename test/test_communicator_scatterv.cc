@@ -145,11 +145,10 @@ bool iscatterv_contiguous_test(const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(scatterv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(scatterv_test<use_non_root_overload::no>(1.0));
   BOOST_TEST(scatterv_test<use_non_root_overload::no>(tuple{1, 2.0}));

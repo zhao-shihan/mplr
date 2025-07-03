@@ -349,11 +349,10 @@ bool rsend_init_recv_init_iter_test(const T &data) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(send_init_recv_init) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(send_init_recv_init_test(std::byte(77)));
@@ -398,7 +397,7 @@ BOOST_AUTO_TEST_CASE(send_init_recv_init) {
 
 BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(bsend_init_recv_init_test(std::byte(77)));
@@ -443,7 +442,7 @@ BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
 
 BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(ssend_init_recv_init_test(std::byte(77)));
@@ -488,7 +487,7 @@ BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
 
 BOOST_AUTO_TEST_CASE(rsend_init_recv_init) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(rsend_init_recv_init_test(std::byte(77)));

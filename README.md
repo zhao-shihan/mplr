@@ -83,8 +83,8 @@ which is also printed.
 #include "mplr/mplr.hpp"
 
 int main() {
-  // environment object
-  mplr::environment env;
+  // initialize environment
+  mplr::init();
   // get communicator "world"
   const auto comm_world{mplr::comm_world()};
   // each process prints a message containing the processor name, the rank

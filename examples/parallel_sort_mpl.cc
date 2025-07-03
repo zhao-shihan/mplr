@@ -76,7 +76,7 @@ void parallel_sort(std::vector<T> &v) {
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   const int size{comm_world.size()};
 

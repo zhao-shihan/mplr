@@ -125,11 +125,10 @@ bool ialltoall_inplace_test(const T &val) {
   return sendrecv_data == expected;
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(alltoall) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(alltoall_test(1.0));
   BOOST_TEST(alltoall_test(tuple{1, 2.0}));

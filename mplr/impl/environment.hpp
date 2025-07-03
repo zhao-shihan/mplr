@@ -71,27 +71,55 @@ namespace mplr {
 
   //----------------------------------------------------------------
 
-  /// @brief Initialize and finalize MPI in an RAII style.
-  class environment {
-  public:
-    environment(int &argc, char **&argv,
-                mplr::threading_mode threading_mode = mplr::threading_mode::multiple) {
-      int _;
-      MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode), &_);
-    }
+  namespace detail {
 
-    environment(mplr::threading_mode threading_mode = mplr::threading_mode::multiple) {
-      int _;
-      MPI_Init_thread(nullptr, nullptr, static_cast<int>(threading_mode), &_);
-    }
+    class environment_finalizer {
+    public:
+      ~environment_finalizer() {
+        MPI_Finalize();
+      }
 
-    ~environment() {
-      MPI_Finalize();
-    }
+      environment_finalizer() = default;
+      environment_finalizer(const environment_finalizer &) = delete;
+      auto &operator=(const environment_finalizer &) = delete;
+    };
 
-    environment(const environment &) = delete;
-    auto &operator=(const environment &) = delete;
-  };
+  }  // namespace detail
+
+  /// @brief Initialize MPI environment via MPI_Init_thread.
+  /// The environment will be finalize automatically before program exiting.
+  /// @param argc The argc of main function parameters.
+  /// @param argv The argv of main function parameters.
+  /// @param threading_mode Threading mode required.
+  /// @return Threading mode provided by MPI library.
+  inline void init(int &argc, char **&argv) {
+    int threading_mode_provided;
+    if (argv) {
+      MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode::multiple),
+                      &threading_mode_provided);
+    } else {
+      MPI_Init_thread(nullptr, nullptr, static_cast<int>(threading_mode::multiple),
+                      &threading_mode_provided);
+    }
+    switch (static_cast<threading_mode>(threading_mode_provided)) {
+      case threading_mode::single:
+      case threading_mode::funneled:
+      case threading_mode::serialized:
+        throw std::runtime_error{"MPLR requires multithreading support from the MPI library"};
+      case threading_mode::multiple:
+        static const detail::environment_finalizer _;
+    }
+  }
+
+  /// @brief Initialize MPI environment via MPI_Init_thread.
+  /// The environment will be finalize automatically before program exiting.
+  /// @param threading_mode Threading mode required.
+  /// @return Threading mode provided by MPI library.
+  inline void init() {
+    int argc;
+    char **argv{};
+    init(argc, argv);
+  }
 
   //------------------------------------------------------------------
 

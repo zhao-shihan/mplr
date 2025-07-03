@@ -6,7 +6,7 @@
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   double x{1.23456 + comm_world.rank()};
   mplr::irequest r_send(comm_world.isend(x, 0));  // nonblocking send to rank 0

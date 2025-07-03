@@ -84,11 +84,10 @@ bool iallgatherv_contiguous_test(const T &val) {
   return v1 == v2;
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(allgatherv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(allgatherv_test(1.0));
   BOOST_TEST(allgatherv_test(tuple{1, 2.0}));

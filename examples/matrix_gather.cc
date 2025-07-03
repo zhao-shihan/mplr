@@ -40,7 +40,7 @@ public:
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   const auto comm_world{mplr::comm_world()};
   const int p{comm_world.size()};  // total numbers of processors
   const int p_l{comm_world.rank()};

@@ -70,11 +70,10 @@ bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(scatter) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(scatter_test(1.0));
   BOOST_TEST(scatter_test(std::array{1, 2, 3, 4}));

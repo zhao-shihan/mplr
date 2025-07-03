@@ -165,11 +165,10 @@ bool iscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(scan) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(scan_test(add<double>(), 1.0));
   BOOST_TEST(scan_test(add<tuple>(), tuple{1, 2.0}));

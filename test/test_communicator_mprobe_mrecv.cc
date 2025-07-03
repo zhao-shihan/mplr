@@ -125,11 +125,10 @@ bool improbe_iter_test(const T &data) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(mprobe) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(mprobe_test(std::byte(77)));
@@ -173,7 +172,7 @@ BOOST_AUTO_TEST_CASE(mprobe) {
 
 BOOST_AUTO_TEST_CASE(improbe) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(improbe_test(std::byte(77)));

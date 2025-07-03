@@ -75,11 +75,10 @@ bool send_recv_test(const T &data) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(send_recv) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   // integer types
   BOOST_TEST(send_recv_test(std::byte(77)));

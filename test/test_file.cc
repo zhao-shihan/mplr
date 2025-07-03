@@ -1039,11 +1039,10 @@ bool read_ordered_split_write_ordered_split_test(const std::vector<T> &val,
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(read_at_write_at) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_at_write_at_test(1.0));
   BOOST_TEST(read_at_write_at_test(std::array{1, 2, 3, 4}));
@@ -1052,7 +1051,7 @@ BOOST_AUTO_TEST_CASE(read_at_write_at) {
 
 BOOST_AUTO_TEST_CASE(iread_at_iwrite_at) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(iread_at_iwrite_at_test(1.0));
   BOOST_TEST(iread_at_iwrite_at_test(std::array{1, 2, 3, 4}));
@@ -1062,7 +1061,7 @@ BOOST_AUTO_TEST_CASE(iread_at_iwrite_at) {
 
 BOOST_AUTO_TEST_CASE(read_write) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_write_test(1.0));
   BOOST_TEST(read_write_test(std::array{1, 2, 3, 4}));
@@ -1071,7 +1070,7 @@ BOOST_AUTO_TEST_CASE(read_write) {
 
 BOOST_AUTO_TEST_CASE(iread_iwrite) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(iread_iwrite_test(1.0));
   BOOST_TEST(iread_iwrite_test(std::array{1, 2, 3, 4}));
@@ -1080,7 +1079,7 @@ BOOST_AUTO_TEST_CASE(iread_iwrite) {
 
 BOOST_AUTO_TEST_CASE(read_shared_write_shared) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_shared_write_shared_test(1.0));
   BOOST_TEST(read_shared_write_shared_test(std::array{1, 2, 3, 4}));
@@ -1090,7 +1089,7 @@ BOOST_AUTO_TEST_CASE(read_shared_write_shared) {
 
 BOOST_AUTO_TEST_CASE(iread_shared_iwrite_shared) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(iread_shared_iwrite_shared_test(1.0));
   BOOST_TEST(iread_shared_iwrite_shared_test(std::array{1, 2, 3, 4}));
@@ -1100,7 +1099,7 @@ BOOST_AUTO_TEST_CASE(iread_shared_iwrite_shared) {
 
 BOOST_AUTO_TEST_CASE(read_at_all_write_at_all) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_at_all_write_at_all_test(1.0));
   BOOST_TEST(read_at_all_write_at_all_test(std::array{1, 2, 3, 4}));
@@ -1110,7 +1109,7 @@ BOOST_AUTO_TEST_CASE(read_at_all_write_at_all) {
 
 BOOST_AUTO_TEST_CASE(iread_at_all_iwrite_at_all) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(iread_at_all_iwrite_at_all_test(1.0));
   BOOST_TEST(iread_at_all_iwrite_at_all_test(std::array{1, 2, 3, 4}));
@@ -1120,7 +1119,7 @@ BOOST_AUTO_TEST_CASE(iread_at_all_iwrite_at_all) {
 
 BOOST_AUTO_TEST_CASE(read_all_write_all) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_all_write_all_test(1.0));
   BOOST_TEST(read_all_write_all_test(std::array{1, 2, 3, 4}));
@@ -1130,7 +1129,7 @@ BOOST_AUTO_TEST_CASE(read_all_write_all) {
 
 BOOST_AUTO_TEST_CASE(iread_all_iwrite_all) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(iread_all_iwrite_all_test(1.0));
   BOOST_TEST(iread_all_iwrite_all_test(std::array{1, 2, 3, 4}));
@@ -1140,7 +1139,7 @@ BOOST_AUTO_TEST_CASE(iread_all_iwrite_all) {
 
 BOOST_AUTO_TEST_CASE(read_ordered_write_ordered) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_ordered_write_ordered_test(1.0));
   BOOST_TEST(read_ordered_write_ordered_test(std::array{1, 2, 3, 4}));
@@ -1150,7 +1149,7 @@ BOOST_AUTO_TEST_CASE(read_ordered_write_ordered) {
 
 BOOST_AUTO_TEST_CASE(read_at_all_split_write_at_all_split) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_at_all_split_write_at_all_split_test(1.0));
   BOOST_TEST(read_at_all_split_write_at_all_split_test(std::array{1, 2, 3, 4}));
@@ -1160,7 +1159,7 @@ BOOST_AUTO_TEST_CASE(read_at_all_split_write_at_all_split) {
 
 BOOST_AUTO_TEST_CASE(read_all_split_write_all_split) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_all_split_write_all_split_test(1.0));
   BOOST_TEST(read_all_split_write_all_split_test(std::array{1, 2, 3, 4}));
@@ -1170,7 +1169,7 @@ BOOST_AUTO_TEST_CASE(read_all_split_write_all_split) {
 
 BOOST_AUTO_TEST_CASE(read_ordered_split_write_ordered_split) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(read_ordered_split_write_ordered_split_test(1.0));
   BOOST_TEST(read_ordered_split_write_ordered_split_test(std::array{1, 2, 3, 4}));

@@ -57,11 +57,10 @@ bool graph_communicator_test_2() {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(graph_communicator) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(graph_communicator_test());
   BOOST_TEST(graph_communicator_test_2());

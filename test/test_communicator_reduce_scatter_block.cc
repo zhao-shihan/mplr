@@ -99,11 +99,10 @@ bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(reduce_scatter_block) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(reduce_scatter_block_test(add<double>(), 1.0));
   BOOST_TEST(reduce_scatter_block_test(add<tuple>(), tuple{1, 2.0}));

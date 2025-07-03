@@ -5,7 +5,7 @@
 
 
 int main() {
-  mplr::environment env;
+  mplr::init();
   // check communicator properties of comm_world
   const auto comm_world{mplr::comm_world()};
   std::cout << "comm_world  rank: " << comm_world.rank() << "\tsize: " << comm_world.size()

@@ -164,11 +164,10 @@ bool iallreduce_test_with_layout_inplace(F f, const T &val) {
   return v_x == v_expected;
 }
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(allreduce) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(allreduce_test(add<double>(), 1.0));
   BOOST_TEST(allreduce_test(add<tuple>(), tuple{1, 2.0}));

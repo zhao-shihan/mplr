@@ -101,11 +101,10 @@ bool communicator_comm_self_test() {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(communicator) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(communicator_comm_world_test());
   BOOST_TEST(communicator_comm_world_copy_test());

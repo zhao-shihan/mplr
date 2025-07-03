@@ -60,11 +60,10 @@ bool ireduce_scatter_test(F f, const T &val) {
 }
 
 
-std::optional<mplr::environment> env;
 
 BOOST_AUTO_TEST_CASE(reduce_scatter) {
   if (not mplr::initialized())
-    env.emplace();
+    mplr::init();
 
   BOOST_TEST(reduce_scatter_test(add<double>(), 1.0));
   BOOST_TEST(reduce_scatter_test(add<tuple>(), tuple{1, 2.0}));
