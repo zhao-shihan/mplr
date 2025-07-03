@@ -137,14 +137,14 @@ namespace mplr {
     return mpi_communicator{MPI_COMM_SELF};
   }
 
-  /// Determines the highest level of thread support that is provided by the underlying
+  /* /// Determines the highest level of thread support that is provided by the underlying
   /// MPI implementation.
   /// \return supported threading level
   inline threading_mode query_thread() {
     int threading_mode;
     MPI_Query_thread(&threading_mode);
     return static_cast<enum threading_mode>(threading_mode);
-  }
+  } */
 
   /// Determines if the current thread is the main thread, i.e., the thread that has
   /// initialized the MPI environment of the underlying MPI implementation.
