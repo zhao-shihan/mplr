@@ -254,7 +254,7 @@ namespace mplr {
       static_assert(not std::is_pointer_v<F>, "functor must not be function pointer");
 
       static constexpr bool is_commutative = op_traits<functor>::is_commutative;
-      static std::unique_ptr<functor> f;
+      static inline std::unique_ptr<functor> f;
 
       static void apply(void *in_vector, void *in_out_vector, int *len, MPI_Datatype *) {
         auto *i_1{static_cast<T *>(in_vector)};
@@ -289,9 +289,6 @@ namespace mplr {
       friend op &get_op<>(F &&);
       friend op &get_op<>(const F &&);
     };
-
-    template<typename T, typename F>
-    std::unique_ptr<F> op<T, F>::f;
 
   }  // namespace detail
 
