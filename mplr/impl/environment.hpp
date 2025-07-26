@@ -3,6 +3,7 @@
 #define MPLR_ENVIRONMENT_HPP
 
 #include <algorithm>
+#include <cstdlib>
 #include <memory>
 #include <string>
 #include <vector>
@@ -73,16 +74,9 @@ namespace mplr {
 
   namespace detail {
 
-    class environment_finalizer {
-    public:
-      ~environment_finalizer() {
-        MPI_Finalize();
-      }
-
-      environment_finalizer() = default;
-      environment_finalizer(const environment_finalizer &) = delete;
-      auto &operator=(const environment_finalizer &) = delete;
-    };
+    inline void finalize() {
+      MPI_Finalize();
+    }
 
   }  // namespace detail
 
@@ -107,7 +101,7 @@ namespace mplr {
       case threading_mode::serialized:
         throw std::runtime_error{"MPLR requires multithreading support from the MPI library"};
       case threading_mode::multiple:
-        static const detail::environment_finalizer _;
+        std::atexit(detail::finalize);
     }
   }
 
