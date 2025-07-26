@@ -20,8 +20,7 @@ namespace mplr::impl {
     /// \param info the info object
     /// \note Objects of this class should not be instantiated by MPLR users, just a base
     /// class.
-    explicit topology_communicator(const topology_communicator &other,
-                                   const mplr::info &info = {})
+    explicit topology_communicator(const topology_communicator &other, const mplr::info &info)
         : communicator{other, info} {
     }
 

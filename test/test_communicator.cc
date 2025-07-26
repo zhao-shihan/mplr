@@ -32,7 +32,7 @@ bool communicator_comm_world_test() {
 // test properties of a newly created communicator
 bool communicator_comm_world_copy_test() {
   const auto comm_world{mplr::comm_world()};
-  mplr::communicator comm_new{comm_world};
+  mplr::communicator comm_new{comm_world, {}};
   if (not comm_new.is_valid())
     return false;
   if (comm_world.size() != comm_new.size())
@@ -99,7 +99,6 @@ bool communicator_comm_self_test() {
     return false;
   return true;
 }
-
 
 
 BOOST_AUTO_TEST_CASE(communicator) {

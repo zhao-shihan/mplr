@@ -416,8 +416,7 @@ namespace mplr {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit cartesian_communicator(const cartesian_communicator &other,
-                                    const mplr::info &info = {})
+    explicit cartesian_communicator(const cartesian_communicator &other, const mplr::info &info)
         : topology_communicator{other, info} {
     }
 

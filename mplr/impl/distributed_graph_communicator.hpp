@@ -88,7 +88,7 @@ namespace mplr {
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
     explicit distributed_graph_communicator(const distributed_graph_communicator &other,
-                                            const mplr::info &info = {})
+                                            const mplr::info &info)
         : topology_communicator{other, info} {
     }
 

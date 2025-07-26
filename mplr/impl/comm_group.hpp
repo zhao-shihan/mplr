@@ -460,7 +460,7 @@ namespace mplr {
       explicit base_communicator(MPI_Comm comm) : comm_(comm) {
       }
 
-      explicit base_communicator(const base_communicator &other, const mplr::info &info = {})
+      explicit base_communicator(const base_communicator &other, const mplr::info &info)
           : comm_{} {
         MPI_Comm_dup_with_info(other.comm_, info.info_, &comm_);
       }
@@ -4358,7 +4358,7 @@ namespace mplr {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit communicator(const communicator &other, const mplr::info &info = {})
+    explicit communicator(const communicator &other, const mplr::info &info)
         : base{other, info} {
     }
 
@@ -5330,7 +5330,7 @@ namespace mplr {
     /// remote processes of the inter-communicator \c other.  Inter-communicators should not be
     /// copied unless a new independent communicator is wanted.  Inter-Communicators should be
     /// passed via references to functions to avoid unnecessary copying.
-    explicit inter_communicator(const inter_communicator &other, const mplr::info &info = {})
+    explicit inter_communicator(const inter_communicator &other, const mplr::info &info)
         : base{other, info} {
     }
 
