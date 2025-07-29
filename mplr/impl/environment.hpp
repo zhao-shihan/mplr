@@ -131,6 +131,12 @@ namespace mplr {
     return mpi_communicator{MPI_COMM_SELF};
   }
 
+  /// An invalid communicator for representing a null communicator.
+  /// \return An invalid communicator
+  inline mpi_communicator comm_null() {
+    return mpi_communicator{MPI_COMM_NULL};
+  }
+
   /* /// Determines the highest level of thread support that is provided by the underlying
   /// MPI implementation.
   /// \return supported threading level
