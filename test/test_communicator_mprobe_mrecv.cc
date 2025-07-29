@@ -125,7 +125,6 @@ bool improbe_iter_test(const T &data) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(mprobe) {
   if (not mplr::initialized())
     mplr::init();

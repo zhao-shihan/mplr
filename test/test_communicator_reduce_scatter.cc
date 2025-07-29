@@ -60,7 +60,6 @@ bool ireduce_scatter_test(F f, const T &val) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(reduce_scatter) {
   if (not mplr::initialized())
     mplr::init();

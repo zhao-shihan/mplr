@@ -11,9 +11,8 @@ int main() {
   // each process prints a message containing the processor name, the rank
   // in communicator world and the size of communicator world
   // output may depend on MPI implementation
-  std::cout << "Hello world! I am running on \"" << mplr::processor_name()
-            << "\". My rank is " << comm_world.rank() << " out of " << comm_world.size()
-            << " processes.\n";
+  std::cout << "Hello world! I am running on \"" << mplr::processor_name() << "\". My rank is "
+            << comm_world.rank() << " out of " << comm_world.size() << " processes.\n";
   // if there are two or more processes send a message from process 0 to process 1
   if (comm_world.size() >= 2) {
     if (comm_world.rank() == 0) {

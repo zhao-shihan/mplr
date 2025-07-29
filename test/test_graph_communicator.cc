@@ -57,7 +57,6 @@ bool graph_communicator_test_2() {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(graph_communicator) {
   if (not mplr::initialized())
     mplr::init();

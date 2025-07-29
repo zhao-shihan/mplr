@@ -191,7 +191,6 @@ bool cartesian_communicator_ineighbor_alltoall_layout_test(const T &val) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(cartesian_communicator) {
   if (not mplr::initialized())
     mplr::init();

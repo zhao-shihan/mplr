@@ -4,7 +4,6 @@
 #include "mplr/mplr.hpp"
 
 
-
 // test inter-communicator creation
 BOOST_AUTO_TEST_CASE(inter_communicator_create) {
   if (not mplr::initialized())

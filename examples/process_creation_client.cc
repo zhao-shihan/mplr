@@ -11,9 +11,8 @@ int main(int argc, char *argv[]) {
   [[maybe_unused]] const auto comm_world{mplr::comm_world()};
   // get the parent inter-communicator
   auto &inter_comm{mplr::inter_communicator::parent()};
-  std::cout << "Hello world! I am running on \"" << mplr::processor_name()
-            << "\". My rank is " << inter_comm.rank() << " out of " << inter_comm.size()
-            << " processes.\n";
+  std::cout << "Hello world! I am running on \"" << mplr::processor_name() << "\". My rank is "
+            << inter_comm.rank() << " out of " << inter_comm.size() << " processes.\n";
   std::cout << "commandline arguments: ";
   for (int i{0}; i < argc; ++i)
     std::cout << argv[i] << ' ';

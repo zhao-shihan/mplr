@@ -80,7 +80,6 @@ bool igather_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-
 BOOST_AUTO_TEST_CASE(gather) {
   if (not mplr::initialized())
     mplr::init();

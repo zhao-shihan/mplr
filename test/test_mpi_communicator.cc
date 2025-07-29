@@ -75,7 +75,6 @@ bool send_recv_test(const T &data) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(send_recv) {
   if (not mplr::initialized())
     mplr::init();

@@ -265,7 +265,6 @@ bool irsend_irecv_iter_test(const T &data) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(isend_irecv) {
   if (not mplr::initialized())
     mplr::init();

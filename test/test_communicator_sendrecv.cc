@@ -120,7 +120,6 @@ bool sendrecv_replace_iter_test() {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(sendrecv) {
   if (not mplr::initialized())
     mplr::init();

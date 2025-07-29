@@ -145,7 +145,6 @@ bool iscatterv_contiguous_test(const T &val) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(scatterv) {
   if (not mplr::initialized())
     mplr::init();

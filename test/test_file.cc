@@ -1039,7 +1039,6 @@ bool read_ordered_split_write_ordered_split_test(const std::vector<T> &val,
 }
 
 
-
 BOOST_AUTO_TEST_CASE(read_at_write_at) {
   if (not mplr::initialized())
     mplr::init();

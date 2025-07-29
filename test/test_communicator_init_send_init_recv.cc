@@ -349,7 +349,6 @@ bool rsend_init_recv_init_iter_test(const T &data) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(send_init_recv_init) {
   if (not mplr::initialized())
     mplr::init();

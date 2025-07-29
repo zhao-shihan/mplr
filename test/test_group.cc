@@ -4,7 +4,6 @@
 #include "mplr/mplr.hpp"
 
 
-
 BOOST_AUTO_TEST_CASE(group) {
   if (not mplr::initialized())
     mplr::init();

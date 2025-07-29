@@ -70,7 +70,6 @@ bool iscatter_test(const std::vector<T> &send, const std::vector<T> &expected,
 }
 
 
-
 BOOST_AUTO_TEST_CASE(scatter) {
   if (not mplr::initialized())
     mplr::init();

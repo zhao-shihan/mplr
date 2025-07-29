@@ -99,7 +99,6 @@ bool ireduce_scatter_block_test_with_layout(F f, const T &val) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(reduce_scatter_block) {
   if (not mplr::initialized())
     mplr::init();

@@ -35,7 +35,6 @@ bool dist_graph_communicator_test() {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(dist_graph_communicator) {
   if (not mplr::initialized())
     mplr::init();

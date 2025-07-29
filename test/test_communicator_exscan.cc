@@ -181,7 +181,6 @@ bool iexscan_test_with_layout_inplace(F f, const T &val) {
 }
 
 
-
 BOOST_AUTO_TEST_CASE(exscan) {
   if (not mplr::initialized())
     mplr::init();
