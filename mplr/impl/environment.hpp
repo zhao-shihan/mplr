@@ -86,7 +86,7 @@ namespace mplr {
   /// @param argv The argv of main function parameters.
   /// @param threading_mode Threading mode required.
   /// @return Threading mode provided by MPI library.
-  inline void init(int &argc, char **&argv) {
+  inline void init(int argc, char *argv[]) {
     int threading_mode_provided;
     if (argv) {
       MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode::multiple),
@@ -110,9 +110,7 @@ namespace mplr {
   /// @param threading_mode Threading mode required.
   /// @return Threading mode provided by MPI library.
   inline void init() {
-    int argc;
-    char **argv{};
-    init(argc, argv);
+    init({}, {});
   }
 
   //------------------------------------------------------------------
