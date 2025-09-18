@@ -65,7 +65,7 @@ namespace mplr {
   inline std::string get_library_version() {
     char lib_version[MPI_MAX_LIBRARY_VERSION_STRING + 1];
     int len;
-    MPI_Get_processor_name(lib_version, &len);
+    MPI_Get_library_version(lib_version, &len);
     lib_version[std::min(len, MPI_MAX_LIBRARY_VERSION_STRING)] = '\0';
     return lib_version;
   }
