@@ -11,6 +11,30 @@
 #include <utility>
 
 
+bool send_init_recv_init_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    auto r{comm_world.send_init(1)};
+    r.start();
+    r.wait();
+    r.start();
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.recv_init(0)};
+    r.start();
+    while (not r.test()) {
+    }
+    r.start();
+    while (not r.test()) {
+    }
+  }
+  return true;
+}
+
+
 template<typename T>
 bool send_init_recv_init_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -83,6 +107,31 @@ bool send_init_recv_init_iter_test(const T &data) {
       }
       ok = ok and data_r == data;
       return ok;
+    }
+  }
+  return true;
+}
+
+
+bool bsend_init_recv_init_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    mplr::bsend_buffer buff(1);
+    auto r{comm_world.bsend_init(1)};
+    r.start();
+    r.wait();
+    r.start();
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.recv_init(0)};
+    r.start();
+    while (not r.test()) {
+    }
+    r.start();
+    while (not r.test()) {
     }
   }
   return true;
@@ -179,6 +228,30 @@ bool bsend_init_recv_init_iter_test(const T &data) {
 }
 
 
+bool ssend_init_recv_init_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    auto r{comm_world.ssend_init(1)};
+    r.start();
+    r.wait();
+    r.start();
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.recv_init(0)};
+    r.start();
+    while (not r.test()) {
+    }
+    r.start();
+    while (not r.test()) {
+    }
+  }
+  return true;
+}
+
+
 template<typename T>
 bool ssend_init_recv_init_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -252,6 +325,36 @@ bool ssend_init_recv_init_iter_test(const T &data) {
       ok = ok and data_r == data;
       return ok;
     }
+  }
+  return true;
+}
+
+
+bool rsend_init_recv_init_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    auto r{comm_world.rsend_init(1)};
+    comm_world.barrier();
+    r.start();
+    r.wait();
+    comm_world.barrier();
+    r.start();
+    r.wait();
+  } else if (comm_world.rank() == 1) {
+    auto r{comm_world.recv_init(0)};
+    r.start();
+    comm_world.barrier();
+    while (not r.test()) {
+    }
+    r.start();
+    comm_world.barrier();
+    while (not r.test()) {
+    }
+  } else {
+    comm_world.barrier();
+    comm_world.barrier();
   }
   return true;
 }
@@ -353,6 +456,8 @@ BOOST_AUTO_TEST_CASE(send_init_recv_init) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(send_init_recv_init_test());
   // integer types
   BOOST_TEST(send_init_recv_init_test(std::byte(77)));
   BOOST_TEST(send_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -398,6 +503,8 @@ BOOST_AUTO_TEST_CASE(bsend_init_recv_init) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(bsend_init_recv_init_test());
   // integer types
   BOOST_TEST(bsend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(bsend_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -443,6 +550,8 @@ BOOST_AUTO_TEST_CASE(ssend_init_recv_init) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(ssend_init_recv_init_test());
   // integer types
   BOOST_TEST(ssend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(ssend_init_recv_init_test(std::numeric_limits<char>::max() - 1));
@@ -488,6 +597,8 @@ BOOST_AUTO_TEST_CASE(rsend_init_recv_init) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(rsend_init_recv_init_test());
   // integer types
   BOOST_TEST(rsend_init_recv_init_test(std::byte(77)));
   BOOST_TEST(rsend_init_recv_init_test(std::numeric_limits<char>::max() - 1));

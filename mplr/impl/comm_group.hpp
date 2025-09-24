@@ -772,6 +772,19 @@ namespace mplr {
       }
 
       // --- persistent standard send ---
+      /// Creates a persistent communication request to send an empty message
+      /// via a blocking standard send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return persistent communication request
+      inline prequest send_init(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Send_init(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_prequest{req};
+      }
+
       /// Creates a persistent communication request to send a message with a single
       /// value via a blocking standard send operation.
       /// \tparam T type of the data to send, must  meet the requirements as described in the
@@ -1079,6 +1092,19 @@ namespace mplr {
       }
 
       // --- persistent buffered send ---
+      /// Creates a persistent communication request to send an empty message
+      /// via a buffered send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return persistent communication request
+      inline prequest bsend_init(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Bsend_init(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_prequest{req};
+      }
+
       /// Creates a persistent communication request to send a message with a single
       /// value via a buffered send operation.
       /// \tparam T type of the data to send, must meet the  requirements as described in the
@@ -1356,6 +1382,19 @@ namespace mplr {
       }
 
       // --- persistent synchronous send ---
+      /// Creates a persistent communication request to send an empty message
+      /// via a blocking synchronous send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return persistent communication request
+      inline prequest ssend_init(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Ssend_init(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_prequest{req};
+      }
+
       /// Creates a persistent communication request to send a message with a single
       /// value via a blocking synchronous send operation. \tparam T type of the data to send,
       /// must meet the requirements as described in the
@@ -1633,6 +1672,19 @@ namespace mplr {
       }
 
       // --- persistent ready send ---
+      /// Creates a persistent communication request to send an empty message
+      /// via a blocking ready send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return persistent communication request
+      inline prequest rsend_init(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Rsend_init(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_prequest{req};
+      }
+
       /// Creates a persistent communication request to send a message with a single
       /// value via a blocking ready send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
@@ -1916,6 +1968,19 @@ namespace mplr {
       }
 
       // --- persistent receive ---
+      /// Creates a persistent communication request to receive an empty message
+      /// via a blocking receive operation.
+      /// \param source rank of the sending process
+      /// \param t tag associated to this message
+      /// \return persistent communication request
+      inline prequest recv_init(int source, tag_t t = tag_t{0}) const {
+        check_source(source);
+        check_recv_tag(t);
+        MPI_Request req;
+        MPI_Recv_init(nullptr, 0, MPI_BYTE, source, static_cast<int>(t), comm_, &req);
+        return base_prequest{req};
+      }
+
       /// Creates a persistent communication request to receive a message with a single
       /// value via a blocking receive operation.
       /// \tparam T type of the data to receive, must meet the requirements as described in the
