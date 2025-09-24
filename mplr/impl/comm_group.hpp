@@ -587,6 +587,15 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a blocking standard send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      void send(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Send(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_);
+      }
+
       /// Sends a message with a single value via a blocking standard send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -907,6 +916,15 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a buffered send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      void bsend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Bsend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_);
+      }
+
       /// Sends a message with a single value via a buffered send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -1199,6 +1217,15 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a blocking synchronous send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      void ssend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Ssend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_);
+      }
+
       /// Sends a message with a single value via a blocking synchronous send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -1489,6 +1516,15 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a blocking ready send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      void rsend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Rsend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_);
+      }
+
       /// Sends a message with a single value via a blocking ready send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -1799,6 +1835,20 @@ namespace mplr {
       }
 
     public:
+      /// Receives an empty message.
+      /// \param source rank of the sending process
+      /// \param t tag associated to this message
+      /// \return status of the receive operation
+      /// \anchor communicator_recv
+      status_t recv(int source, tag_t t = tag_t{0}) const {
+        check_source(source);
+        check_recv_tag(t);
+        status_t s;
+        MPI_Recv(nullptr, 0, MPI_BYTE, source, static_cast<int>(t), comm_,
+                 static_cast<MPI_Status *>(&s));
+        return s;
+      }
+
       /// Receives a message with a single value.
       /// \tparam T type of the data to receive, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -1901,6 +1951,18 @@ namespace mplr {
       }
 
     public:
+      /// Receives an empty message via a non-blocking receive operation.
+      /// \param source rank of the sending process
+      /// \param t tag associated to this message
+      /// \return request representing the ongoing receive operation
+      irequest irecv(int source, tag_t t = tag_t{0}) const {
+        check_source(source);
+        check_recv_tag(t);
+        MPI_Request req;
+        MPI_Irecv(nullptr, 0, MPI_BYTE, source, static_cast<int>(t), comm_, &req);
+        return base_irequest{req};
+      }
+
       /// Receives a message with a single value via a non-blocking receive operation.
       /// \tparam T type of the data to receive, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container

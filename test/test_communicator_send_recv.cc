@@ -39,6 +39,18 @@ struct span_size<std::span<T, N>> {
 #endif
 
 
+bool send_recv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0)
+    comm_world.send(1);
+  if (comm_world.rank() == 1)
+    comm_world.recv(0);
+  return true;
+}
+
+
 template<typename T>
 bool send_recv_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -85,6 +97,21 @@ bool send_recv_iter_test(const T &data) {
       comm_world.recv(std::begin(data_r), std::end(data_r), 0);
       return data_r == data;
     }
+  }
+  return true;
+}
+
+
+bool bsend_recv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    mplr::bsend_buffer buff(MPI_BSEND_OVERHEAD);
+    comm_world.bsend(1);
+  }
+  if (comm_world.rank() == 1) {
+    comm_world.recv(0);
   }
   return true;
 }
@@ -156,6 +183,18 @@ bool bsend_recv_iter_test(const T &data) {
 }
 
 
+bool ssend_recv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0)
+    comm_world.ssend(1);
+  if (comm_world.rank() == 1)
+    comm_world.recv(0);
+  return true;
+}
+
+
 template<typename T>
 bool ssend_recv_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -203,6 +242,23 @@ bool ssend_recv_iter_test(const T &data) {
       return data_r == data;
     }
   }
+  return true;
+}
+
+
+bool rsend_recv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    comm_world.barrier();
+    comm_world.rsend(1);
+  } else if (comm_world.rank() == 1) {
+    mplr::irequest r{comm_world.irecv(0)};
+    comm_world.barrier();
+    r.wait();
+  } else
+    comm_world.barrier();
   return true;
 }
 
@@ -308,6 +364,8 @@ BOOST_AUTO_TEST_CASE(send_recv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(send_recv_test());
   // integer types
   BOOST_TEST(send_recv_test(std::byte(77)));
   BOOST_TEST(send_recv_test(std::numeric_limits<char>::max() - 1));
@@ -366,6 +424,8 @@ BOOST_AUTO_TEST_CASE(bsend_recv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(bsend_recv_test());
   // integer types
   BOOST_TEST(bsend_recv_test(std::byte(77)));
   BOOST_TEST(bsend_recv_test(std::numeric_limits<char>::max() - 1));
@@ -424,6 +484,8 @@ BOOST_AUTO_TEST_CASE(ssend_recv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(ssend_recv_test());
   // integer types
   BOOST_TEST(ssend_recv_test(std::byte(77)));
   BOOST_TEST(ssend_recv_test(std::numeric_limits<char>::max() - 1));
@@ -482,6 +544,8 @@ BOOST_AUTO_TEST_CASE(rsend_recv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(rsend_recv_test());
   // integer types
   BOOST_TEST(rsend_recv_test(std::byte(77)));
   BOOST_TEST(rsend_recv_test(std::numeric_limits<char>::max() - 1));
