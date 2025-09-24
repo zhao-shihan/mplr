@@ -777,7 +777,7 @@ namespace mplr {
       /// \param destination rank of the receiving process
       /// \param t tag associated to this message
       /// \return persistent communication request
-      inline prequest send_init(int destination, tag_t t = tag_t{0}) const {
+      prequest send_init(int destination, tag_t t = tag_t{0}) const {
         check_dest(destination);
         check_send_tag(t);
         MPI_Request req;
@@ -1097,7 +1097,7 @@ namespace mplr {
       /// \param destination rank of the receiving process
       /// \param t tag associated to this message
       /// \return persistent communication request
-      inline prequest bsend_init(int destination, tag_t t = tag_t{0}) const {
+      prequest bsend_init(int destination, tag_t t = tag_t{0}) const {
         check_dest(destination);
         check_send_tag(t);
         MPI_Request req;
@@ -1387,7 +1387,7 @@ namespace mplr {
       /// \param destination rank of the receiving process
       /// \param t tag associated to this message
       /// \return persistent communication request
-      inline prequest ssend_init(int destination, tag_t t = tag_t{0}) const {
+      prequest ssend_init(int destination, tag_t t = tag_t{0}) const {
         check_dest(destination);
         check_send_tag(t);
         MPI_Request req;
@@ -1677,7 +1677,7 @@ namespace mplr {
       /// \param destination rank of the receiving process
       /// \param t tag associated to this message
       /// \return persistent communication request
-      inline prequest rsend_init(int destination, tag_t t = tag_t{0}) const {
+      prequest rsend_init(int destination, tag_t t = tag_t{0}) const {
         check_dest(destination);
         check_send_tag(t);
         MPI_Request req;
@@ -1973,7 +1973,7 @@ namespace mplr {
       /// \param source rank of the sending process
       /// \param t tag associated to this message
       /// \return persistent communication request
-      inline prequest recv_init(int source, tag_t t = tag_t{0}) const {
+      prequest recv_init(int source, tag_t t = tag_t{0}) const {
         check_source(source);
         check_recv_tag(t);
         MPI_Request req;

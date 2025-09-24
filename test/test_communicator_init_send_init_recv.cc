@@ -118,7 +118,7 @@ bool bsend_init_recv_init_test() {
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
-    mplr::bsend_buffer buff(1);
+    mplr::bsend_buffer buff(MPI_BSEND_OVERHEAD);
     auto r{comm_world.bsend_init(1)};
     r.start();
     r.wait();
