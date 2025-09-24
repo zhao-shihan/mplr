@@ -712,6 +712,18 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a non-blocking standard send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return request representing the ongoing message transfer
+      irequest isend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Isend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_irequest{req};
+      }
+
       /// Sends a message with a single value via a non-blocking standard send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -872,7 +884,7 @@ namespace mplr {
       [[nodiscard]] int bsend_size(int number = 1) const {
         int pack_size{0};
         MPI_Pack_size(number, detail::datatype_traits<T>::get_datatype(), comm_, &pack_size);
-        return pack_size + MPI_BSEND_OVERHEAD;
+        return pack_size + bsend_overhead;
       }
 
       /// Determines the message buffer size.
@@ -887,7 +899,7 @@ namespace mplr {
         int pack_size{0};
         MPI_Pack_size(number, detail::datatype_traits<layout<T>>::get_datatype(l), comm_,
                       &pack_size);
-        return pack_size + MPI_BSEND_OVERHEAD;
+        return pack_size + bsend_overhead;
       }
 
       // --- blocking buffered send ---
@@ -1040,6 +1052,18 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a non-blocking buffered send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return request representing the ongoing message transfer
+      irequest ibsend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Ibsend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_irequest{req};
+      }
+
       /// Sends a message with a single value via a non-blocking buffered send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container
@@ -1339,6 +1363,18 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a non-blocking synchronous send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return request representing the ongoing message transfer
+      irequest issend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Issend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_irequest{req};
+      }
+
       /// Sends a message with a single value via a non-blocking synchronous send
       /// operation.
       /// \tparam T type of the data to send, must meet the requirements as described
@@ -1639,6 +1675,18 @@ namespace mplr {
       }
 
     public:
+      /// Sends an empty message via a non-blocking synchronous send operation.
+      /// \param destination rank of the receiving process
+      /// \param t tag associated to this message
+      /// \return request representing the ongoing message transfer
+      irequest irsend(int destination, tag_t t = tag_t{0}) const {
+        check_dest(destination);
+        check_send_tag(t);
+        MPI_Request req;
+        MPI_Irsend(nullptr, 0, MPI_BYTE, destination, static_cast<int>(t), comm_, &req);
+        return base_irequest{req};
+      }
+
       /// Sends a message with a single value via a non-blocking ready send operation.
       /// \tparam T type of the data to send, must meet the requirements as described in the
       /// \verbatim embed:rst:inline :doc:`data_types` \endverbatim section or an STL container

@@ -15,6 +15,23 @@
 #include <vector>
 
 
+bool isend_irecv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    auto r{comm_world.isend(1)};
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.irecv(0)};
+    while (not r.test()) {
+    }
+  }
+  return true;
+}
+
+
 template<typename T>
 bool isend_irecv_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -58,6 +75,24 @@ bool isend_irecv_iter_test(const T &data) {
       while (not r.test()) {
       }
       return data_r == data;
+    }
+  }
+  return true;
+}
+
+
+bool ibsend_irecv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    mplr::bsend_buffer buff(mplr::bsend_overhead);
+    auto r{comm_world.ibsend(1)};
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.irecv(0)};
+    while (not r.test()) {
     }
   }
   return true;
@@ -125,6 +160,23 @@ bool ibsend_irecv_iter_test(const T &data) {
 }
 
 
+bool issend_irecv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    auto r{comm_world.issend(1)};
+    r.wait();
+  }
+  if (comm_world.rank() == 1) {
+    auto r{comm_world.irecv(0)};
+    while (not r.test()) {
+    }
+  }
+  return true;
+}
+
+
 template<typename T>
 bool issend_irecv_test(const T &data) {
   const auto comm_world = mplr::comm_world();
@@ -170,6 +222,25 @@ bool issend_irecv_iter_test(const T &data) {
       return data_r == data;
     }
   }
+  return true;
+}
+
+
+bool irsend_irecv_test() {
+  const auto comm_world = mplr::comm_world();
+  if (comm_world.size() < 2)
+    return false;
+  if (comm_world.rank() == 0) {
+    comm_world.barrier();
+    auto r{comm_world.irsend(1)};
+    r.wait();
+  } else if (comm_world.rank() == 1) {
+    mplr::irequest r{comm_world.irecv(0)};
+    comm_world.barrier();
+    while (not r.test()) {
+    }
+  } else
+    comm_world.barrier();
   return true;
 }
 
@@ -269,6 +340,8 @@ BOOST_AUTO_TEST_CASE(isend_irecv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(isend_irecv_test());
   // integer types
   BOOST_TEST(isend_irecv_test(std::byte(77)));
   BOOST_TEST(isend_irecv_test(std::numeric_limits<char>::max() - 1));
@@ -320,6 +393,8 @@ BOOST_AUTO_TEST_CASE(ibsend_irecv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(ibsend_irecv_test());
   // integer types
   BOOST_TEST(ibsend_irecv_test(std::byte(77)));
   BOOST_TEST(ibsend_irecv_test(std::numeric_limits<char>::max() - 1));
@@ -371,6 +446,8 @@ BOOST_AUTO_TEST_CASE(issend_irecv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(issend_irecv_test());
   // integer types
   BOOST_TEST(issend_irecv_test(std::byte(77)));
   BOOST_TEST(issend_irecv_test(std::numeric_limits<char>::max() - 1));
@@ -422,6 +499,8 @@ BOOST_AUTO_TEST_CASE(irsend_irecv) {
   if (not mplr::initialized())
     mplr::init();
 
+  // empty message
+  BOOST_TEST(irsend_irecv_test());
   // integer types
   BOOST_TEST(irsend_irecv_test(std::byte(77)));
   BOOST_TEST(irsend_irecv_test(std::numeric_limits<char>::max() - 1));
