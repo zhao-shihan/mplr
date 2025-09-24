@@ -107,7 +107,7 @@ bool bsend_recv_test() {
   if (comm_world.size() < 2)
     return false;
   if (comm_world.rank() == 0) {
-    mplr::bsend_buffer buff(MPI_BSEND_OVERHEAD);
+    mplr::bsend_buffer buff(mplr::bsend_overhead);
     comm_world.bsend(1);
   }
   if (comm_world.rank() == 1) {
