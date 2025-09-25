@@ -2,7 +2,6 @@
 
 #define MPLR_OPERATOR_HPP
 
-#include <ciso646>
 #include <functional>
 #include <memory>
 #include <type_traits>
