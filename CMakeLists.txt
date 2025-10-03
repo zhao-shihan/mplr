@@ -1,7 +1,7 @@
 # 3.21 required for PROJECT_IS_TOP_LEVEL, 3.10 required for mpi targets, 3.5 required for boost targets
 cmake_minimum_required(VERSION 3.21)
 
-project(mplr VERSION 0.25.1003 LANGUAGES CXX)
+project(mplr VERSION 0.25.1003 LANGUAGES C CXX)
 
 if(NOT DEFINED CACHE{BUILD_TESTING})
   set(BUILD_TESTING OFF CACHE BOOL "")
@@ -31,7 +31,6 @@ target_link_libraries(mplr INTERFACE MPI::MPI_CXX)
 
 option(MPLR_BUILD_EXAMPLES "build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
 if(MPLR_BUILD_EXAMPLES)
-  enable_language(C)
   find_package(MPI 3.1 REQUIRED C)
   add_subdirectory(examples)
 endif()
