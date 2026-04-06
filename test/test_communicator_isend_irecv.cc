@@ -166,7 +166,7 @@ bool issend_irecv_test() {
     return false;
   if (comm_world.rank() == 0) {
     auto r{comm_world.issend(1)};
-    r.wait();
+    r.wait(mplr::duty_ratio::preset::moderate);
   }
   if (comm_world.rank() == 1) {
     auto r{comm_world.irecv(0)};
@@ -184,7 +184,7 @@ bool issend_irecv_test(const T &data) {
     return false;
   if (comm_world.rank() == 0) {
     auto r{comm_world.issend(data, 1)};
-    r.wait();
+    r.wait(mplr::duty_ratio::preset::moderate);
   }
   if (comm_world.rank() == 1) {
     T data_r;
@@ -204,7 +204,7 @@ bool issend_irecv_iter_test(const T &data) {
     return false;
   if (comm_world.rank() == 0) {
     auto r{comm_world.issend(std::begin(data), std::end(data), 1)};
-    r.wait();
+    r.wait(mplr::duty_ratio::preset::moderate);
   }
   if (comm_world.rank() == 1) {
     T data_r;
@@ -233,7 +233,7 @@ bool irsend_irecv_test() {
   if (comm_world.rank() == 0) {
     comm_world.barrier();
     auto r{comm_world.irsend(1)};
-    r.wait();
+    r.wait(mplr::duty_ratio::preset::moderate);
   } else if (comm_world.rank() == 1) {
     mplr::irequest r{comm_world.irecv(0)};
     comm_world.barrier();
@@ -253,7 +253,7 @@ bool irsend_irecv_test(const T &data) {
   if (comm_world.rank() == 0) {
     comm_world.barrier();
     auto r{comm_world.irsend(data, 1)};
-    r.wait();
+    r.wait(mplr::duty_ratio::preset::moderate);
   } else if (comm_world.rank() == 1) {
     // must ensure that MPI_Recv is called before mplr::communicator::rsend
     if constexpr (has_begin_end<T>() and has_size<T>() and has_resize<T>()) {
@@ -262,7 +262,7 @@ bool irsend_irecv_test(const T &data) {
       data_r.resize(data.size());
       mplr::irequest r{comm_world.irecv(begin(data_r), end(data_r), 0)};
       comm_world.barrier();
-      r.wait();
+      r.wait(mplr::duty_ratio{0.03});
       return data_r == data;
     } else if constexpr (has_begin_end<T>() and has_size<T>()) {
       // T is an STL container without resize member, e.g., std::set

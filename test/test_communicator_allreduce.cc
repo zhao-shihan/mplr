@@ -53,7 +53,7 @@ bool iallreduce_test(F f, const T &val) {
     ++x;
   T y{};
   auto r{comm_world.iallreduce(f, x, y)};
-  r.wait();
+  r.wait(mplr::duty_ratio::preset::moderate);
   T expected{val};
   x = val;
   for (int i{1}; i < comm_world.size(); ++i) {

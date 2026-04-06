@@ -86,7 +86,7 @@ bool improbe_test(const T &data) {
         }
         T data_r;
         mplr::irequest request{comm_world.imrecv(data_r, m)};
-        request.wait();
+        request.wait(mplr::duty_ratio::preset::moderate);
         return data_r == data;
       }
     }
@@ -116,7 +116,7 @@ bool improbe_iter_test(const T &data) {
         if constexpr (has_resize<T>())
           data_r.resize(count);
         mplr::irequest request{comm_world.imrecv(std::begin(data_r), std::end(data_r), m)};
-        request.wait();
+        request.wait(mplr::duty_ratio{0.03});
         return data_r == data;
       }
     }
