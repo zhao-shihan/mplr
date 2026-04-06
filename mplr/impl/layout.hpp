@@ -56,10 +56,10 @@ namespace mplr {
   class absolute_data;
 
   template<typename T>
-  absolute_data<T *> make_absolute(T *x, const layout<T> &l);
+  absolute_data<T*> make_absolute(T* x, const layout<T>& l);
 
   template<typename T>
-  absolute_data<const T *> make_absolute(const T *x, const layout<T> &l);
+  absolute_data<const T*> make_absolute(const T* x, const layout<T>& l);
 
   template<typename T>
   class contiguous_layouts;
@@ -94,7 +94,7 @@ namespace mplr {
     /// Copy constructor creates a new layout that describes the same memory layout as
     /// the other one.
     /// \param l the layout to copy from
-    layout(const layout &l) {
+    layout(const layout& l) {
       if (l.type_ != MPI_DATATYPE_NULL)
         MPI_Type_dup(l.type_, &type_);
     }
@@ -102,14 +102,14 @@ namespace mplr {
     /// Move constructor creates a new layout that describes the same memory layout as
     /// the other one.
     /// \param l the layout to move from
-    layout(layout &&l) noexcept : type_{l.type_} {
+    layout(layout&& l) noexcept : type_{l.type_} {
       l.type_ = MPI_DATATYPE_NULL;
     }
 
     /// Copy assignment operator creates a new layout that describes the same memory
     /// layout as the other one.
     /// \param l the layout to copy from
-    layout &operator=(const layout &l) {
+    layout& operator=(const layout& l) {
       if (this != &l) {
         if (type_ != MPI_DATATYPE_NULL)
           MPI_Type_free(&type_);
@@ -124,7 +124,7 @@ namespace mplr {
     /// Move assignment operator creates a new layout that describes the same memory
     /// layout as the other one.
     /// \param l the layout to move from
-    layout &operator=(layout &&l) noexcept {
+    layout& operator=(layout&& l) noexcept {
       if (type_ != MPI_DATATYPE_NULL)
         MPI_Type_free(&type_);
       type_ = l.type_;
@@ -322,7 +322,7 @@ namespace mplr {
 
     /// Swap with other layout.
     /// \param l other layout
-    void swap(layout &l) noexcept {
+    void swap(layout& l) noexcept {
       std::swap(type_, l.type_);
     }
 
@@ -358,9 +358,9 @@ namespace mplr {
 
     friend class heterogeneous_layout;
 
-    friend absolute_data<T *> make_absolute<>(T *, const layout &);
+    friend absolute_data<T*> make_absolute<>(T*, const layout&);
 
-    friend absolute_data<const T *> make_absolute<>(const T *, const layout &);
+    friend absolute_data<const T*> make_absolute<>(const T*, const layout&);
   };
 
   //--------------------------------------------------------------------
@@ -380,15 +380,15 @@ namespace mplr {
     }
 
     /// copy constructor
-    null_layout([[maybe_unused]] const null_layout &l) noexcept : null_layout() {
+    null_layout([[maybe_unused]] const null_layout& l) noexcept : null_layout() {
     }
 
-    null_layout([[maybe_unused]] null_layout &&l) noexcept : null_layout() {
+    null_layout([[maybe_unused]] null_layout&& l) noexcept : null_layout() {
     }
 
     /// swap two instances of null_layout
     /// \note This a no-op, as all instances of \c null_layout are equal.
-    void swap([[maybe_unused]] null_layout &other) noexcept {
+    void swap([[maybe_unused]] null_layout& other) noexcept {
     }
 
     using layout<T>::byte_extent;
@@ -423,27 +423,27 @@ namespace mplr {
 
     /// copy constructor
     /// \param l layout to copy from
-    empty_layout(const empty_layout &l) : layout<T>(l) {
+    empty_layout(const empty_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    empty_layout(empty_layout &&l) noexcept : layout<T>(std::move(l)) {
+    empty_layout(empty_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    empty_layout &operator=(const empty_layout &l) = default;
+    empty_layout& operator=(const empty_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    empty_layout &operator=(empty_layout &&l) noexcept = default;
+    empty_layout& operator=(empty_layout&& l) noexcept = default;
 
     /// exchanges two empty layouts
     /// \param other the layout to swap with
-    void swap(empty_layout &other) noexcept {
+    void swap(empty_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -511,18 +511,18 @@ namespace mplr {
     /// some other contiguous layout
     /// \param count number of layouts in sequence
     /// \param l the layout of a single element
-    explicit contiguous_layout(std::size_t count, const contiguous_layout &l)
+    explicit contiguous_layout(std::size_t count, const contiguous_layout& l)
         : layout<T>(build(count, l.type_)), count_(l.count_ * count) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    contiguous_layout(const contiguous_layout &l) : layout<T>(l), count_(l.count_) {
+    contiguous_layout(const contiguous_layout& l) : layout<T>(l), count_(l.count_) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    contiguous_layout(contiguous_layout &&l) noexcept
+    contiguous_layout(contiguous_layout&& l) noexcept
         : layout<T>(std::move(l)), count_(l.count_) {
       l.count_ = 0;
     }
@@ -530,7 +530,7 @@ namespace mplr {
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    contiguous_layout &operator=(const contiguous_layout &l) {
+    contiguous_layout& operator=(const contiguous_layout& l) {
       if (&l != this) {
         layout<T>::operator=(l);
         count_ = l.count_;
@@ -541,7 +541,7 @@ namespace mplr {
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    contiguous_layout &operator=(contiguous_layout &&l) noexcept {
+    contiguous_layout& operator=(contiguous_layout&& l) noexcept {
       if (this != &l) {
         layout<T>::operator=(std::move(l));
         count_ = l.count_;
@@ -552,7 +552,7 @@ namespace mplr {
 
     /// exchanges two contiguous layouts
     /// \param other the layout to swap with
-    void swap(contiguous_layout &other) noexcept {
+    void swap(contiguous_layout& other) noexcept {
       std::swap(type_, other.type_);
       std::swap(count_, other.count_);
     }
@@ -620,33 +620,33 @@ namespace mplr {
     /// other layout
     /// \param count number of layouts in sequence
     /// \param l the layout of a single element
-    explicit vector_layout(std::size_t count, const layout<T> &l)
+    explicit vector_layout(std::size_t count, const layout<T>& l)
         : layout<T>(build(count, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    vector_layout(const vector_layout &l) : layout<T>(l) {
+    vector_layout(const vector_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    vector_layout(vector_layout &&l) noexcept : layout<T>(std::move(l)) {
+    vector_layout(vector_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    vector_layout &operator=(const vector_layout &l) = default;
+    vector_layout& operator=(const vector_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    vector_layout &operator=(vector_layout &&l) noexcept = default;
+    vector_layout& operator=(vector_layout&& l) noexcept = default;
 
     /// exchanges two contiguous layouts
     /// \param other the layout to swap with
-    void swap(vector_layout &other) noexcept {
+    void swap(vector_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -703,33 +703,33 @@ namespace mplr {
     /// \param stride number or elements between start of each block, each element having the
     /// size given by the extend of the layout given by parameter \c l
     /// \param l the layout of a single element in each block
-    explicit strided_vector_layout(int count, int blocklength, int stride, const layout<T> &l)
+    explicit strided_vector_layout(int count, int blocklength, int stride, const layout<T>& l)
         : layout<T>(build(count, blocklength, stride, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    strided_vector_layout(const strided_vector_layout &l) : layout<T>(l) {
+    strided_vector_layout(const strided_vector_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    strided_vector_layout(strided_vector_layout &&l) noexcept : layout<T>(std::move(l)) {
+    strided_vector_layout(strided_vector_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    strided_vector_layout &operator=(const strided_vector_layout &l) = default;
+    strided_vector_layout& operator=(const strided_vector_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    strided_vector_layout &operator=(strided_vector_layout &&l) noexcept = default;
+    strided_vector_layout& operator=(strided_vector_layout&& l) noexcept = default;
 
     /// exchanges two contiguous layouts
     /// \param other the layout to swap with
-    void swap(strided_vector_layout &other) noexcept {
+    void swap(strided_vector_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -767,9 +767,9 @@ namespace mplr {
       /// have two elements (the block length and the displacement), each convertible to int
       /// \param list container
       template<typename List_T>
-      parameter(const List_T &list) {
+      parameter(const List_T& list) {
         using std::get;
-        for (const auto &i : list)
+        for (const auto& i : list)
           add(get<0>(i), get<1>(i));
       }
 
@@ -778,7 +778,7 @@ namespace mplr {
       /// displacements
       parameter(std::initializer_list<std::tuple<int, int>> list) {
         using std::get;
-        for (const std::tuple<int, int> &i : list)
+        for (const std::tuple<int, int>& i : list)
           add(get<0>(i), get<1>(i));
       }
 
@@ -801,7 +801,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        const parameter &par,
+        const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
       MPI_Type_indexed(par.displacements.size(), par.blocklengths.data(),
@@ -816,39 +816,39 @@ namespace mplr {
 
     /// constructs indexed layout for data of type \c T
     /// \param par parameter containing information about the layout
-    explicit indexed_layout(const parameter &par) : layout<T>(build(par)) {
+    explicit indexed_layout(const parameter& par) : layout<T>(build(par)) {
     }
 
     /// constructs indexed layout for data with some other layout
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
-    explicit indexed_layout(const parameter &par, const layout<T> &l)
+    explicit indexed_layout(const parameter& par, const layout<T>& l)
         : layout<T>(build(par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    indexed_layout(const indexed_layout &l) : layout<T>(l) {
+    indexed_layout(const indexed_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    indexed_layout(indexed_layout &&l) noexcept : layout<T>(std::move(l)) {
+    indexed_layout(indexed_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    indexed_layout &operator=(const indexed_layout &l) = default;
+    indexed_layout& operator=(const indexed_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    indexed_layout &operator=(indexed_layout &&l) noexcept = default;
+    indexed_layout& operator=(indexed_layout&& l) noexcept = default;
 
     /// exchanges two indexed layouts
     /// \param other the layout to swap with
-    void swap(indexed_layout &other) noexcept {
+    void swap(indexed_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -888,9 +888,9 @@ namespace mplr {
       /// have two elements (the block length and the displacement), each convertible to int
       /// \param list container
       template<typename List_T>
-      explicit parameter(const List_T &list) {
+      explicit parameter(const List_T& list) {
         using std::get;
-        for (const auto &i : list)
+        for (const auto& i : list)
           add(get<0>(i), get<1>(i));
       }
 
@@ -899,7 +899,7 @@ namespace mplr {
       /// displacements
       parameter(std::initializer_list<std::tuple<int, ssize_t>> list) {
         using std::get;
-        for (const std::tuple<int, ssize_t> &i : list)
+        for (const std::tuple<int, ssize_t>& i : list)
           add(get<0>(i), get<1>(i));
       }
 
@@ -926,7 +926,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        const parameter &par,
+        const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
       MPI_Type_create_hindexed(par.displacements.size(), par.blocklengths.data(),
@@ -942,40 +942,40 @@ namespace mplr {
     /// constructs heterogeneously indexed layout for data of type \c T
     /// \param par parameter containing information about the layout
     /// \note displacements are given in bytes
-    explicit hindexed_layout(const parameter &par) : layout<T>(build(par)) {
+    explicit hindexed_layout(const parameter& par) : layout<T>(build(par)) {
     }
 
     /// constructs heterogeneously indexed layout for data with some other layout
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
     /// \note displacements are given bytes
-    explicit hindexed_layout(const parameter &par, const layout<T> &l)
+    explicit hindexed_layout(const parameter& par, const layout<T>& l)
         : layout<T>(build(par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    hindexed_layout(const hindexed_layout &l) : layout<T>(l) {
+    hindexed_layout(const hindexed_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    hindexed_layout(hindexed_layout &&l) noexcept : layout<T>(std::move(l)) {
+    hindexed_layout(hindexed_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    hindexed_layout &operator=(const hindexed_layout &l) = default;
+    hindexed_layout& operator=(const hindexed_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    hindexed_layout &operator=(hindexed_layout &&l) noexcept = default;
+    hindexed_layout& operator=(hindexed_layout&& l) noexcept = default;
 
     /// exchanges two indexed layouts
     /// \param other the layout to swap with
-    void swap(hindexed_layout &other) noexcept {
+    void swap(hindexed_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1013,8 +1013,8 @@ namespace mplr {
       /// have a single element (the displacement), convertible to int
       /// \param list container
       template<typename List_T>
-      explicit parameter(const List_T &list) {
-        for (const auto &i : list)
+      explicit parameter(const List_T& list) {
+        for (const auto& i : list)
           add(i);
       }
 
@@ -1042,7 +1042,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        int blocklengths, const parameter &par,
+        int blocklengths, const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
       MPI_Type_create_indexed_block(par.displacements.size(), blocklengths,
@@ -1059,7 +1059,7 @@ namespace mplr {
     /// \param blocklength the length of each block
     /// \param par parameter containing information about the layout
     /// \note displacements are given in multiples of the extent of \c T
-    explicit indexed_block_layout(int blocklength, const parameter &par)
+    explicit indexed_block_layout(int blocklength, const parameter& par)
         : layout<T>(build(blocklength, par)) {
     }
 
@@ -1068,33 +1068,33 @@ namespace mplr {
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
     /// \note displacements are given in multiples of the extent of \c l
-    explicit indexed_block_layout(int blocklength, const parameter &par, const layout<T> &l)
+    explicit indexed_block_layout(int blocklength, const parameter& par, const layout<T>& l)
         : layout<T>(build(blocklength, par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    indexed_block_layout(const indexed_block_layout &l) : layout<T>(l) {
+    indexed_block_layout(const indexed_block_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    indexed_block_layout(indexed_block_layout &&l) noexcept : layout<T>(std::move(l)) {
+    indexed_block_layout(indexed_block_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    indexed_block_layout &operator=(const indexed_block_layout &l) = default;
+    indexed_block_layout& operator=(const indexed_block_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    indexed_block_layout &operator=(indexed_block_layout &&l) noexcept = default;
+    indexed_block_layout& operator=(indexed_block_layout&& l) noexcept = default;
 
     /// exchanges two indexed layouts
     /// \param other the layout to swap with
-    void swap(indexed_block_layout &other) noexcept {
+    void swap(indexed_block_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1133,15 +1133,15 @@ namespace mplr {
       /// have a single element (the displacement), convertible to int
       /// \param list container
       template<typename List_T>
-      explicit parameter(const List_T &list) {
-        for (const auto &i : list)
+      explicit parameter(const List_T& list) {
+        for (const auto& i : list)
           add(i);
       }
 
       /// converts an initializer list into an hindexed block layout parameter
       /// \param list initializer list with integers representing the displacements
       parameter(std::initializer_list<ssize_t> list) {
-        for (const ssize_t &i : list)
+        for (const ssize_t& i : list)
           add(i);
       }
 
@@ -1166,7 +1166,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        int blocklengths, const parameter &par,
+        int blocklengths, const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
       MPI_Type_create_hindexed_block(par.displacements.size(), blocklengths,
@@ -1183,7 +1183,7 @@ namespace mplr {
     /// \param blocklength the length of each block
     /// \param par parameter containing information about the layout
     /// \note displacements are given in bytes
-    explicit hindexed_block_layout(int blocklength, const parameter &par)
+    explicit hindexed_block_layout(int blocklength, const parameter& par)
         : layout<T>(build(blocklength, par)) {
     }
 
@@ -1192,33 +1192,33 @@ namespace mplr {
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
     /// \note displacements are given bytes
-    explicit hindexed_block_layout(int blocklength, const parameter &par, const layout<T> &l)
+    explicit hindexed_block_layout(int blocklength, const parameter& par, const layout<T>& l)
         : layout<T>(build(blocklength, par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    hindexed_block_layout(const hindexed_block_layout &l) : layout<T>(l) {
+    hindexed_block_layout(const hindexed_block_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    hindexed_block_layout(hindexed_block_layout &&l) noexcept : layout<T>(std::move(l)) {
+    hindexed_block_layout(hindexed_block_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    hindexed_block_layout &operator=(const hindexed_block_layout &l) = default;
+    hindexed_block_layout& operator=(const hindexed_block_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    hindexed_block_layout &operator=(hindexed_block_layout &&l) noexcept = default;
+    hindexed_block_layout& operator=(hindexed_block_layout&& l) noexcept = default;
 
     /// exchanges two indexed layouts
     /// \param other the layout to swap with
-    void swap(hindexed_block_layout &other) noexcept {
+    void swap(hindexed_block_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1251,14 +1251,13 @@ namespace mplr {
       std::vector<int> blocklengths;
 
       template<typename value_T>
-      void add(value_T &base, value_T *&i, MPI_Count extent_) {
-        add(reinterpret_cast<char *>(&i) - reinterpret_cast<char *>(&base), extent_);
+      void add(value_T& base, value_T*& i, MPI_Count extent_) {
+        add(reinterpret_cast<char*>(&i) - reinterpret_cast<char*>(&base), extent_);
       }
 
       template<typename value_T>
-      void add(const value_T &base, const value_T &i, MPI_Count extent_) {
-        add(reinterpret_cast<const char *>(&i) - reinterpret_cast<const char *>(&base),
-            extent_);
+      void add(const value_T& base, const value_T& i, MPI_Count extent_) {
+        add(reinterpret_cast<const char*>(&i) - reinterpret_cast<const char*>(&base), extent_);
       }
 
       void add(MPI_Aint displacement, MPI_Count extent_) {
@@ -1301,7 +1300,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        const parameter &par,
+        const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
 #if defined MPLR_DEBUG
@@ -1330,7 +1329,7 @@ namespace mplr {
 
     /// constructs iterator layout for data of type T
     /// \param par parameter containing information about the layout
-    explicit iterator_layout(const parameter &par) : layout<T>(build(par)) {
+    explicit iterator_layout(const parameter& par) : layout<T>(build(par)) {
     }
 
     /// constructs iterator layout for data with some other layout
@@ -1339,40 +1338,40 @@ namespace mplr {
     /// \param last iterator pointing after the last element
     /// \param l the layout of a single element
     template<typename iter_T>
-    explicit iterator_layout(iter_T first, iter_T last, const layout<T> &l)
+    explicit iterator_layout(iter_T first, iter_T last, const layout<T>& l)
         : layout<T>(build(parameter(first, last), l.type_)) {
     }
 
     /// constructs iterator layout for data with some other layout
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
-    explicit iterator_layout(const parameter &par, const layout<T> &l)
+    explicit iterator_layout(const parameter& par, const layout<T>& l)
         : layout<T>(build(par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    iterator_layout(const iterator_layout &l) : layout<T>(l) {
+    iterator_layout(const iterator_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    iterator_layout(iterator_layout &&l) noexcept : layout<T>(std::move(l)) {
+    iterator_layout(iterator_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    iterator_layout &operator=(const iterator_layout &l) = default;
+    iterator_layout& operator=(const iterator_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    iterator_layout &operator=(iterator_layout &&l) noexcept = default;
+    iterator_layout& operator=(iterator_layout&& l) noexcept = default;
 
     /// exchanges two iterator layouts
     /// \param other the layout to swap with
-    void swap(iterator_layout &other) noexcept {
+    void swap(iterator_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1424,8 +1423,8 @@ namespace mplr {
       /// the size of the subarray, the third value gives the index of the first element of the
       /// subarray.  Array order is C order.
       template<typename List_T>
-      explicit parameter(const List_T &V) {
-        for (const auto &i : V)
+      explicit parameter(const List_T& V) {
+        for (const auto& i : V)
           add(std::get<0>(i), std::get<1>(i), std::get<2>(i));
       }
 
@@ -1436,7 +1435,7 @@ namespace mplr {
       /// equals the size of the subarray, the third value gives the index of the first element
       /// of the subarray.  Array order is C order.
       parameter(std::initializer_list<std::array<int, 3>> list) {
-        for (const std::array<int, 3> &i : list)
+        for (const std::array<int, 3>& i : list)
           add(i[0], i[1], i[2]);
       }
 
@@ -1473,7 +1472,7 @@ namespace mplr {
     }
 
     static MPI_Datatype build(
-        const parameter &par,
+        const parameter& par,
         MPI_Datatype old_type = detail::datatype_traits<T>::get_datatype()) {
       MPI_Datatype new_type;
       int total_size = 1;
@@ -1495,39 +1494,39 @@ namespace mplr {
 
     /// constructs subarray layout for data of type T
     /// \param par parameter containing information about the layout
-    explicit subarray_layout(const parameter &par) : layout<T>(build(par)) {
+    explicit subarray_layout(const parameter& par) : layout<T>(build(par)) {
     }
 
     /// constructs subarray layout for data with some other layout
     /// \param par parameter containing information about the layout
     /// \param l the layout of a single element
-    explicit subarray_layout(const parameter &par, const layout<T> &l)
+    explicit subarray_layout(const parameter& par, const layout<T>& l)
         : layout<T>(build(par, l.type_)) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    subarray_layout(const subarray_layout &l) : layout<T>(l) {
+    subarray_layout(const subarray_layout& l) : layout<T>(l) {
     }
 
     /// move constructor
     /// \param l layout to move from
-    subarray_layout(subarray_layout &&l) noexcept : layout<T>(std::move(l)) {
+    subarray_layout(subarray_layout&& l) noexcept : layout<T>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    subarray_layout &operator=(const subarray_layout &l) = default;
+    subarray_layout& operator=(const subarray_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    subarray_layout &operator=(subarray_layout &&l) noexcept = default;
+    subarray_layout& operator=(subarray_layout&& l) noexcept = default;
 
     /// exchanges two subarray layouts
     /// \param other the layout to swap with
-    void swap(subarray_layout &other) noexcept {
+    void swap(subarray_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1555,17 +1554,17 @@ namespace mplr {
   /// <tt>make_absolute(const T *x, const layout<T> &l)</tt>.
   /// \tparam T data type
   template<typename T>
-  class absolute_data<T *> {
-    T *address_{nullptr};
+  class absolute_data<T*> {
+    T* address_{nullptr};
     MPI_Datatype datatype_;
 
-    explicit absolute_data(T *address, MPI_Datatype datatype)
+    explicit absolute_data(T* address, MPI_Datatype datatype)
         : address_{address}, datatype_{datatype} {
     }
 
     friend class heterogeneous_layout;
 
-    friend absolute_data make_absolute<>(T *, const layout<T> &);
+    friend absolute_data make_absolute<>(T*, const layout<T>&);
   };
 
 
@@ -1574,17 +1573,17 @@ namespace mplr {
   /// <tt>make_absolute(const T *x, const layout<T> &l)</tt>.
   /// \tparam T data type
   template<typename T>
-  class absolute_data<const T *> {
-    const T *address_{nullptr};
+  class absolute_data<const T*> {
+    const T* address_{nullptr};
     MPI_Datatype datatype_;
 
-    explicit absolute_data(const T *address, MPI_Datatype datatype)
+    explicit absolute_data(const T* address, MPI_Datatype datatype)
         : address_{address}, datatype_{datatype} {
     }
 
     friend class heterogeneous_layout;
 
-    friend absolute_data make_absolute<>(const T *, const layout<T> &);
+    friend absolute_data make_absolute<>(const T*, const layout<T>&);
   };
 
 
@@ -1613,7 +1612,7 @@ namespace mplr {
       /// \tparam Ts types of the heterogeneous data
       /// \param xs heterogeneous data elements (parameter pack)
       template<typename... Ts>
-      explicit parameter(const Ts &...xs) {
+      explicit parameter(const Ts&... xs) {
         add(xs...);
       }
 
@@ -1623,7 +1622,7 @@ namespace mplr {
       /// \tparam Ts types of further heterogeneous data elements
       /// \param xs further data elements (parameter pack)
       template<typename T, typename... Ts>
-      void add(const T &x, const Ts &...xs) {
+      void add(const T& x, const Ts&... xs) {
         block_lengths_.push_back(1);
         displacements_.push_back(reinterpret_cast<MPI_Aint>(&x));
         types_.push_back(detail::datatype_traits<T>::get_datatype());
@@ -1637,7 +1636,7 @@ namespace mplr {
       /// \tparam Ts types of further heterogeneous data elements
       /// \param xs further data elements (parameter pack)
       template<typename T, typename... Ts>
-      void add(const absolute_data<T *> &x, const Ts &...xs) {
+      void add(const absolute_data<T*>& x, const Ts&... xs) {
         block_lengths_.push_back(1);
         displacements_.push_back(reinterpret_cast<MPI_Aint>(x.address_));
         types_.push_back(x.datatype_);
@@ -1654,7 +1653,7 @@ namespace mplr {
       return new_type;
     }
 
-    static MPI_Datatype build(const parameter &par) {
+    static MPI_Datatype build(const parameter& par) {
       MPI_Datatype new_type{};
       MPI_Type_create_struct(static_cast<int>(par.block_lengths_.size()),
                              par.block_lengths_.data(), par.displacements_.data(),
@@ -1669,7 +1668,7 @@ namespace mplr {
 
     /// constructs heterogeneous layout
     /// \param par parameter containing information about the layout
-    explicit heterogeneous_layout(const parameter &par) : layout<void>(build(par)) {
+    explicit heterogeneous_layout(const parameter& par) : layout<void>(build(par)) {
     }
 
     /// constructs heterogeneous layout
@@ -1678,32 +1677,32 @@ namespace mplr {
     /// \tparam Ts types of further heterogeneous data elements
     /// \param xs further data elements (parameter pack)
     template<typename T, typename... Ts>
-    explicit heterogeneous_layout(const T &x, const Ts &...xs)
+    explicit heterogeneous_layout(const T& x, const Ts&... xs)
         : layout<void>(build(parameter(x, xs...))) {
     }
 
     /// copy constructor
     /// \param l layout to copy from
-    heterogeneous_layout(const heterogeneous_layout &l) = default;
+    heterogeneous_layout(const heterogeneous_layout& l) = default;
 
     /// move constructor
     /// \param l layout to move from
-    heterogeneous_layout(heterogeneous_layout &&l) noexcept : layout<void>(std::move(l)) {
+    heterogeneous_layout(heterogeneous_layout&& l) noexcept : layout<void>(std::move(l)) {
     }
 
     /// copy assignment operator
     /// \param l layout to copy from
     /// \return reference to this object
-    heterogeneous_layout &operator=(const heterogeneous_layout &l) = default;
+    heterogeneous_layout& operator=(const heterogeneous_layout& l) = default;
 
     /// move assignment operator
     /// \param l layout to move from
     /// \return reference to this object
-    heterogeneous_layout &operator=(heterogeneous_layout &&l) noexcept = default;
+    heterogeneous_layout& operator=(heterogeneous_layout&& l) noexcept = default;
 
     /// exchanges two heterogeneous layouts
     /// \param other the layout to swap with
-    void swap(heterogeneous_layout &other) noexcept {
+    void swap(heterogeneous_layout& other) noexcept {
       std::swap(type_, other.type_);
     }
 
@@ -1725,8 +1724,8 @@ namespace mplr {
   /// \see <tt>make_absolute(T *x, const layout<T> &l)</tt> function and
   /// \c heterogeneous_layout class
   template<typename T>
-  absolute_data<T *> make_absolute(T *x, const layout<T> &l) {
-    return absolute_data<T *>{x, l.type_};
+  absolute_data<T*> make_absolute(T* x, const layout<T>& l) {
+    return absolute_data<T*>{x, l.type_};
   }
 
   /// Helper function for the class heterogeneous_layout.
@@ -1736,8 +1735,8 @@ namespace mplr {
   /// \see <tt>make_absolute(const T *x, const layout<T> &l)</tt> function and
   /// \c heterogeneous_layout class
   template<typename T>
-  absolute_data<const T *> make_absolute(const T *x, const layout<T> &l) {
-    return absolute_data<const T *>{x, l.type_};
+  absolute_data<const T*> make_absolute(const T* x, const layout<T>& l) {
+    return absolute_data<const T*>{x, l.type_};
   }
 
   //--------------------------------------------------------------------
@@ -1746,7 +1745,7 @@ namespace mplr {
 
     template<typename T>
     struct datatype_traits<layout<T>> {
-      static MPI_Datatype get_datatype(const layout<T> &l) {
+      static MPI_Datatype get_datatype(const layout<T>& l) {
         return l.type_;
       }
     };
@@ -1777,7 +1776,7 @@ namespace mplr {
     /// constructs a layout container
     /// \param n number of initial layouts in container
     /// \param l layout used to initialize the layout container
-    explicit layouts(size_type n, const layout<T> &l) : base(n, l) {
+    explicit layouts(size_type n, const layout<T>& l) : base(n, l) {
     }
 
     using base::begin;
@@ -1793,7 +1792,7 @@ namespace mplr {
     friend class communicator;
 
   private:
-    const layout<T> *operator()() const {
+    const layout<T>* operator()() const {
       return base::data();
     }
   };
@@ -1832,15 +1831,15 @@ namespace mplr {
     friend class impl::topology_communicator;
 
   private:
-    const contiguous_layout<T> *operator()() const {
+    const contiguous_layout<T>* operator()() const {
       return base::data();
     }
 
-    const int *sizes() const {
+    const int* sizes() const {
       s.clear();
       s.reserve(size());
       std::transform(begin(), end(), std::back_inserter(s),
-                     [](const contiguous_layout<T> &l) { return l.size(); });
+                     [](const contiguous_layout<T>& l) { return l.size(); });
       return s.data();
     }
   };

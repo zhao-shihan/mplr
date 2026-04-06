@@ -48,8 +48,8 @@ namespace mplr {
     /// \param name %file name
     /// \param mode %file open-mode
     /// \param i hints
-    explicit file(const communicator &comm, const char *name, access_mode mode,
-                  const info &i = info{}) {
+    explicit file(const communicator& comm, const char* name, access_mode mode,
+                  const info& i = info{}) {
       open(comm, name, mode, i);
     }
 
@@ -58,8 +58,8 @@ namespace mplr {
     /// \param name %file name
     /// \param mode %file open-mode
     /// \param i hints
-    explicit file(const communicator &comm, const std::string &name, access_mode mode,
-                  const info &i = info{}) {
+    explicit file(const communicator& comm, const std::string& name, access_mode mode,
+                  const info& i = info{}) {
       open(comm, name, mode, i);
     }
 
@@ -68,17 +68,17 @@ namespace mplr {
     /// \param name %file name
     /// \param mode %file open-mode
     /// \param i hints
-    explicit file(const communicator &comm, const std::filesystem::path &name, access_mode mode,
-                  const info &i = info{}) {
+    explicit file(const communicator& comm, const std::filesystem::path& name, access_mode mode,
+                  const info& i = info{}) {
       open(comm, name, mode, i);
     }
 
     /// deleted copy constructor
-    file(const file &) = delete;
+    file(const file&) = delete;
 
     /// move constructor
     /// \param other file to move from
-    file(file &&other) noexcept : file_{other.file_} {
+    file(file&& other) noexcept : file_{other.file_} {
       other.file_ = MPI_FILE_NULL;
     }
 
@@ -86,20 +86,20 @@ namespace mplr {
     ~file() {
       try {
         close();
-      } catch (io_failure &) {
+      } catch (io_failure&) {
         // must not throw
       }
     }
 
     /// deleted copy-assignment operator
-    file &operator=(const file &) = delete;
+    file& operator=(const file&) = delete;
 
     /// move-assignment operator
     /// \param other %file to move from
-    file &operator=(file &&other) noexcept {
+    file& operator=(file&& other) noexcept {
       try {
         close();
-      } catch (io_failure &) {
+      } catch (io_failure&) {
         // must not throw
       }
       file_ = other.file_;
@@ -114,8 +114,8 @@ namespace mplr {
     /// \param i hints
     /// \note This is a collective operation and must be called by all processes in the
     /// communicator.
-    void open(const communicator &comm, const char *name, access_mode mode,
-              const info &i = info{}) {
+    void open(const communicator& comm, const char* name, access_mode mode,
+              const info& i = info{}) {
       using int_type = std::underlying_type_t<file::access_mode>;
       const int err{
           MPI_File_open(comm.comm_, name, static_cast<int_type>(mode), i.info_, &file_)};
@@ -130,8 +130,8 @@ namespace mplr {
     /// \param i hints
     /// \note This is a collective operation and must be called by all processes in the
     /// communicator.
-    void open(const communicator &comm, const std::string &name, access_mode mode,
-              const info &i = info{}) {
+    void open(const communicator& comm, const std::string& name, access_mode mode,
+              const info& i = info{}) {
       using int_type = std::underlying_type_t<file::access_mode>;
       const int err{MPI_File_open(comm.comm_, name.c_str(), static_cast<int_type>(mode),
                                   i.info_, &file_)};
@@ -146,8 +146,8 @@ namespace mplr {
     /// \param i hints
     /// \note This is a collective operation and must be called by all processes in the
     /// communicator.
-    void open(const communicator &comm, const std::filesystem::path &name, access_mode mode,
-              const info &i = info{}) {
+    void open(const communicator& comm, const std::filesystem::path& name, access_mode mode,
+              const info& i = info{}) {
       using int_type = std::underlying_type_t<file::access_mode>;
       const int err{MPI_File_open(comm.comm_, name.c_str(), static_cast<int_type>(mode),
                                   i.info_, &file_)};
@@ -218,8 +218,8 @@ namespace mplr {
     /// \param i hints
     /// \return status of performed i/o operation
     template<typename T>
-    void set_view(const char *representation, ssize_t displacement = 0,
-                  const info &i = info{}) {
+    void set_view(const char* representation, ssize_t displacement = 0,
+                  const info& i = info{}) {
       const int err{MPI_File_set_view(
           file_, displacement, detail::datatype_traits<T>::get_datatype(),
           detail::datatype_traits<T>::get_datatype(), representation, i.info_)};
@@ -235,8 +235,8 @@ namespace mplr {
     /// \param i hints
     /// \return status of performed i/o operation
     template<typename T>
-    void set_view(const char *representation, const layout<T> &l, ssize_t displacement = 0,
-                  const info &i = info{}) {
+    void set_view(const char* representation, const layout<T>& l, ssize_t displacement = 0,
+                  const info& i = info{}) {
       const int err{MPI_File_set_view(
           file_, displacement, detail::datatype_traits<T>::get_datatype(),
           detail::datatype_traits<layout<T>>::get_datatype(l), representation, i.info_)};
@@ -279,7 +279,7 @@ namespace mplr {
     /// \param i hint
     /// \note This is a collective operation and must be called by all processes in the
     /// communicator.
-    void set_info(info &i) {
+    void set_info(info& i) {
       const int err{MPI_File_set_info(file_, i.info_)};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
@@ -309,11 +309,11 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at(ssize_t offset, T &data) {
+    status_t read_at(ssize_t offset, T& data) {
       status_t s;
       const int err{MPI_File_read_at(file_, offset, &data, 1,
                                      detail::datatype_traits<T>::get_datatype(),
-                                     static_cast<MPI_Status *>(&s))};
+                                     static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -326,11 +326,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at(ssize_t offset, T *data, const layout<T> &l) {
+    status_t read_at(ssize_t offset, T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read_at(file_, offset, data, 1,
                                      detail::datatype_traits<layout<T>>::get_datatype(l),
-                                     static_cast<MPI_Status *>(&s))};
+                                     static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -342,11 +342,11 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at(ssize_t offset, const T &data) {
+    status_t write_at(ssize_t offset, const T& data) {
       status_t s;
       const int err{MPI_File_write_at(file_, offset, &data, 1,
                                       detail::datatype_traits<T>::get_datatype(),
-                                      static_cast<MPI_Status *>(&s))};
+                                      static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -359,11 +359,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at(ssize_t offset, const T *data, const layout<T> &l) {
+    status_t write_at(ssize_t offset, const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write_at(file_, offset, data, 1,
                                       detail::datatype_traits<layout<T>>::get_datatype(l),
-                                      static_cast<MPI_Status *>(&s))};
+                                      static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -375,7 +375,7 @@ namespace mplr {
     /// \param data value to read
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_at(ssize_t offset, T &data) {
+    irequest iread_at(ssize_t offset, T& data) {
       MPI_Request req;
       const int err{MPI_File_iread_at(file_, offset, &data, 1,
                                       detail::datatype_traits<T>::get_datatype(), &req)};
@@ -391,7 +391,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_at(ssize_t offset, T *data, const layout<T> &l) {
+    irequest iread_at(ssize_t offset, T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iread_at(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -406,7 +406,7 @@ namespace mplr {
     /// \param data value to write
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_at(ssize_t offset, const T &data) {
+    irequest iwrite_at(ssize_t offset, const T& data) {
       MPI_Request req;
       const int err{MPI_File_iwrite_at(file_, offset, &data, 1,
                                        detail::datatype_traits<T>::get_datatype(), &req)};
@@ -422,7 +422,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_at(ssize_t offset, const T *data, const layout<T> &l) {
+    irequest iwrite_at(ssize_t offset, const T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iwrite_at(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -436,10 +436,10 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read(T &data) {
+    status_t read(T& data) {
       status_t s;
       const int err{MPI_File_read(file_, &data, 1, detail::datatype_traits<T>::get_datatype(),
-                                  static_cast<MPI_Status *>(&s))};
+                                  static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -451,11 +451,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read(T *data, const layout<T> &l) {
+    status_t read(T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read(file_, data, 1,
                                   detail::datatype_traits<layout<T>>::get_datatype(l),
-                                  static_cast<MPI_Status *>(&s))};
+                                  static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -466,10 +466,10 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write(const T &data) {
+    status_t write(const T& data) {
       status_t s;
       const int err{MPI_File_write(file_, &data, 1, detail::datatype_traits<T>::get_datatype(),
-                                   static_cast<MPI_Status *>(&s))};
+                                   static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -481,11 +481,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write(const T *data, const layout<T> &l) {
+    status_t write(const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write(file_, data, 1,
                                    detail::datatype_traits<layout<T>>::get_datatype(l),
-                                   static_cast<MPI_Status *>(&s))};
+                                   static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -496,7 +496,7 @@ namespace mplr {
     /// \param data value to read
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread(T &data) {
+    irequest iread(T& data) {
       MPI_Request req;
       const int err{
           MPI_File_iread(file_, &data, 1, detail::datatype_traits<T>::get_datatype(), &req)};
@@ -511,7 +511,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread(T *data, const layout<T> &l) {
+    irequest iread(T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iread(file_, data, 1,
                                    detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -525,7 +525,7 @@ namespace mplr {
     /// \param data value to write
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite(const T &data) {
+    irequest iwrite(const T& data) {
       MPI_Request req;
       const int err{
           MPI_File_iwrite(file_, &data, 1, detail::datatype_traits<T>::get_datatype(), &req)};
@@ -540,7 +540,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite(const T *data, const layout<T> &l) {
+    irequest iwrite(const T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iwrite(file_, data, 1,
                                     detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -554,11 +554,11 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_shared(T &data) {
+    status_t read_shared(T& data) {
       status_t s;
       const int err{MPI_File_read_shared(file_, &data, 1,
                                          detail::datatype_traits<T>::get_datatype(),
-                                         static_cast<MPI_Status *>(&s))};
+                                         static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -570,11 +570,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_shared(T *data, const layout<T> &l) {
+    status_t read_shared(T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read_shared(file_, data, 1,
                                          detail::datatype_traits<layout<T>>::get_datatype(l),
-                                         static_cast<MPI_Status *>(&s))};
+                                         static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -585,11 +585,11 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_shared(const T &data) {
+    status_t write_shared(const T& data) {
       status_t s;
       const int err{MPI_File_write_shared(file_, &data, 1,
                                           detail::datatype_traits<T>::get_datatype(),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -601,11 +601,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_shared(const T *data, const layout<T> &l) {
+    status_t write_shared(const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write_shared(file_, data, 1,
                                           detail::datatype_traits<layout<T>>::get_datatype(l),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -616,7 +616,7 @@ namespace mplr {
     /// \param data value to read
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_shared(T &data) {
+    irequest iread_shared(T& data) {
       MPI_Request req;
       const int err{MPI_File_iread_shared(file_, &data, 1,
                                           detail::datatype_traits<T>::get_datatype(), &req)};
@@ -631,7 +631,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_shared(T *data, const layout<T> &l) {
+    irequest iread_shared(T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iread_shared(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -645,7 +645,7 @@ namespace mplr {
     /// \param data value to write
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_shared(const T &data) {
+    irequest iwrite_shared(const T& data) {
       MPI_Request req;
       const int err{MPI_File_iwrite_shared(file_, &data, 1,
                                            detail::datatype_traits<T>::get_datatype(), &req)};
@@ -660,7 +660,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_shared(const T *data, const layout<T> &l) {
+    irequest iwrite_shared(const T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iwrite_shared(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -675,11 +675,11 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at_all(ssize_t offset, T &data) {
+    status_t read_at_all(ssize_t offset, T& data) {
       status_t s;
       const int err{MPI_File_read_at_all(file_, offset, &data, 1,
                                          detail::datatype_traits<T>::get_datatype(),
-                                         static_cast<MPI_Status *>(&s))};
+                                         static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -692,11 +692,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at_all(ssize_t offset, T *data, const layout<T> &l) {
+    status_t read_at_all(ssize_t offset, T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read_at_all(file_, offset, data, 1,
                                          detail::datatype_traits<layout<T>>::get_datatype(l),
-                                         static_cast<MPI_Status *>(&s))};
+                                         static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -708,11 +708,11 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at_all(ssize_t offset, const T &data) {
+    status_t write_at_all(ssize_t offset, const T& data) {
       status_t s;
       const int err{MPI_File_write_at_all(file_, offset, &data, 1,
                                           detail::datatype_traits<T>::get_datatype(),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -725,11 +725,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at_all(ssize_t offset, const T *data, const layout<T> &l) {
+    status_t write_at_all(ssize_t offset, const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write_at_all(file_, offset, data, 1,
                                           detail::datatype_traits<layout<T>>::get_datatype(l),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -741,7 +741,7 @@ namespace mplr {
     /// \param data value to read
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_at_all(ssize_t offset, T &data) {
+    irequest iread_at_all(ssize_t offset, T& data) {
       MPI_Request req;
       const int err{MPI_File_iread_at_all(file_, offset, &data, 1,
                                           detail::datatype_traits<T>::get_datatype(), &req)};
@@ -757,7 +757,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_at_all(ssize_t offset, T *data, const layout<T> &l) {
+    irequest iread_at_all(ssize_t offset, T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iread_at_all(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -772,7 +772,7 @@ namespace mplr {
     /// \param data value to write
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_at_all(ssize_t offset, const T &data) {
+    irequest iwrite_at_all(ssize_t offset, const T& data) {
       MPI_Request req;
       const int err{MPI_File_iwrite_at_all(file_, offset, &data, 1,
                                            detail::datatype_traits<T>::get_datatype(), &req)};
@@ -788,7 +788,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_at_all(ssize_t offset, const T *data, const layout<T> &l) {
+    irequest iwrite_at_all(ssize_t offset, const T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iwrite_at_all(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -802,11 +802,11 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_all(T &data) {
+    status_t read_all(T& data) {
       status_t s;
       const int err{MPI_File_read_all(file_, &data, 1,
                                       detail::datatype_traits<T>::get_datatype(),
-                                      static_cast<MPI_Status *>(&s))};
+                                      static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -818,11 +818,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_all(T *data, const layout<T> &l) {
+    status_t read_all(T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read_all(file_, data, 1,
                                       detail::datatype_traits<layout<T>>::get_datatype(l),
-                                      static_cast<MPI_Status *>(&s))};
+                                      static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -833,11 +833,11 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_all(const T &data) {
+    status_t write_all(const T& data) {
       status_t s;
       const int err{MPI_File_write_all(file_, &data, 1,
                                        detail::datatype_traits<T>::get_datatype(),
-                                       static_cast<MPI_Status *>(&s))};
+                                       static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -849,11 +849,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_all(const T *data, const layout<T> &l) {
+    status_t write_all(const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write_all(file_, data, 1,
                                        detail::datatype_traits<layout<T>>::get_datatype(l),
-                                       static_cast<MPI_Status *>(&s))};
+                                       static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -864,7 +864,7 @@ namespace mplr {
     /// \param data value to read
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_all(T &data) {
+    irequest iread_all(T& data) {
       MPI_Request req;
       const int err{MPI_File_iread_all(file_, &data, 1,
                                        detail::datatype_traits<T>::get_datatype(), &req)};
@@ -879,7 +879,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iread_all(T *data, const layout<T> &l) {
+    irequest iread_all(T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iread_all(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -893,7 +893,7 @@ namespace mplr {
     /// \param data value to write
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_all(const T &data) {
+    irequest iwrite_all(const T& data) {
       MPI_Request req;
       const int err{MPI_File_iwrite_all(file_, &data, 1,
                                         detail::datatype_traits<T>::get_datatype(), &req)};
@@ -908,7 +908,7 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return request representing the ongoing i/o operation
     template<typename T>
-    irequest iwrite_all(const T *data, const layout<T> &l) {
+    irequest iwrite_all(const T* data, const layout<T>& l) {
       MPI_Request req;
       const int err{MPI_File_iwrite_all(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l), &req)};
@@ -922,11 +922,11 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_ordered(T &data) {
+    status_t read_ordered(T& data) {
       status_t s;
       const int err{MPI_File_read_ordered(file_, &data, 1,
                                           detail::datatype_traits<T>::get_datatype(),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -938,11 +938,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_ordered(T *data, const layout<T> &l) {
+    status_t read_ordered(T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_read_ordered(file_, data, 1,
                                           detail::datatype_traits<layout<T>>::get_datatype(l),
-                                          static_cast<MPI_Status *>(&s))};
+                                          static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -953,11 +953,11 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_ordered(const T &data) {
+    status_t write_ordered(const T& data) {
       status_t s;
       const int err{MPI_File_write_ordered(file_, &data, 1,
                                            detail::datatype_traits<T>::get_datatype(),
-                                           static_cast<MPI_Status *>(&s))};
+                                           static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -969,11 +969,11 @@ namespace mplr {
     /// \param l layout used in associated i/o operation
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_ordered(const T *data, const layout<T> &l) {
+    status_t write_ordered(const T* data, const layout<T>& l) {
       status_t s;
       const int err{MPI_File_write_ordered(file_, data, 1,
                                            detail::datatype_traits<layout<T>>::get_datatype(l),
-                                           static_cast<MPI_Status *>(&s))};
+                                           static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -984,7 +984,7 @@ namespace mplr {
     /// \param offset file offset in bytes
     /// \param data value to read
     template<typename T>
-    void read_at_all_begin(ssize_t offset, T &data) {
+    void read_at_all_begin(ssize_t offset, T& data) {
       const int err{MPI_File_read_at_all_begin(file_, offset, &data, 1,
                                                detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -997,7 +997,7 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void read_at_all_begin(ssize_t offset, T *data, const layout<T> &l) {
+    void read_at_all_begin(ssize_t offset, T* data, const layout<T>& l) {
       const int err{MPI_File_read_at_all_begin(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1009,9 +1009,9 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at_all_end(T &data) {
+    status_t read_at_all_end(T& data) {
       status_t s;
-      const int err{MPI_File_read_at_all_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_at_all_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1022,9 +1022,9 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_at_all_end(T *data) {
+    status_t read_at_all_end(T* data) {
       status_t s;
-      const int err{MPI_File_read_at_all_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_at_all_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1035,7 +1035,7 @@ namespace mplr {
     /// \param offset file offset in bytes
     /// \param data value to write
     template<typename T>
-    void write_at_all_begin(ssize_t offset, const T &data) {
+    void write_at_all_begin(ssize_t offset, const T& data) {
       const int err{MPI_File_write_at_all_begin(file_, offset, &data, 1,
                                                 detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -1048,7 +1048,7 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void write_at_all_begin(ssize_t offset, const T *data, const layout<T> &l) {
+    void write_at_all_begin(ssize_t offset, const T* data, const layout<T>& l) {
       const int err{MPI_File_write_at_all_begin(
           file_, offset, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1060,9 +1060,9 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at_all_end(const T &data) {
+    status_t write_at_all_end(const T& data) {
       status_t s;
-      const int err{MPI_File_write_at_all_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_at_all_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1073,9 +1073,9 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_at_all_end(const T *data) {
+    status_t write_at_all_end(const T* data) {
       status_t s;
-      const int err{MPI_File_write_at_all_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_at_all_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1085,7 +1085,7 @@ namespace mplr {
     /// \tparam T read data type
     /// \param data value to read
     template<typename T>
-    void read_all_begin(T &data) {
+    void read_all_begin(T& data) {
       const int err{
           MPI_File_read_all_begin(file_, &data, 1, detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -1097,7 +1097,7 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void read_all_begin(T *data, const layout<T> &l) {
+    void read_all_begin(T* data, const layout<T>& l) {
       const int err{MPI_File_read_all_begin(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1109,9 +1109,9 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_all_end(T &data) {
+    status_t read_all_end(T& data) {
       status_t s;
-      const int err{MPI_File_read_all_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_all_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1122,9 +1122,9 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_all_end(T *data) {
+    status_t read_all_end(T* data) {
       status_t s;
-      const int err{MPI_File_read_all_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_all_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1134,7 +1134,7 @@ namespace mplr {
     /// \tparam T write data type
     /// \param data value to write
     template<typename T>
-    void write_all_begin(const T &data) {
+    void write_all_begin(const T& data) {
       const int err{MPI_File_write_all_begin(file_, &data, 1,
                                              detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -1146,7 +1146,7 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void write_all_begin(const T *data, const layout<T> &l) {
+    void write_all_begin(const T* data, const layout<T>& l) {
       const int err{MPI_File_write_all_begin(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1158,9 +1158,9 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_all_end(const T &data) {
+    status_t write_all_end(const T& data) {
       status_t s;
-      const int err{MPI_File_write_all_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_all_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1171,9 +1171,9 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_all_end(const T *data) {
+    status_t write_all_end(const T* data) {
       status_t s;
-      const int err{MPI_File_write_all_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_all_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1183,7 +1183,7 @@ namespace mplr {
     /// \tparam T read data type
     /// \param data value to read
     template<typename T>
-    void read_ordered_begin(T &data) {
+    void read_ordered_begin(T& data) {
       const int err{MPI_File_read_ordered_begin(file_, &data, 1,
                                                 detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -1195,7 +1195,7 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void read_ordered_begin(T *data, const layout<T> &l) {
+    void read_ordered_begin(T* data, const layout<T>& l) {
       const int err{MPI_File_read_ordered_begin(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1207,9 +1207,9 @@ namespace mplr {
     /// \param data value to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_ordered_end(T &data) {
+    status_t read_ordered_end(T& data) {
       status_t s;
-      const int err{MPI_File_read_ordered_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_ordered_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1220,9 +1220,9 @@ namespace mplr {
     /// \param data pointer to the data to read
     /// \return status of performed i/o operation
     template<typename T>
-    status_t read_ordered_end(T *data) {
+    status_t read_ordered_end(T* data) {
       status_t s;
-      const int err{MPI_File_read_ordered_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_read_ordered_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1232,7 +1232,7 @@ namespace mplr {
     /// \tparam T write data type
     /// \param data value to write
     template<typename T>
-    void write_ordered_begin(const T &data) {
+    void write_ordered_begin(const T& data) {
       const int err{MPI_File_write_ordered_begin(file_, &data, 1,
                                                  detail::datatype_traits<T>::get_datatype())};
       if (err != MPI_SUCCESS)
@@ -1244,7 +1244,7 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \param l layout used in associated i/o operation
     template<typename T>
-    void write_ordered_begin(const T *data, const layout<T> &l) {
+    void write_ordered_begin(const T* data, const layout<T>& l) {
       const int err{MPI_File_write_ordered_begin(
           file_, data, 1, detail::datatype_traits<layout<T>>::get_datatype(l))};
       if (err != MPI_SUCCESS)
@@ -1256,9 +1256,9 @@ namespace mplr {
     /// \param data value to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_ordered_end(const T &data) {
+    status_t write_ordered_end(const T& data) {
       status_t s;
-      const int err{MPI_File_write_ordered_end(file_, &data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_ordered_end(file_, &data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1269,9 +1269,9 @@ namespace mplr {
     /// \param data pointer to the data to write
     /// \return status of performed i/o operation
     template<typename T>
-    status_t write_ordered_end(const T *data) {
+    status_t write_ordered_end(const T* data) {
       status_t s;
-      const int err{MPI_File_write_ordered_end(file_, data, static_cast<MPI_Status *>(&s))};
+      const int err{MPI_File_write_ordered_end(file_, data, static_cast<MPI_Status*>(&s))};
       if (err != MPI_SUCCESS)
         throw io_failure(err);
       return s;
@@ -1296,7 +1296,7 @@ namespace mplr {
   /// \param mode1 1st access mode
   /// \param mode2 2nd access mode
   /// \return combined %file access mode
-  inline file::access_mode &operator|=(file::access_mode &mode1, file::access_mode mode2) {
+  inline file::access_mode& operator|=(file::access_mode& mode1, file::access_mode mode2) {
     using int_type = std::underlying_type_t<file::access_mode>;
     mode1 = static_cast<file::access_mode>(static_cast<int_type>(mode1) |
                                            static_cast<int_type>(mode2));
@@ -1319,7 +1319,7 @@ namespace mplr {
   /// \param mode1 1st access mode
   /// \param mode2 2nd access mode
   /// \return combined %file access mode
-  inline file::access_mode &operator&=(file::access_mode &mode1, file::access_mode mode2) {
+  inline file::access_mode& operator&=(file::access_mode& mode1, file::access_mode mode2) {
     using int_type = std::underlying_type_t<file::access_mode>;
     mode1 = static_cast<file::access_mode>(static_cast<int_type>(mode1) &
                                            static_cast<int_type>(mode2));
@@ -1327,7 +1327,7 @@ namespace mplr {
   }
 
 
-  inline group::group(const file &f) {
+  inline group::group(const file& f) {
     MPI_File_get_group(f.file_, &gr_);
   }
 

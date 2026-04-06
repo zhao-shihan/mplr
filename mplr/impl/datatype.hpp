@@ -61,12 +61,12 @@ namespace mplr {
   template<typename S>
   class struct_layout {
     template<typename T>
-    inline constexpr std::size_t size(const T &) const {
+    inline constexpr std::size_t size(const T&) const {
       return 1;
     }
 
     template<typename T, std::size_t N0>
-    inline constexpr std::size_t size(const std::array<T, N0> &) const {
+    inline constexpr std::size_t size(const std::array<T, N0>&) const {
       return N0;
     }
 
@@ -91,12 +91,12 @@ namespace mplr {
     }
 
     template<typename T>
-    inline MPI_Datatype get_datatype(const T &) const {
+    inline MPI_Datatype get_datatype(const T&) const {
       return detail::datatype_traits<T>().get_datatype();
     }
 
     template<typename T, std::size_t N0>
-    inline MPI_Datatype get_datatype(const std::array<T, N0> &) const {
+    inline MPI_Datatype get_datatype(const std::array<T, N0>&) const {
       return detail::datatype_traits<T>().get_datatype();
     }
 
@@ -129,8 +129,8 @@ namespace mplr {
     /// starts to register a struct type
     /// \param x an instance of type \c S (the template parameter of class \c struct_layout)
     /// \return reference to this \c struct_layout object (allows chaining)
-    struct_layout &register_struct(const S &x) {
-      MPI_Get_address(const_cast<S *>(&x), &base_);
+    struct_layout& register_struct(const S& x) {
+      MPI_Get_address(const_cast<S*>(&x), &base_);
       return *this;
     }
 
@@ -139,7 +139,7 @@ namespace mplr {
     /// \c struct_layout)
     /// \return reference to this \c struct_layout object (allows chaining)
     template<typename T>
-    struct_layout &register_element(T &x) {
+    struct_layout& register_element(T& x) {
       static_assert(not std::is_const_v<T>, "type must not be const");
       static_assert(not std::is_pointer_v<T>, "type must not be pointer");
       block_lengths_.push_back(size(x));
@@ -165,7 +165,7 @@ namespace mplr {
     MPI_Datatype type_;
 
   protected:
-    void define_struct(const struct_layout<T> &str) {
+    void define_struct(const struct_layout<T>& str) {
       MPI_Datatype temp_type;
       MPI_Type_create_struct(str.block_lengths_.size(), str.block_lengths_.data(),
                              str.displacements_.data(), str.data_types_.data(), &temp_type);
@@ -178,8 +178,8 @@ namespace mplr {
     base_struct_builder() = default;
 
   public:
-    base_struct_builder(const base_struct_builder &) = delete;
-    auto &operator=(const base_struct_builder &) = delete;
+    base_struct_builder(const base_struct_builder&) = delete;
+    auto& operator=(const base_struct_builder&) = delete;
 
   protected:
     ~base_struct_builder() {
@@ -233,13 +233,13 @@ namespace mplr {
 
     template<typename F, typename T, std::size_t N>
     class apply_n {
-      F &f_;
+      F& f_;
 
     public:
-      explicit apply_n(F &f) : f_{f} {
+      explicit apply_n(F& f) : f_{f} {
       }
 
-      void operator()(T &x) const {
+      void operator()(T& x) const {
         apply_n<F, T, N - 1> next{f_};
         next(x);
         f_(std::get<N - 1>(x));
@@ -248,33 +248,33 @@ namespace mplr {
 
     template<typename F, typename T>
     class apply_n<F, T, 1> {
-      F &f_;
+      F& f_;
 
     public:
-      explicit apply_n(F &f) : f_{f} {
+      explicit apply_n(F& f) : f_{f} {
       }
 
-      void operator()(T &x) const {
+      void operator()(T& x) const {
         f_(std::get<0>(x));
       }
     };
 
     template<typename F, typename... Args>
-    void apply(std::tuple<Args...> &t, F &f) {
+    void apply(std::tuple<Args...>& t, F& f) {
       apply_n<F, std::tuple<Args...>, std::tuple_size<std::tuple<Args...>>::value> app{f};
       app(t);
     }
 
     template<typename... Ts>
     class register_element {
-      struct_layout<std::tuple<Ts...>> &layout_;
+      struct_layout<std::tuple<Ts...>>& layout_;
 
     public:
-      explicit register_element(struct_layout<std::tuple<Ts...>> &layout) : layout_{layout} {
+      explicit register_element(struct_layout<std::tuple<Ts...>>& layout) : layout_{layout} {
       }
 
       template<typename T>
-      void operator()(T &x) const {
+      void operator()(T& x) const {
         layout_.register_element(x);
       }
     };

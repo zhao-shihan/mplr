@@ -28,7 +28,7 @@ namespace mplr {
 
   /// Special constant to indicate the start of the address range of message buffers.
   /// \anchor absolute
-  constexpr void *absolute = MPI_BOTTOM;
+  constexpr void* absolute = MPI_BOTTOM;
 
   /// Special constant representing an upper bound on the additional space consumed when
   /// buffering messages.

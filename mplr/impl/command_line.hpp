@@ -31,11 +31,11 @@ namespace mplr {
 
     /// Constructs set of command-line arguments from another set.
     /// \param other the other set to copy from
-    command_line(const command_line &other) = default;
+    command_line(const command_line& other) = default;
 
     /// Move-constructs set of command-line arguments from another set.
     /// \param other the other set to move from
-    command_line(command_line &&other) noexcept : base(std::move(other)) {
+    command_line(command_line&& other) noexcept : base(std::move(other)) {
     }
 
     using base::operator=;
@@ -69,11 +69,11 @@ namespace mplr {
 
     /// Constructs list of command-line argument sets from another list.
     /// \param other the other list to copy from
-    command_lines(const command_lines &other) = default;
+    command_lines(const command_lines& other) = default;
 
     /// Move-constructs list of command-line argument sets from another list.
     /// \param other the other list to move from
-    command_lines(command_lines &&other) noexcept : base(std::move(other)) {
+    command_lines(command_lines&& other) noexcept : base(std::move(other)) {
     }
 
     using base::operator=;

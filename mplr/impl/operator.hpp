@@ -17,7 +17,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return maximum of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return (x < y) ? y : x;
     }
   };
@@ -30,7 +30,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return minimum of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return not(y < x) ? x : y;
     }
   };
@@ -43,7 +43,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return sum of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x + y;
     }
   };
@@ -56,7 +56,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return product of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x * y;
     }
   };
@@ -69,7 +69,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return logical conjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x and y;
     }
   };
@@ -82,7 +82,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return logical (inclusive) disjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x or y;
     }
   };
@@ -95,7 +95,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return logical exclusive disjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x xor y;
     }
   };
@@ -108,7 +108,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return bitwise conjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x & y;
     }
   };
@@ -121,7 +121,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return bitwise (inclusive) disjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x | y;
     }
   };
@@ -134,7 +134,7 @@ namespace mplr {
     /// \param x first argument
     /// \param y second argument
     /// \return bitwise exclusive disjunction of the two arguments
-    T operator()(const T &x, const T &y) const {
+    T operator()(const T& x, const T& y) const {
       return x ^ y;
     }
   };
@@ -238,7 +238,7 @@ namespace mplr {
 
     template<typename T, typename F, typename F1,
              std::enable_if_t<std::is_same_v<std::decay_t<F1>, F>, bool> = true>
-    inline op<T, F> &get_op(F1 &&f) {
+    inline op<T, F>& get_op(F1&& f) {
       static op<T, F> op_{std::forward<F1>(f)};
       return op_;
     }
@@ -255,9 +255,9 @@ namespace mplr {
       static constexpr bool is_commutative = op_traits<functor>::is_commutative;
       static inline std::unique_ptr<functor> f;
 
-      static void apply(void *in_vector, void *in_out_vector, int *len, MPI_Datatype *) {
-        auto *i_1{static_cast<T *>(in_vector)};
-        auto *i_2{static_cast<T *>(in_out_vector)};
+      static void apply(void* in_vector, void* in_out_vector, int* len, MPI_Datatype*) {
+        auto* i_1{static_cast<T*>(in_vector)};
+        auto* i_2{static_cast<T*>(in_out_vector)};
         for (int i{0}, i_end{*len}; i < i_end; ++i, ++i_1, ++i_2)
           *i_2 = (*f)(*i_1, *i_2);
       }
@@ -265,28 +265,28 @@ namespace mplr {
       MPI_Op mpi_op{MPI_OP_NULL};
 
     private:
-      explicit op(const F &f_) {
+      explicit op(const F& f_) {
         f = std::make_unique<F>(f_);
         MPI_Op_create(op::apply, is_commutative, &mpi_op);
       }
 
-      explicit op(F &&f_) {
+      explicit op(F&& f_) {
         f = std::make_unique<F>(std::move(f_));
         MPI_Op_create(op::apply, is_commutative, &mpi_op);
       }
 
-      op(op const &) = delete;
+      op(op const&) = delete;
 
       ~op() {
         MPI_Op_free(&mpi_op);
       }
 
-      auto &operator=(op const &) = delete;
+      auto& operator=(op const&) = delete;
 
-      friend op &get_op<>(F &);
-      friend op &get_op<>(const F &);
-      friend op &get_op<>(F &&);
-      friend op &get_op<>(const F &&);
+      friend op& get_op<>(F&);
+      friend op& get_op<>(const F&);
+      friend op& get_op<>(F&&);
+      friend op& get_op<>(const F&&);
     };
 
   }  // namespace detail

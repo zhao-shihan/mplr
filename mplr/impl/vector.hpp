@@ -14,17 +14,17 @@ namespace mplr::detail {
   class vector {
   public:
     using value_type = T;
-    using pointer = T *;
-    using const_pointer = const T *;
-    using reference = T &;
-    using const_reference = const T &;
-    using iterator = T *;
-    using const_iterator = const T *;
+    using pointer = T*;
+    using const_pointer = const T*;
+    using reference = T&;
+    using const_reference = const T&;
+    using iterator = T*;
+    using const_iterator = const T*;
     using size_type = std::size_t;
 
   private:
     size_type size_{0};
-    T *data_{nullptr};
+    T* data_{nullptr};
 
   public:
     explicit vector(size_type size)
@@ -53,8 +53,8 @@ namespace mplr::detail {
       }
     }
 
-    vector(const vector &) = delete;
-    vector &operator=(const vector &) = delete;
+    vector(const vector&) = delete;
+    vector& operator=(const vector&) = delete;
 
     [[nodiscard]] size_type size() const {
       return size_;
@@ -96,7 +96,7 @@ namespace mplr::detail {
     }
 
     ~vector() {
-      for (auto &val : *this)
+      for (auto& val : *this)
         val.~T();
       operator delete(data_);
     }

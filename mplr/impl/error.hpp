@@ -10,15 +10,15 @@ namespace mplr {
   /// Base class for all MPLR exception classes that will be thrown in case of run-time errors.
   class error : public ::std::exception {
   private:
-    const char *const messsage_;
+    const char* const messsage_;
 
   public:
     /// \param message error message that will be returned by #what method
-    explicit error(const char *const message = "unknown") : messsage_{message} {
+    explicit error(const char* const message = "unknown") : messsage_{message} {
     }
 
     /// \return character pointer to error message
-    [[nodiscard]] const char *what() const noexcept override {
+    [[nodiscard]] const char* what() const noexcept override {
       return messsage_;
     }
   };
@@ -98,7 +98,7 @@ namespace mplr {
     }
 
     /// \return character pointer to error message
-    [[nodiscard]] const char *what() const noexcept override {
+    [[nodiscard]] const char* what() const noexcept override {
       return message_;
     }
   };

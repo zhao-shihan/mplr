@@ -40,7 +40,7 @@ namespace mplr {
     /// \return true if associated request has been canceled
     [[nodiscard]] bool is_cancelled() const {
       int result;
-      MPI_Test_cancelled(static_cast<const MPI_Status *>(this), &result);
+      MPI_Test_cancelled(static_cast<const MPI_Status*>(this), &result);
       return result != 0;
     }
 
@@ -54,7 +54,7 @@ namespace mplr {
     template<typename T>
     [[nodiscard]] int get_count() const {
       int result;
-      MPI_Get_count(static_cast<const MPI_Status *>(this),
+      MPI_Get_count(static_cast<const MPI_Status*>(this),
                     detail::datatype_traits<T>::get_datatype(), &result);
       return result;
     }
@@ -63,9 +63,9 @@ namespace mplr {
     /// \param l layout used in associated message
     /// \return number of top level elements of type \c T received in associated message
     template<typename T>
-    [[nodiscard]] int get_count(const layout<T> &l) const {
+    [[nodiscard]] int get_count(const layout<T>& l) const {
       int result;
-      MPI_Get_count(static_cast<const MPI_Status *>(this),
+      MPI_Get_count(static_cast<const MPI_Status*>(this),
                     detail::datatype_traits<layout<T>>::get_datatype(l), &result);
       return result;
     }

@@ -86,7 +86,7 @@ namespace mplr {
   /// @param argv The argv of main function parameters.
   /// @param threading_mode Threading mode required.
   /// @return Threading mode provided by MPI library.
-  inline void init(int argc, char *argv[]) {
+  inline void init(int argc, char* argv[]) {
     int threading_mode_provided;
     if (argv) {
       MPI_Init_thread(&argc, &argv, static_cast<int>(threading_mode::multiple),
@@ -158,10 +158,10 @@ namespace mplr {
   /// \return true if times are synchronized
   /// \see <tt>\ref wtime</tt>
   inline bool wtime_is_global() {
-    void *val;
+    void* val;
     int flag;
     MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_WTIME_IS_GLOBAL, &val, &flag);
-    return *static_cast<int *>(val);
+    return *static_cast<int*>(val);
   }
 
   /// Gives a unique specifier, the processor name, for the actual (physical) node.
@@ -194,7 +194,7 @@ namespace mplr {
   /// \param buff pointer to user-provided buffer
   /// \param size size of the buffer in bytes, must be non-negative
   /// \see \c buffer_detach
-  inline void buffer_attach(void *buff, int size) {
+  inline void buffer_attach(void* buff, int size) {
     MPI_Buffer_attach(buff, size);
   }
 
@@ -202,8 +202,8 @@ namespace mplr {
   /// \return pair representing the buffer location and size, i.e., the parameters provided to
   /// <tt>\ref buffer_attach</tt>
   /// \see \c buffer_attach
-  inline std::pair<void *, int> buffer_detach() {
-    void *buff;
+  inline std::pair<void*, int> buffer_detach() {
+    void* buff;
     int size;
     MPI_Buffer_detach(&buff, &size);
     return {buff, size};

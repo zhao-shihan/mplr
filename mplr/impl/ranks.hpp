@@ -32,11 +32,11 @@ namespace mplr {
 
     /// Constructs collection of ranks from another collection.
     /// \param other the other collection to copy from
-    ranks(const ranks &other) = default;
+    ranks(const ranks& other) = default;
 
     /// Move-constructs collection of ranks from another collection.
     /// \param other the other collection to move from
-    ranks(ranks &&other) noexcept : base(std::move(other)) {
+    ranks(ranks&& other) noexcept : base(std::move(other)) {
     }
 
     using base::operator=;
@@ -50,13 +50,13 @@ namespace mplr {
 
     /// Gives access to internal data.
     /// \return pointer to constant array
-    [[nodiscard]] const int *operator()() const {
+    [[nodiscard]] const int* operator()() const {
       return base::data();
     }
 
     /// Gives access to internal data.
     /// \return pointer to array
-    [[nodiscard]] int *operator()() {
+    [[nodiscard]] int* operator()() {
       return base::data();
     }
   };

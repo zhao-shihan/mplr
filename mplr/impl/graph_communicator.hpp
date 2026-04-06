@@ -48,7 +48,7 @@ namespace mplr {
 
       /// Add an edge to the set.
       /// \param edge tuple of two non-negative integers
-      void add(const value_type &edge) {
+      void add(const value_type& edge) {
         insert(edge);
       }
     };
@@ -123,13 +123,13 @@ namespace mplr {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit graph_communicator(const graph_communicator &other, const mplr::info &info)
+    explicit graph_communicator(const graph_communicator& other, const mplr::info& info)
         : topology_communicator{other, info} {
     }
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
-    graph_communicator(graph_communicator &&other) noexcept = default;
+    graph_communicator(graph_communicator&& other) noexcept = default;
 
     /// Creates a new communicator with graph process topology.
     /// \param other communicator containing the processes to use in the creation of the new
@@ -139,10 +139,10 @@ namespace mplr {
     /// same rank in the new communicator as in the old one
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other with the same arguments.
-    explicit graph_communicator(const communicator &other, const edge_set &edges,
+    explicit graph_communicator(const communicator& other, const edge_set& edges,
                                 bool reorder = true) {
       int nodes{0};
-      for (const auto &e : edges) {
+      for (const auto& e : edges) {
 #if defined MPLR_DEBUG
         if (std::get<0>(e) < 0 or std::get<1>(e) < 0)
           throw invalid_argument();
@@ -153,7 +153,7 @@ namespace mplr {
       edges_list.reserve(edges.size());
       // the following works because the edge set is ordered with respect to the pairs of
       // edge-node numbers
-      for (const auto &e : edges) {
+      for (const auto& e : edges) {
         edges_list.push_back(std::get<1>(e));
         ++index[std::get<0>(e)];
       }
@@ -161,13 +161,13 @@ namespace mplr {
       MPI_Graph_create(other.comm_, nodes, index.data(), edges_list.data(), reorder, &comm_);
     }
 
-    graph_communicator &operator=(const graph_communicator &other) = delete;
+    graph_communicator& operator=(const graph_communicator& other) = delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other.
-    graph_communicator &operator=(graph_communicator &&other) noexcept = default;
+    graph_communicator& operator=(graph_communicator&& other) noexcept = default;
 
     /// Determines the number of neighbours of some process.
     /// \param rank process rank
@@ -206,8 +206,8 @@ namespace mplr {
   /// \param l_1 1st node list to compare
   /// \param l_2 2nd node list to compare
   /// \return true if equal
-  inline bool operator==(const graph_communicator::node_list &l_1,
-                         const graph_communicator::node_list &l_2) {
+  inline bool operator==(const graph_communicator::node_list& l_1,
+                         const graph_communicator::node_list& l_2) {
     return l_1.size() == l_2.size() and std::equal(l_1.begin(), l_1.end(), l_2.begin());
   }
 
@@ -217,8 +217,8 @@ namespace mplr {
   /// \param l_1 1st node list to compare
   /// \param l_2 2nd node list to compare
   /// \return true if not equal
-  inline bool operator!=(const graph_communicator::node_list &l_1,
-                         const graph_communicator::node_list &l_2) {
+  inline bool operator!=(const graph_communicator::node_list& l_1,
+                         const graph_communicator::node_list& l_2) {
     return not(l_1 == l_2);
   }
 

@@ -18,7 +18,7 @@ namespace mplr {
   public:
     /// Copy-constructor.
     /// \param t tag value
-    tag_t(const tag_t &t) = default;
+    tag_t(const tag_t& t) = default;
 
     /// Initializes tag from an integer value.
     /// \param t tag value
@@ -36,7 +36,7 @@ namespace mplr {
 
     /// Copy-assignmnet operator.
     /// \param t tag value
-    tag_t &operator=(const tag_t &t) = default;
+    tag_t& operator=(const tag_t& t) = default;
 
     /// \return tag value as integer
     explicit operator int() const {
@@ -45,10 +45,10 @@ namespace mplr {
 
     /// \return tag with the largest value when converted to int
     static tag_t up() {
-      void *val;
+      void* val;
       int flag;
       MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_TAG_UB, &val, &flag);
-      return tag_t{*static_cast<int *>(val)};
+      return tag_t{*static_cast<int*>(val)};
     }
 
     /// \return wildcard tag to be used in receive operations, e.g., \c communicator::recv, to
@@ -78,7 +78,7 @@ namespace mplr {
   /// \param t tag to write into stream
   /// \return output stream
   template<typename CharT, typename Traits>
-  std::basic_ostream<CharT, Traits> &operator<<(std::basic_ostream<CharT, Traits> &os,
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
                                                 tag_t t) {
     return os << static_cast<int>(t);
   }
@@ -88,8 +88,8 @@ namespace mplr {
   /// \param t tag to read from stream
   /// \return input stream
   template<typename CharT, typename Traits>
-  std::basic_istream<CharT, Traits> &operator>>(std::basic_istream<CharT, Traits> &is,
-                                                tag_t &t) {
+  std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is,
+                                                tag_t& t) {
     int t_;
     is >> t_;
     if (is)

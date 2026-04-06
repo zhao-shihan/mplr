@@ -114,14 +114,14 @@ namespace mplr {
       base_request() : request_{MPI_REQUEST_NULL} {
       }
 
-      base_request(const base_request &) = delete;
+      base_request(const base_request&) = delete;
 
-      explicit base_request(const base_irequest &req) : request_{req.request_} {
+      explicit base_request(const base_irequest& req) : request_{req.request_} {
       }
-      explicit base_request(const base_prequest &req) : request_{req.request_} {
+      explicit base_request(const base_prequest& req) : request_{req.request_} {
       }
 
-      base_request(base_request &&other) noexcept : request_(other.request_) {
+      base_request(base_request&& other) noexcept : request_(other.request_) {
         other.request_ = MPI_REQUEST_NULL;
       }
 
@@ -130,9 +130,9 @@ namespace mplr {
           MPI_Request_free(&request_);
       }
 
-      auto &operator=(const base_request &) = delete;
+      auto& operator=(const base_request&) = delete;
 
-      base_request &operator=(base_request &&other) noexcept {
+      base_request& operator=(base_request&& other) noexcept {
         if (this != &other) {
           if (is_valid())
             MPI_Request_free(&request_);
@@ -160,7 +160,7 @@ namespace mplr {
       std::optional<status_t> test() {
         int result{true};
         status_t s;
-        MPI_Test(&request_, &result, static_cast<MPI_Status *>(&s));
+        MPI_Test(&request_, &result, static_cast<MPI_Status*>(&s));
         if (result != 0)
           return s;
         return {};
@@ -170,7 +170,7 @@ namespace mplr {
       /// \return operation's status after completion
       status_t wait() {
         status_t s;
-        MPI_Wait(&request_, static_cast<MPI_Status *>(&s));
+        MPI_Wait(&request_, static_cast<MPI_Status*>(&s));
         return s;
       }
 
@@ -183,7 +183,7 @@ namespace mplr {
         status_t status;
         while (true) {
           const auto t0{detail::steady_high_resolution_clock::now()};
-          MPI_Test(&request_, &flag, static_cast<MPI_Status *>(&status));
+          MPI_Test(&request_, &flag, static_cast<MPI_Status*>(&status));
           if (flag) {
             return status;
           }
@@ -197,7 +197,7 @@ namespace mplr {
       std::optional<status_t> get_status() {
         int result{true};
         status_t s;
-        MPI_Request_get_status(request_, &result, static_cast<MPI_Status *>(&s));
+        MPI_Request_get_status(request_, &result, static_cast<MPI_Status*>(&s));
         if (result != 0)
           return s;
         return {};
@@ -217,22 +217,22 @@ namespace mplr {
 
       request_pool() = default;
 
-      request_pool(const request_pool &) = delete;
+      request_pool(const request_pool&) = delete;
 
-      request_pool(request_pool &&other) noexcept : requests_(std::move(other.requests_)) {
+      request_pool(request_pool&& other) noexcept : requests_(std::move(other.requests_)) {
       }
 
       ~request_pool() {
-        for (auto &request : requests_)
+        for (auto& request : requests_)
           if (request != MPI_REQUEST_NULL)
             MPI_Request_free(&request);
       }
 
-      auto &operator=(const request_pool &) = delete;
+      auto& operator=(const request_pool&) = delete;
 
-      request_pool &operator=(request_pool &&other) noexcept {
+      request_pool& operator=(request_pool&& other) noexcept {
         if (this != &other) {
-          for (auto &request : requests_)
+          for (auto& request : requests_)
             if (request != MPI_REQUEST_NULL)
               MPI_Request_free(&request);
           requests_ = std::move(other.requests_);
@@ -258,7 +258,7 @@ namespace mplr {
       std::optional<status_t> test(size_type i) {
         int result{true};
         status_t s;
-        MPI_Test(&requests_[i], &result, static_cast<MPI_Status *>(&s));
+        MPI_Test(&requests_[i], &result, static_cast<MPI_Status*>(&s));
         if (result != 0)
           return s;
         return {};
@@ -269,7 +269,7 @@ namespace mplr {
       /// \return operation's status after completion
       status_t wait(size_type i) {
         status_t s;
-        MPI_Wait(&requests_[i], static_cast<MPI_Status *>(&s));
+        MPI_Wait(&requests_[i], static_cast<MPI_Status*>(&s));
         return s;
       }
 
@@ -283,7 +283,7 @@ namespace mplr {
         status_t status;
         while (true) {
           const auto t0{detail::steady_high_resolution_clock::now()};
-          MPI_Test(&requests_[i], &flag, static_cast<MPI_Status *>(&status));
+          MPI_Test(&requests_[i], &flag, static_cast<MPI_Status*>(&status));
           if (flag) {
             return status;
           }
@@ -298,7 +298,7 @@ namespace mplr {
       std::optional<status_t> get_status(size_type i) {
         int result{true};
         status_t s;
-        MPI_Request_get_status(requests_[i], &result, static_cast<MPI_Status *>(&s));
+        MPI_Request_get_status(requests_[i], &result, static_cast<MPI_Status*>(&s));
         if (result != 0)
           return s;
         return {};
@@ -319,7 +319,7 @@ namespace mplr {
 
       /// Move a request into the request pool.
       /// \param request request to move into the pool
-      void push(T &&request) {
+      void push(T&& request) {
         requests_.push_back(request.request_);
         request.request_ = MPI_REQUEST_NULL;
       }
@@ -467,24 +467,24 @@ namespace mplr {
     irequest() = default;
 
 #if (!defined MPLR_DOXYGEN_SHOULD_SKIP_THIS)
-    irequest(const impl::base_irequest &r) : base{r} {
+    irequest(const impl::base_irequest& r) : base{r} {
     }
 #endif
 
     /// Deleted copy constructor.
-    irequest(const irequest &) = delete;
+    irequest(const irequest&) = delete;
 
     /// Move constructor.
     /// \param other the request to move from
-    irequest(irequest &&other) noexcept = default;
+    irequest(irequest&& other) noexcept = default;
 
     /// Deleted copy operator.
-    auto &operator=(const irequest &) = delete;
+    auto& operator=(const irequest&) = delete;
 
     /// Move operator.
     /// \param other the request to move from
     /// \return reference to the moved-to request
-    irequest &operator=(irequest &&other) noexcept = default;
+    irequest& operator=(irequest&& other) noexcept = default;
 
     friend class impl::request_pool<irequest>;
   };
@@ -500,19 +500,19 @@ namespace mplr {
     irequest_pool() = default;
 
     /// Deleted copy constructor.
-    irequest_pool(const irequest_pool &) = delete;
+    irequest_pool(const irequest_pool&) = delete;
 
     /// Move constructor.
     /// \param other the request pool to move from
-    irequest_pool(irequest_pool &&other) noexcept = default;
+    irequest_pool(irequest_pool&& other) noexcept = default;
 
     /// Deleted copy operator.
-    auto &operator=(const irequest_pool &) = delete;
+    auto& operator=(const irequest_pool&) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from
     /// \return reference to the moved-to request pool
-    irequest_pool &operator=(irequest_pool &&other) noexcept = default;
+    irequest_pool& operator=(irequest_pool&& other) noexcept = default;
   };
 
   //--------------------------------------------------------------------
@@ -527,24 +527,24 @@ namespace mplr {
     prequest() = default;
 
 #if (!defined MPLR_DOXYGEN_SHOULD_SKIP_THIS)
-    prequest(const impl::base_prequest &r) : base{r} {
+    prequest(const impl::base_prequest& r) : base{r} {
     }
 #endif
 
     /// Deleted copy constructor.
-    prequest(const prequest &) = delete;
+    prequest(const prequest&) = delete;
 
     /// Move constructor.
     /// \param other the request to move from
-    prequest(prequest &&other) noexcept = default;
+    prequest(prequest&& other) noexcept = default;
 
     /// Deleted copy operator.
-    auto &operator=(const prequest &) = delete;
+    auto& operator=(const prequest&) = delete;
 
     /// Move operator.
     /// \param other the request to move from
     /// \return reference to the moved-to request
-    prequest &operator=(prequest &&other) noexcept = default;
+    prequest& operator=(prequest&& other) noexcept = default;
 
     /// Start communication operation.
     void start() {
@@ -566,18 +566,18 @@ namespace mplr {
     prequest_pool() = default;
 
     /// Deleted copy constructor.
-    prequest_pool(const prequest_pool &) = delete;
+    prequest_pool(const prequest_pool&) = delete;
 
     /// Move constructor.
     /// \param other the request pool to move from
-    prequest_pool(prequest_pool &&other) noexcept = default;
+    prequest_pool(prequest_pool&& other) noexcept = default;
 
     /// Deleted copy constructor.
-    auto &operator=(const prequest_pool &) = delete;
+    auto& operator=(const prequest_pool&) = delete;
 
     /// Move operator.
     /// \param other the request pool to move from
-    prequest_pool &operator=(prequest_pool &&other) noexcept = default;
+    prequest_pool& operator=(prequest_pool&& other) noexcept = default;
 
     /// Start a persistent requests in the pool.
     /// \param i index of the request for which shall be started

@@ -174,10 +174,10 @@ namespace mplr {
 
     public:
       class dimension_periodicity_proxy {
-        int &dim_;
-        int &is_periodic_;
+        int& dim_;
+        int& is_periodic_;
 
-        dimension_periodicity_proxy(int &dim, int &is_periodic)
+        dimension_periodicity_proxy(int& dim, int& is_periodic)
             : dim_{dim}, is_periodic_{is_periodic} {
         }
 
@@ -191,19 +191,19 @@ namespace mplr {
                                      : periodicity_tag::periodic;
         }
 
-        dimension_periodicity_proxy &operator=(const std::tuple<int, periodicity_tag> &t) {
+        dimension_periodicity_proxy& operator=(const std::tuple<int, periodicity_tag>& t) {
           dim_ = std::get<int>(t);
           is_periodic_ = std::get<periodicity_tag>(t) == periodic;
           return *this;
         }
 
-        bool operator==(const std::tuple<int, periodicity_tag> &t) const {
+        bool operator==(const std::tuple<int, periodicity_tag>& t) const {
           return dim_ == std::get<int>(t) and
                  (static_cast<bool>(is_periodic_) ==
                   (std::get<periodicity_tag>(t) == periodicity_tag::periodic));
         }
 
-        bool operator!=(const std::tuple<int, periodicity_tag> &t) const {
+        bool operator!=(const std::tuple<int, periodicity_tag>& t) const {
           return not(*this == t);
         }
 
@@ -218,24 +218,24 @@ namespace mplr {
 
       /// Iterator class for non-constant access.
       class iterator {
-        dimensions *dimensions_{nullptr};
+        dimensions* dimensions_{nullptr};
         int index_{0};
 
       public:
         using difference_type = std::ptrdiff_t;
         using iterator_category = std::input_iterator_tag;
         using value_type = dimensions::value_type;
-        using pointer = value_type *;
+        using pointer = value_type*;
         using reference = dimensions::reference;
 
-        explicit iterator(dimensions *dims, int index = 0) : dimensions_{dims}, index_{index} {
+        explicit iterator(dimensions* dims, int index = 0) : dimensions_{dims}, index_{index} {
         }
 
         reference operator*() const {
           return (*dimensions_)[index_];
         }
 
-        iterator &operator++() {
+        iterator& operator++() {
           ++index_;
           return *this;
         }
@@ -246,11 +246,11 @@ namespace mplr {
           return tmp;
         }
 
-        friend bool operator==(const iterator &a, const iterator &b) {
+        friend bool operator==(const iterator& a, const iterator& b) {
           return a.dimensions_ == b.dimensions_ and a.index_ == b.index_;
         }
 
-        friend bool operator!=(const iterator &a, const iterator &b) {
+        friend bool operator!=(const iterator& a, const iterator& b) {
           return a.dimensions_ != b.dimensions_ or a.index_ != b.index_;
         }
       };
@@ -258,17 +258,17 @@ namespace mplr {
 
       /// Iterator class for constant access.
       class const_iterator {
-        const dimensions *dimensions_{nullptr};
+        const dimensions* dimensions_{nullptr};
         int index_{0};
 
       public:
         using difference_type = std::ptrdiff_t;
         using iterator_category = std::input_iterator_tag;
         using value_type = dimensions::value_type;
-        using pointer = const value_type *;
+        using pointer = const value_type*;
         using reference = dimensions::const_reference;
 
-        explicit const_iterator(const dimensions *dims, int index = 0)
+        explicit const_iterator(const dimensions* dims, int index = 0)
             : dimensions_{dims}, index_{index} {
         }
 
@@ -276,7 +276,7 @@ namespace mplr {
           return (*dimensions_)[index_];
         }
 
-        const_iterator &operator++() {
+        const_iterator& operator++() {
           ++index_;
           return *this;
         }
@@ -287,11 +287,11 @@ namespace mplr {
           return tmp;
         }
 
-        friend bool operator==(const const_iterator &a, const const_iterator &b) {
+        friend bool operator==(const const_iterator& a, const const_iterator& b) {
           return a.dimensions_ == b.dimensions_ and a.index_ == b.index_;
         }
 
-        friend bool operator!=(const const_iterator &a, const const_iterator &b) {
+        friend bool operator!=(const const_iterator& a, const const_iterator& b) {
           return a.dimensions_ != b.dimensions_ or a.index_ != b.index_;
         }
       };
@@ -317,7 +317,7 @@ namespace mplr {
       dimensions(std::initializer_list<periodicity_tag> list) {
         dims_.reserve(list.size());
         periodic_.reserve(list.size());
-        for (const auto &the_periodicity : list)
+        for (const auto& the_periodicity : list)
           add(0, the_periodicity);
       }
 
@@ -328,7 +328,7 @@ namespace mplr {
       dimensions(std::initializer_list<std::tuple<int, periodicity_tag>> list) {
         dims_.reserve(list.size());
         periodic_.reserve(list.size());
-        for (const auto &[the_size, the_periodicity] : list) {
+        for (const auto& [the_size, the_periodicity] : list) {
           add(the_size, the_periodicity);
         }
       }
@@ -416,7 +416,7 @@ namespace mplr {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit cartesian_communicator(const cartesian_communicator &other, const mplr::info &info)
+    explicit cartesian_communicator(const cartesian_communicator& other, const mplr::info& info)
         : topology_communicator{other, info} {
     }
 
@@ -428,7 +428,7 @@ namespace mplr {
     /// same rank in the new communicator as in the old one
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other with the same arguments.
-    explicit cartesian_communicator(const communicator &other, const dimensions &dims,
+    explicit cartesian_communicator(const communicator& other, const dimensions& dims,
                                     bool reorder = true) {
       MPI_Cart_create(other.comm_, dims.dims_.size(), dims.dims_.data(), dims.periodic_.data(),
                       reorder, &comm_);
@@ -441,26 +441,26 @@ namespace mplr {
     /// \param is_included indicates along which dimensions to arrange sub-grids
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other with the same arguments.
-    explicit cartesian_communicator(const cartesian_communicator &other,
-                                    const included_tags &is_included) {
+    explicit cartesian_communicator(const cartesian_communicator& other,
+                                    const included_tags& is_included) {
 #if defined MPLR_DEBUG
       if (is_included.size() != other.dimensionality())
         throw invalid_size();
 #endif
-      MPI_Cart_sub(other.comm_, reinterpret_cast<const int *>(is_included.data()), &comm_);
+      MPI_Cart_sub(other.comm_, reinterpret_cast<const int*>(is_included.data()), &comm_);
     }
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
-    cartesian_communicator(cartesian_communicator &&other) noexcept = default;
+    cartesian_communicator(cartesian_communicator&& other) noexcept = default;
 
-    cartesian_communicator &operator=(const cartesian_communicator &other) = delete;
+    cartesian_communicator& operator=(const cartesian_communicator& other) = delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other.
-    cartesian_communicator &operator=(cartesian_communicator &&other) noexcept = default;
+    cartesian_communicator& operator=(cartesian_communicator&& other) noexcept = default;
 
     /// Determines the communicator's dimensionality.
     /// \return number of dimensions of the Cartesian topology
@@ -475,7 +475,7 @@ namespace mplr {
     /// Determines process rank of a process at a given Cartesian location.
     /// \param coordinate Cartesian location
     /// \return process rank
-    [[nodiscard]] int rank(const vector &coordinate) const {
+    [[nodiscard]] int rank(const vector& coordinate) const {
       int t_rank{0};
       MPI_Cart_rank(this->comm_, coordinate.data(), &t_rank);
       return t_rank;

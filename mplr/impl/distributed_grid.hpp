@@ -88,28 +88,28 @@ namespace mplr {
 
     public:
       using value_type = size_overlap_pair;
-      using reference = size_overlap_pair &;
-      using const_reference = const size_overlap_pair &;
+      using reference = size_overlap_pair&;
+      using const_reference = const size_overlap_pair&;
       using iterator = typename std::array<size_overlap_pair, dim>::iterator;
       using const_iterator = typename std::array<size_overlap_pair, dim>::const_iterator;
 
-      dimensions(const size_overlap_pair &size_0) : size_overlap_{size_0} {
+      dimensions(const size_overlap_pair& size_0) : size_overlap_{size_0} {
         static_assert(dim == 1, "invalid number of arguments");
       }
 
-      dimensions(const size_overlap_pair &size_0, const size_overlap_pair &size_1)
+      dimensions(const size_overlap_pair& size_0, const size_overlap_pair& size_1)
           : size_overlap_{size_0, size_1} {
         static_assert(dim == 2, "invalid number of arguments");
       }
 
-      dimensions(const size_overlap_pair &size_0, const size_overlap_pair &size_1,
-                 const size_overlap_pair &size_2)
+      dimensions(const size_overlap_pair& size_0, const size_overlap_pair& size_1,
+                 const size_overlap_pair& size_2)
           : size_overlap_{size_0, size_1, size_2} {
         static_assert(dim == 3, "invalid number of arguments");
       }
 
-      dimensions(const size_overlap_pair &size_0, const size_overlap_pair &size_1,
-                 const size_overlap_pair &size_2, const size_overlap_pair &size_3)
+      dimensions(const size_overlap_pair& size_0, const size_overlap_pair& size_1,
+                 const size_overlap_pair& size_2, const size_overlap_pair& size_3)
           : size_overlap_{size_0, size_1, size_2, size_3} {
         static_assert(dim == 4, "invalid number of arguments");
       }
@@ -183,8 +183,8 @@ namespace mplr {
     /// \param dims size and overlap data of the global grid
     /// \note The number of dimensions of the Cartesian communicator and the size of the dims
     /// parameter must be equal.
-    explicit distributed_grid(const cartesian_communicator &communicator,
-                              const dimensions &dims) {
+    explicit distributed_grid(const cartesian_communicator& communicator,
+                              const dimensions& dims) {
 #if defined MPLR_DEBUG
       if (communicator.dimensionality() != dim or global_size_.size() != dim or
           overlap_.size() != dim)
@@ -421,7 +421,7 @@ namespace mplr {
     /// \param d dimension
     /// \return memory layout
     /// \details The returned memory layout represents data in the left overlap region.
-    [[nodiscard]] const subarray_layout<T> &left_mirror_layout(size_type d) const {
+    [[nodiscard]] const subarray_layout<T>& left_mirror_layout(size_type d) const {
       return left_mirror_layout_[d];
     }
 
@@ -430,7 +430,7 @@ namespace mplr {
     /// \param d dimension
     /// \return memory layout
     /// \details The returned memory layout represents data in the right overlap region.
-    [[nodiscard]] const subarray_layout<T> &right_mirror_layout(size_type d) const {
+    [[nodiscard]] const subarray_layout<T>& right_mirror_layout(size_type d) const {
       return right_mirror_layout_[d];
     }
 
@@ -439,7 +439,7 @@ namespace mplr {
     /// \param d dimension
     /// \return memory layout
     /// \details The returned memory layout represents data next to the left overlap region.
-    const subarray_layout<T> &left_border_layout(size_type d) const {
+    const subarray_layout<T>& left_border_layout(size_type d) const {
       return left_border_layout_[d];
     }
 
@@ -448,7 +448,7 @@ namespace mplr {
     /// \param d dimension
     /// \return memory layout
     /// \details The returned memory layout represents data next to the right overlap region.
-    const subarray_layout<T> &right_border_layout(size_type d) const {
+    const subarray_layout<T>& right_border_layout(size_type d) const {
       return right_border_layout_[d];
     }
 
@@ -456,13 +456,13 @@ namespace mplr {
     /// \return memory layout
     /// \details The returned memory layout represents inner grid data without the overlap
     /// regions.
-    const subarray_layout<T> &interior_layout() const {
+    const subarray_layout<T>& interior_layout() const {
       return interior_layout_;
     }
 
     /// Swaps this distributed data grid with another.
     /// \param other other distributed data grid
-    void swap(distributed_grid &other) noexcept {
+    void swap(distributed_grid& other) noexcept {
       global_size_.swap(other.global_size_);
       global_begin_.swap(other.global_begin_);
       global_end_.swap(other.global_end_);
@@ -529,26 +529,26 @@ namespace mplr {
 
     public:
       using value_type = size_type;
-      using reference = size_type &;
-      using const_reference = const size_type &;
+      using reference = size_type&;
+      using const_reference = const size_type&;
       using iterator = typename std::array<size_type, dim>::iterator;
       using const_iterator = typename std::array<std::size_t, dim>::const_iterator;
 
-      dimensions(const size_type &size_0) : size_{size_0} {
+      dimensions(const size_type& size_0) : size_{size_0} {
         static_assert(dim == 1, "invalid number of arguments");
       }
 
-      dimensions(const size_type &size_0, const size_type &size_1) : size_{size_0, size_1} {
+      dimensions(const size_type& size_0, const size_type& size_1) : size_{size_0, size_1} {
         static_assert(dim == 2, "invalid number of arguments");
       }
 
-      dimensions(const size_type &size_0, const size_type &size_1, const size_type &size_2)
+      dimensions(const size_type& size_0, const size_type& size_1, const size_type& size_2)
           : size_{size_0, size_1, size_2} {
         static_assert(dim == 3, "invalid number of arguments");
       }
 
-      dimensions(const size_type &size_0, const size_type &size_1, const size_type &size_2,
-                 const size_type &size_3)
+      dimensions(const size_type& size_0, const size_type& size_1, const size_type& size_2,
+                 const size_type& size_3)
           : size_{size_0, size_1, size_2, size_3} {
         static_assert(dim == 4, "invalid number of arguments");
       }
@@ -613,7 +613,7 @@ namespace mplr {
     /// \param dims size of the global grid
     /// \note The number of dimensions of the Cartesian communicator and the size of the dims
     /// parameter must be equal.
-    local_grid(const cartesian_communicator &communicator, const dimensions &dims)
+    local_grid(const cartesian_communicator& communicator, const dimensions& dims)
         : global_size_(dims.size_) {
 #if defined MPLR_DEBUG
       if (communicator.dimensionality() != dim or global_size_.size() != dim)
@@ -772,11 +772,11 @@ namespace mplr {
     /// same Cartesian communicator argument and if both grids have the same total size then
     /// the i-th returned layout is suitable to send a sub-set of data from the local_grid to
     /// the distributed grid at the process with rank i in the Cartesian communicator.
-    [[nodiscard]] const layouts<T> &sub_layouts() const {
+    [[nodiscard]] const layouts<T>& sub_layouts() const {
       return sub_layouts_;
     }
 
-    void swap(local_grid &other) noexcept {
+    void swap(local_grid& other) noexcept {
       global_size_.swap(other.global_size_);
       v_.swap(other.v_);
       sub_layouts_.swap(other.sub_layouts_);

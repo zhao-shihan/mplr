@@ -28,7 +28,7 @@ namespace mplr {
   private:
     class less_weights {
     public:
-      bool operator()(const rank_weight_pair &pair_1, const rank_weight_pair &pair_2) const {
+      bool operator()(const rank_weight_pair& pair_1, const rank_weight_pair& pair_2) const {
         if (pair_1.rank == pair_2.rank)
           return pair_1.weight < pair_2.weight;
         else
@@ -71,7 +71,7 @@ namespace mplr {
 
       /// Add an edge to the set.
       /// \param edge tuple of two non-negative integers
-      void add(const value_type &edge) {
+      void add(const value_type& edge) {
         insert(edge);
       }
     };
@@ -87,14 +87,14 @@ namespace mplr {
     /// the communicator \c other. Communicators should not be copied unless a new independent
     /// communicator is wanted. Communicators should be passed via references to functions to
     /// avoid unnecessary copying.
-    explicit distributed_graph_communicator(const distributed_graph_communicator &other,
-                                            const mplr::info &info)
+    explicit distributed_graph_communicator(const distributed_graph_communicator& other,
+                                            const mplr::info& info)
         : topology_communicator{other, info} {
     }
 
     /// Move-constructs a communicator.
     /// \param other the other communicator to move from
-    distributed_graph_communicator(distributed_graph_communicator &&other) noexcept = default;
+    distributed_graph_communicator(distributed_graph_communicator&& other) noexcept = default;
 
     /// Creates a new communicator with graph process topology.
     /// \param other communicator containing the processes to use in the creation of the new
@@ -112,15 +112,15 @@ namespace mplr {
     /// all destination-edges in this collective operation.  Edge weights given in the sources
     /// and destinations arguments may affect the rank ordering but the specific meaning is
     /// determined by the underling MPI implementation.
-    explicit distributed_graph_communicator(const communicator &other,
-                                            const neighbours_set &sources,
-                                            const neighbours_set &destinations,
+    explicit distributed_graph_communicator(const communicator& other,
+                                            const neighbours_set& sources,
+                                            const neighbours_set& destinations,
                                             bool reorder = true) {
       std::vector<int> sources_vector;
       std::vector<int> source_weights;
       sources_vector.reserve(sources.size());
       source_weights.reserve(sources.size());
-      for (const auto &x : sources) {
+      for (const auto& x : sources) {
         sources_vector.push_back(x.rank);
         source_weights.push_back(x.weight);
       }
@@ -128,7 +128,7 @@ namespace mplr {
       std::vector<int> destination_weights;
       destinations_vector.reserve(destinations.size());
       destination_weights.reserve(destinations.size());
-      for (const auto &x : destinations) {
+      for (const auto& x : destinations) {
         destinations_vector.push_back(x.rank);
         destination_weights.push_back(x.weight);
       }
@@ -138,14 +138,14 @@ namespace mplr {
                                      MPI_INFO_NULL, reorder, &comm_);
     }
 
-    distributed_graph_communicator &operator=(const distributed_graph_communicator &other) =
+    distributed_graph_communicator& operator=(const distributed_graph_communicator& other) =
         delete;
 
     /// Move-assigns a communicator.
     /// \param other the other communicator to move from
     /// \note This is a collective operation that needs to be carried out by all processes of
     /// the communicator \c other.
-    distributed_graph_communicator &operator=(distributed_graph_communicator &&other) noexcept =
+    distributed_graph_communicator& operator=(distributed_graph_communicator&& other) noexcept =
         default;
 
     /// Determines the number of edges into and out of this process.
@@ -203,8 +203,8 @@ namespace mplr {
   /// \param pair_1 1st rank-weight pair to compare
   /// \param pair_2 2nd rank-weight pair to compare
   /// \return true if equal
-  inline bool operator==(const distributed_graph_communicator::rank_weight_pair &pair_1,
-                         const distributed_graph_communicator::rank_weight_pair &pair_2) {
+  inline bool operator==(const distributed_graph_communicator::rank_weight_pair& pair_1,
+                         const distributed_graph_communicator::rank_weight_pair& pair_2) {
     return pair_1.rank == pair_2.rank and pair_1.weight == pair_2.weight;
   }
 
@@ -212,8 +212,8 @@ namespace mplr {
   /// \param pair_1 1st rank-weight pair to compare
   /// \param pair_2 2nd rank-weight pair to compare
   /// \return true if not equal
-  inline bool operator!=(const distributed_graph_communicator::rank_weight_pair &pair_1,
-                         const distributed_graph_communicator::rank_weight_pair &pair_2) {
+  inline bool operator!=(const distributed_graph_communicator::rank_weight_pair& pair_1,
+                         const distributed_graph_communicator::rank_weight_pair& pair_2) {
     return pair_1.rank != pair_2.rank or pair_1.weight != pair_2.weight;
   }
 

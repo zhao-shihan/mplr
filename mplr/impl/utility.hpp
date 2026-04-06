@@ -42,7 +42,7 @@ namespace mplr::detail {
   struct underlying_type<T, true> {
     using type = std::underlying_type_t<T>;
 
-    static constexpr int value(const T &v) {
+    static constexpr int value(const T& v) {
       return static_cast<int>(v);
     }
   };
@@ -51,7 +51,7 @@ namespace mplr::detail {
   struct underlying_type<T, false> {
     using type = T;
 
-    static constexpr int value(const T &v) {
+    static constexpr int value(const T& v) {
       return static_cast<int>(v);
     }
   };

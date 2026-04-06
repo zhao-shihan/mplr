@@ -26,19 +26,19 @@ namespace mplr {
 
     /// Copy-constructs a new info object.
     /// \param other the other info object to copy from
-    info(const info &other) {
+    info(const info& other) {
       MPI_Info_dup(other.info_, &info_);
     }
 
     /// Move-constructs a new info object.
     /// \param other the other info object to move from
-    info(info &&other) noexcept : info_{other.info_} {
+    info(info&& other) noexcept : info_{other.info_} {
       other.info_ = MPI_INFO_NULL;
     }
 
     /// Copies an info object.
     /// \param other the other info object to copy from
-    info &operator()(const info &other) {
+    info& operator()(const info& other) {
       if (this != &other) {
         if (info_ != MPI_INFO_NULL)
           MPI_Info_free(&info_);
@@ -52,7 +52,7 @@ namespace mplr {
 
     /// Moves an info object.
     /// \param other the other info object to move from
-    info &operator()(info &&other) noexcept {
+    info& operator()(info&& other) noexcept {
       if (this != &other) {
         if (info_ != MPI_INFO_NULL)
           MPI_Info_free(&info_);
@@ -71,7 +71,7 @@ namespace mplr {
     /// Stores a key-value pair.
     /// \param key the key
     /// \param value the value
-    void set(const std::string &key, const std::string &value) {
+    void set(const std::string& key, const std::string& value) {
       if (info_ == MPI_INFO_NULL)
         MPI_Info_create(&info_);
       MPI_Info_set(info_, key.data(), value.data());
@@ -79,7 +79,7 @@ namespace mplr {
 
     /// Removes a key-value pair with the the given key.
     /// \param key the key
-    void remove(const std::string &key) {
+    void remove(const std::string& key) {
       if (info_ == MPI_INFO_NULL)
         MPI_Info_create(&info_);
       MPI_Info_delete(info_, key.data());
@@ -88,7 +88,7 @@ namespace mplr {
     /// Retrieves the value for a given key.
     /// \param key the key
     /// \return the value if the info object contains a key-value pair with the given key.
-    [[nodiscard]] std::optional<std::string> value(const std::string &key) const {
+    [[nodiscard]] std::optional<std::string> value(const std::string& key) const {
       if (info_ == MPI_INFO_NULL)
         MPI_Info_create(&info_);
       int flag{0};
@@ -158,11 +158,11 @@ namespace mplr {
 
     /// Constructs list of info objects from another set.
     /// \param other the other list to copy from
-    infos(const infos &other) = default;
+    infos(const infos& other) = default;
 
     /// Move-constructs list of info objects from another list.
     /// \param other the other list to move from
-    infos(infos &&other) noexcept : base(std::move(other)) {
+    infos(infos&& other) noexcept : base(std::move(other)) {
     }
 
     using base::operator=;
