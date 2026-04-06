@@ -2,7 +2,7 @@
 
 #define MPLR_REQUEST_HPP
 
-#include "mplr/impl/utility.hpp"
+#include "mplr/impl/thread_processor_stopwatch.hpp"
 
 #include <limits>
 #include <optional>
@@ -32,7 +32,11 @@ namespace mplr {
               case preset::relaxed:
                 return 0.001;
             }
+#if defined MPLR_DEBUG
+            throw invalid_argument{};
+#else
             return std::numeric_limits<double>::min();
+#endif
           }()} {
     }
 
@@ -179,16 +183,16 @@ namespace mplr {
       /// @return operation's status after completion
       status_t wait(duty_ratio duty_ratio) {
         const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        detail::thread_processor_stopwatch stopwatch;
         int flag;
         status_t status;
         while (true) {
-          const auto t0{detail::steady_high_resolution_clock::now()};
+          stopwatch.reset();
           MPI_Test(&request_, &flag, static_cast<MPI_Status*>(&status));
           if (flag) {
             return status;
           }
-          const auto t1{detail::steady_high_resolution_clock::now()};
-          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+          std::this_thread::sleep_for(sleep_to_duty_ratio * stopwatch.read());
         }
       }
 
@@ -279,16 +283,16 @@ namespace mplr {
       /// @return operation's status after completion
       status_t wait(size_type i, duty_ratio duty_ratio) {
         const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        detail::thread_processor_stopwatch stopwatch;
         int flag;
         status_t status;
         while (true) {
-          const auto t0{detail::steady_high_resolution_clock::now()};
+          stopwatch.reset();
           MPI_Test(&requests_[i], &flag, static_cast<MPI_Status*>(&status));
           if (flag) {
             return status;
           }
-          const auto t1{detail::steady_high_resolution_clock::now()};
-          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+          std::this_thread::sleep_for(sleep_to_duty_ratio * stopwatch.read());
         }
       }
 
@@ -341,10 +345,11 @@ namespace mplr {
       /// @return operation's status after completion
       std::pair<test_result, size_type> waitany(duty_ratio duty_ratio) {
         const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        detail::thread_processor_stopwatch stopwatch;
         int index;
         int flag;
         while (true) {
-          const auto t0{detail::steady_high_resolution_clock::now()};
+          stopwatch.reset();
           MPI_Testany(size(), requests_.data(), &index, &flag, MPI_STATUS_IGNORE);
           if (flag) {
             if (index == MPI_UNDEFINED) {
@@ -352,8 +357,7 @@ namespace mplr {
             }
             return {test_result::completed, static_cast<size_type>(index)};
           }
-          const auto t1{detail::steady_high_resolution_clock::now()};
-          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+          std::this_thread::sleep_for(sleep_to_duty_ratio * stopwatch.read());
         }
       }
 
@@ -380,15 +384,15 @@ namespace mplr {
       /// @param duty_ratio duty ratio of wait
       void waitall(duty_ratio duty_ratio) {
         const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        detail::thread_processor_stopwatch stopwatch;
         int flag;
         while (true) {
-          const auto t0{detail::steady_high_resolution_clock::now()};
+          stopwatch.reset();
           MPI_Testall(size(), requests_.data(), &flag, MPI_STATUSES_IGNORE);
           if (flag) {
             return;
           }
-          const auto t1{detail::steady_high_resolution_clock::now()};
-          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+          std::this_thread::sleep_for(sleep_to_duty_ratio * stopwatch.read());
         }
       }
 
@@ -419,10 +423,11 @@ namespace mplr {
       /// @param duty_ratio duty ratio of wait
       std::pair<test_result, std::vector<size_type>> waitsome(duty_ratio duty_ratio) {
         const auto sleep_to_duty_ratio{duty_ratio.sleep_to_duty_ratio()};
+        detail::thread_processor_stopwatch stopwatch;
         std::vector<int> out_indices(size());
         int count;
         while (true) {
-          const auto t0{detail::steady_high_resolution_clock::now()};
+          stopwatch.reset();
           MPI_Testsome(size(), requests_.data(), &count, out_indices.data(),
                        MPI_STATUSES_IGNORE);
           if (count == MPI_UNDEFINED) {
@@ -432,8 +437,7 @@ namespace mplr {
             return {test_result::completed,
                     std::vector<std::size_t>(out_indices.begin(), out_indices.begin() + count)};
           }
-          const auto t1{detail::steady_high_resolution_clock::now()};
-          std::this_thread::sleep_for(sleep_to_duty_ratio * (t1 - t0));
+          std::this_thread::sleep_for(sleep_to_duty_ratio * stopwatch.read());
         }
       }
 
