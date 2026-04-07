@@ -2,7 +2,6 @@
 
 #define MPLR_UTILITY_HPP
 
-#include <chrono>
 #include <iterator>
 #include <limits>
 #include <type_traits>
@@ -158,10 +157,6 @@ namespace mplr::detail {
   inline constexpr bool has_resize_v = has_resize<T>::value;
 
   // -----------------------------------------------------------------
-
-  using steady_high_resolution_clock =
-      std::conditional_t<std::chrono::high_resolution_clock::is_steady,
-                         std::chrono::high_resolution_clock, std::chrono::steady_clock>;
 
 }  // namespace mplr::detail
 

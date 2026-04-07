@@ -1,27 +1,26 @@
-#if !(defined MPLR_THREAD_PROCESSOR_STOPWATCH_HPP)
+#if !(defined MPLR_THREAD_STOPWATCH_HPP)
 
-#define MPLR_THREAD_PROCESSOR_STOPWATCH_HPP
+#define MPLR_THREAD_STOPWATCH_HPP
 
 #include <chrono>
-#include <cmath>
-#include <cstdlib>
 
 
 // macOS / iOS (Darwin) implementation:
 #if defined __APPLE__ and defined __MACH__
+
 
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
 namespace mplr::detail::impl {
 
-  class thread_processor_stopwatch {
+  class thread_stopwatch {
   public:
-    thread_processor_stopwatch() noexcept
+    thread_stopwatch() noexcept
         : m_current_thread{mach_thread_self()}, m_t0{thread_clock_in_us()} {
     }
 
-    ~thread_processor_stopwatch() {
+    ~thread_stopwatch() {
       mach_port_deallocate(mach_task_self(), m_current_thread);
     }
 
@@ -53,18 +52,20 @@ namespace mplr::detail::impl {
 
 }  // namespace mplr::detail::impl
 
+
 // Linux/BSD implementation:
 #elif (defined linux or defined __linux__ or defined __linux) or           \
     (defined __DragonFly__ or defined __FreeBSD__ or defined __NetBSD__ or \
      defined __OpenBSD__)
 
+
 #include <time.h>
 
 namespace mplr::detail::impl {
 
-  class thread_processor_stopwatch {
+  class thread_stopwatch {
   public:
-    thread_processor_stopwatch() noexcept : m_t0{} {
+    thread_stopwatch() noexcept : m_t0{} {
       reset();
     }
 
@@ -85,8 +86,10 @@ namespace mplr::detail::impl {
 
 }  // namespace mplr::detail::impl
 
+
 // Windows implementation:
 #elif defined _WIN32
+
 
 #if defined _MSC_VER and not defined __clang__ and not defined __GNUC__ and not defined NOMINMAX
 #define NOMINMAX
@@ -101,9 +104,9 @@ namespace mplr::detail::impl {
 
 namespace mplr::detail::impl {
 
-  class thread_processor_stopwatch {
+  class thread_stopwatch {
   public:
-    thread_processor_stopwatch() noexcept
+    thread_stopwatch() noexcept
         : m_current_thread{GetCurrentThread()}, m_t0{thread_clock_in_100ns()} {
     }
 
@@ -138,16 +141,20 @@ namespace mplr::detail::impl {
 
 }  // namespace mplr::detail::impl
 
+
 // Fallback implementation:
 #else
 
+
+#include <cmath>
+#include <cstdlib>
 #include <ctime>
 
 namespace mplr::detail::impl {
 
-  class thread_processor_stopwatch {
+  class thread_stopwatch {
   public:
-    thread_processor_stopwatch() noexcept : m_t0{std::clock()} {
+    thread_stopwatch() noexcept : m_t0{std::clock()} {
     }
 
     auto reset() noexcept -> void {
@@ -170,11 +177,13 @@ namespace mplr::detail::impl {
 
 }  // namespace mplr::detail::impl
 
+
 #endif
+
 
 namespace mplr::detail {
 
-  class thread_processor_stopwatch {
+  class thread_stopwatch {
   public:
     using duration = std::chrono::nanoseconds;
 
@@ -188,7 +197,7 @@ namespace mplr::detail {
     }
 
   private:
-    impl::thread_processor_stopwatch m_impl;
+    impl::thread_stopwatch m_impl;
   };
 
 }  // namespace mplr::detail
