@@ -1,7 +1,14 @@
 # 3.21 required for PROJECT_IS_TOP_LEVEL, 3.10 required for mpi targets, 3.5 required for boost targets
 cmake_minimum_required(VERSION 3.21)
 
-project(mplr VERSION 0.25.1003 LANGUAGES C CXX)
+project(mplr VERSION 0.26.408 LANGUAGES CXX)
+
+option(MPLR_BUILD_EXAMPLES "Build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
+option(MPLR_INSTALL "Generate and install MPLR target" ${PROJECT_IS_TOP_LEVEL})
+
+if(MPLR_BUILD_EXAMPLES)
+  project(mplr LANGUAGES C)
+endif()
 
 if(NOT DEFINED CACHE{BUILD_TESTING})
   set(BUILD_TESTING OFF CACHE BOOL "")
@@ -29,7 +36,6 @@ target_include_directories(mplr
 add_library(mplr::mplr ALIAS mplr)
 target_link_libraries(mplr INTERFACE MPI::MPI_CXX)
 
-option(MPLR_BUILD_EXAMPLES "build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
 if(MPLR_BUILD_EXAMPLES)
   find_package(MPI 3.1 REQUIRED C)
   add_subdirectory(examples)
@@ -38,7 +44,6 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-option(MPLR_INSTALL "Generate and install MPLR target" ${PROJECT_IS_TOP_LEVEL})
 if(MPLR_INSTALL)
   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mplConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mplr)
 
@@ -53,6 +58,3 @@ if(MPLR_INSTALL)
       NAMESPACE mplr::
       FILE mplTargets.cmake)
 endif()
-
-# option(MPLR_BUILD_DOCUMENTATION "build the mplr documentation using Doxygen and Sphinx" OFF)
-# add_subdirectory(doc)
