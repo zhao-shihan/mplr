@@ -148,8 +148,8 @@ namespace mplr {
     /// datatype.  See MPI documentation for details.
     /// \see \c extent
     [[nodiscard]] ssize_t byte_extent() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return extent_;
@@ -161,8 +161,8 @@ namespace mplr {
     /// MPI datatype.  See MPI documentation for details.
     /// \see \c byte_upper_bound, \c lower_bound
     [[nodiscard]] ssize_t byte_lower_bound() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return lb_;
@@ -174,8 +174,8 @@ namespace mplr {
     /// MPI datatype.  See MPI documentation for details.
     /// \see \c byte_lower_bound, \c upper_bound
     [[nodiscard]] ssize_t byte_upper_bound() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return extent_ - lb_;
@@ -226,8 +226,8 @@ namespace mplr {
     /// datatype.  See MPI documentation for details.
     /// \see \c true_extent
     [[nodiscard]] ssize_t true_byte_extent() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_true_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_true_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return extent_;
@@ -239,8 +239,8 @@ namespace mplr {
     /// underlying MPI datatype.  See MPI documentation for details.
     /// \see \c true_byte_upper_bound, \c true_lower_bound
     [[nodiscard]] ssize_t true_byte_lower_bound() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_true_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_true_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return lb_;
@@ -252,8 +252,8 @@ namespace mplr {
     /// underlying MPI datatype.  See MPI documentation for details.
     /// \see \c true_byte_lower_bound, \c true_upper_bound
     [[nodiscard]] ssize_t true_byte_upper_bound() const {
-      MPI_Count lb_, extent_;
-      MPI_Type_get_true_extent_x(type_, &lb_, &extent_);
+      MPI_Aint lb_, extent_;
+      MPI_Type_get_true_extent(type_, &lb_, &extent_);
       if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
         throw invalid_datatype_bound();
       return extent_ - lb_;
@@ -478,8 +478,8 @@ namespace mplr {
         const std::size_t modulus{std::numeric_limits<int>::max()};
         const std::size_t count_1{count / modulus};
         const std::size_t count_0{count - count_1 * modulus};
-        MPI_Count lb, extent;
-        MPI_Type_get_extent_x(old_type, &lb, &extent);
+        MPI_Aint lb, extent;
+        MPI_Type_get_extent(old_type, &lb, &extent);
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
@@ -593,8 +593,8 @@ namespace mplr {
         const std::size_t modulus{std::numeric_limits<int>::max()};
         const std::size_t count_1{count / modulus};
         const std::size_t count_0{count - count_1 * modulus};
-        MPI_Count lb, extent;
-        MPI_Type_get_extent_x(old_type, &lb, &extent);
+        MPI_Aint lb, extent;
+        MPI_Type_get_extent(old_type, &lb, &extent);
         MPI_Datatype type_modulus;
         MPI_Type_contiguous(static_cast<int>(modulus), old_type, &type_modulus);
         std::vector<int> block_lengths{static_cast<int>(count_0), static_cast<int>(count_1)};
@@ -1251,16 +1251,16 @@ namespace mplr {
       std::vector<int> blocklengths;
 
       template<typename value_T>
-      void add(value_T& base, value_T*& i, MPI_Count extent_) {
+      void add(value_T& base, value_T*& i, MPI_Aint extent_) {
         add(reinterpret_cast<char*>(&i) - reinterpret_cast<char*>(&base), extent_);
       }
 
       template<typename value_T>
-      void add(const value_T& base, const value_T& i, MPI_Count extent_) {
+      void add(const value_T& base, const value_T& i, MPI_Aint extent_) {
         add(reinterpret_cast<const char*>(&i) - reinterpret_cast<const char*>(&base), extent_);
       }
 
-      void add(MPI_Aint displacement, MPI_Count extent_) {
+      void add(MPI_Aint displacement, MPI_Aint extent_) {
         if ((not displacements.empty()) and
             displacements.back() + blocklengths.back() * extent_ == displacement and
             blocklengths.back() < std::numeric_limits<int>::max())
@@ -1281,8 +1281,8 @@ namespace mplr {
       /// \param last iterator pointing after the last element
       template<typename iter_T>
       parameter(iter_T first, iter_T last) {
-        MPI_Count lb_, extent_;
-        MPI_Type_get_extent_x(detail::datatype_traits<T>::get_datatype(), &lb_, &extent_);
+        MPI_Aint lb_, extent_;
+        MPI_Type_get_extent(detail::datatype_traits<T>::get_datatype(), &lb_, &extent_);
         if (lb_ == MPI_UNDEFINED or extent_ == MPI_UNDEFINED)
           throw invalid_datatype_bound();
         for (iter_T i = first; i != last; ++i)
