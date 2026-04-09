@@ -131,6 +131,15 @@ namespace mplr {
       return {};
     }
 
+    /// Gets the native MPI_Info handle.
+    /// \return The native MPI_Info handle.
+    /// \note This function returns a non-owning handle to the underlying MPI info.
+    [[nodiscard]] MPI_Info native_handle() const {
+      if (info_ == MPI_INFO_NULL)
+        MPI_Info_create(&info_);
+      return info_;
+    }
+
     friend class impl::base_communicator;
     friend class communicator;
     friend class file;
