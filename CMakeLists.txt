@@ -1,7 +1,7 @@
 # 3.21 required for PROJECT_IS_TOP_LEVEL, 3.10 required for mpi targets, 3.5 required for boost targets
 cmake_minimum_required(VERSION 3.21)
 
-project(mplr VERSION 0.26.408 LANGUAGES CXX)
+project(mplr VERSION 0.26.409 LANGUAGES CXX)
 
 option(MPLR_BUILD_EXAMPLES "Build the mplr examples" ${PROJECT_IS_TOP_LEVEL})
 option(MPLR_INSTALL "Generate and install MPLR target" ${PROJECT_IS_TOP_LEVEL})
